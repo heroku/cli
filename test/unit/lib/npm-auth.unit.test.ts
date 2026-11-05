@@ -67,6 +67,16 @@ describe('NpmAuth', function () {
       const result = await NpmAuth.isPrivatePackage('@oclif/core')
 
       expect(result).to.be.false
+      expect(execStub.calledWith(['view', '@oclif/core', 'name', '--json'], sinon.match.object)).to.be.true
+    })
+
+    it('passes shell punctuation as a literal npm argument', async function () {
+      execStub.resolves({stderr: '', stdout: ''})
+      const packageName = 'plugin; touch /tmp/injected'
+
+      await NpmAuth.isPrivatePackage(packageName)
+
+      expect(execStub.calledOnceWith(['view', packageName, 'name', '--json'], sinon.match.object)).to.be.true
     })
 
     it('should return true when package returns 401', async function () {

@@ -43,7 +43,7 @@ describe('push_pull', function () {
         await prepare(target as any, execStub)
 
         expect(execStub.calledOnce).to.be.true
-        expect(execStub.firstCall.args[0]).to.equal('createdb -U me -h localhost -p 5432 cats_doing_stuff')
+        expect(execStub.calledWithExactly('createdb', ['-U', 'me', '-h', 'localhost', '-p', '5432', 'cats_doing_stuff'])).to.be.true
       })
 
       it('creates a local database when host is not specified', async function () {
@@ -56,7 +56,7 @@ describe('push_pull', function () {
         await prepare(target as any, execStub)
 
         expect(execStub.calledOnce).to.be.true
-        expect(execStub.firstCall.args[0]).to.equal('createdb -U you -p 5432 dogs_that_thing_they_are_cats')
+        expect(execStub.calledWithExactly('createdb', ['-U', 'you', '-p', '5432', 'dogs_that_thing_they_are_cats'])).to.be.true
       })
     })
 
