@@ -2,7 +2,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import {SinonStub, stub} from 'sinon'
+import {match, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgUpgradeRun from '../../../../../../src/commands/data/pg/upgrade/run.js'
@@ -49,9 +49,12 @@ describe('data:pg:upgrade:run', function () {
         Upgrade started. Use heroku data:pg:upgrade:wait ${advancedAddon.name} -a myapp to monitor progress.
       `))
     expect(stdout).to.equal('')
-    expect(fakeData.postgres.runUpgrade.firstCall.args[0]).to.equal('myapp')
-    expect(fakeData.postgres.runUpgrade.firstCall.args[1]).to.equal(advancedAddon.name)
-    expect(fakeData.postgres.runUpgrade.firstCall.args[2]).to.deep.equal({version: undefined})
+    expect(fakeData.postgres.runUpgrade.calledOnceWithExactly(
+      'myapp',
+      advancedAddon.name,
+      {version: undefined},
+      {beforeRunUpgrade: match.func},
+    )).to.equal(true)
   })
 
   it('upgrades an advanced database to a specific version with --version', async function () {
@@ -92,12 +95,13 @@ describe('data:pg:upgrade:run', function () {
       throw new Error('Database is not ready for upgrade.')
     })
 
-    const {error} = await runCommand(DataPgUpgradeRun, [
+    const {error, stderr} = await runCommand(DataPgUpgradeRun, [
       advancedAddon.name,
       '--app=myapp',
       '--confirm=myapp',
     ])
 
     expect(ansis.strip((error as Error).message)).to.include('Database is not ready for upgrade.')
+    expect(ansis.strip(stderr)).to.include(`Upgrading your ⛁ ${advancedAddon.name} database from 16.10 to the latest supported Postgres version... !`)
   })
 })

@@ -166,6 +166,7 @@ export interface NonAdvancedCredentialInfo extends Record<string, unknown> {
 
 export type PlanLimit = ConnectionLimit | StorageLimitInGb | TableLimit
 
+// TODO: delete this type and use PostgresInfoResult from @heroku/types/data instead
 export type PoolInfoResponse = {
   compute_instances: Array<ComputeInstance>
   connections_used: null | number

@@ -64,6 +64,8 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     let credentials: AdvancedCredentials
     try {
       let result
+      // TODO: push this scoped-then-unscoped resolve into an SDK composite instead
+      // of re-issuing the full credential list here just to change resolve scope.
       try {
         result = await data.databaseCredential.list(databaseArg, {appIdentity: app})
       } catch (error) {
