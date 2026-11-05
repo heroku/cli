@@ -1,5 +1,6 @@
 /* eslint-disable n/no-process-exit */
 
+import {awaitProcessShutdown, type ShutdownSignal} from '../process-shutdown.js'
 import {
   CLIError, spawnTelemetryWorker, telemetryDebug, TelemetryGlobal,
 } from './telemetry-utils.js'
@@ -43,30 +44,36 @@ export function setupTelemetryHandlers(options: SetupTelemetryOptions): void {
     }
   })
 
-  process.on('SIGINT', () => {
-    // Spawn background process to send telemetry
-    const error: CLIError = Object.assign(new Error('Received SIGINT'), {
-      cliRunDuration: computeDuration(cliStartTime),
-      context: {
-        isTTY: process.stdin.isTTY,
-      },
-    })
-    spawnTelemetryWorker(error)
-    // Defer termination to the next tick so every other SIGINT listener in this
-    // emit runs first (e.g. the SDK's AbortController, dyno/ssh/forward/socks/mcp
-    // connection teardown) instead of being cut off by a synchronous exit.
-    // Draining the microtask queue in between also lets aborted in-flight
-    // requests reject and unwind, and gives the worker's stdin write time to flush.
-    setImmediate(() => process.exit(1))
-  })
+  let shutdownStarted = false
+  const handleSignal = async (signal: ShutdownSignal): Promise<void> => {
+    if (shutdownStarted) return
 
-  process.on('SIGTERM', () => {
-    // Spawn background process to send telemetry
-    const error: CLIError = Object.assign(new Error('Received SIGTERM'), {
+    shutdownStarted = true
+
+    // Snapshot the error before waiting so signal-time duration and context are preserved.
+    const error: CLIError = Object.assign(new Error(`Received ${signal}`), {
       cliRunDuration: computeDuration(cliStartTime),
+      ...(signal === 'SIGINT' ? {context: {isTTY: process.stdin.isTTY}} : {}),
     })
+
+    try {
+      await awaitProcessShutdown(signal)
+    } catch (shutdownError) {
+      telemetryDebug('Error waiting for process shutdown before sending signal telemetry: %s', shutdownError)
+    }
+
     spawnTelemetryWorker(error)
-    // Defer termination; see the SIGINT handler above for why.
-    setImmediate(() => process.exit(1))
+    // Let the coordinator replay distinct unowned signals after the shutdown barrier settles.
+    setImmediate(() => {
+      // eslint-disable-next-line unicorn/no-process-exit -- preserve the CLI's signal exit status
+      process.exit(1)
+    })
+  }
+
+  process.on('SIGINT', () => {
+    handleSignal('SIGINT').catch(error => telemetryDebug('Error handling SIGINT shutdown: %s', error))
+  })
+  process.on('SIGTERM', () => {
+    handleSignal('SIGTERM').catch(error => telemetryDebug('Error handling SIGTERM shutdown: %s', error))
   })
 }
