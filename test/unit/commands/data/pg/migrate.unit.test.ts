@@ -384,6 +384,22 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.match(/⛁ postgresql-convex-12345\s+⛁ postgresql-obscured-12345\s+Preparing databases/)
     })
 
+    it('warns that preparing the migration deletes all data on the destination database before confirming', async function () {
+      mockedStdinInput = [
+        '\n', // Main menu: > Configure a database migration
+        '\n', // Select source database: > Premium database
+        '\n', // Select target database: > Non-target Advanced database
+        '\n', // Confirm migration configuration: > Confirm
+        EXIT, // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
+
+      expect(stderr).to.equal('Configuring migration... done\n')
+      // The destructive-prepare warning names the chosen destination database.
+      expect(stdout).to.contain(`Preparing the migration deletes all the data on the destination database ⛁ ${nonTargetAdvancedDbAttachment.addon.name}`)
+    })
+
     it('surfaces the error and marks the spinner failed when preparing the migration fails', async function () {
       fakeData.postgresMigration.prepare.rejects(new Error('prepare boom'))
 
@@ -649,6 +665,20 @@ describe('data:pg:migrate', function () {
       expect(fakeData.postgresMigration.startWhenReady.calledOnce).to.be.true
       expect(fakeData.postgresMigration.startWhenReady.firstCall.args[0]).to.equal(targetAdvancedDbAttachment.addon.id)
       expect(stderr).to.equal('Starting migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
+    })
+
+    it('warns that the source database is unavailable during the migration before confirming', async function () {
+      mockedStdinInput = [
+        '\n', // Main menu: > Start a migration
+        '\n', // Select the migration to start: > first ready migration
+        '\n', // Confirm to start migration: > Confirm
+        EXIT, // Main menu: > Exit
+      ]
+
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      // The source-unavailability warning is surfaced before the start is confirmed.
+      expect(stdout).to.contain('will be unavailable after starting the migration until the migration is complete.')
     })
 
     it('surfaces the error and marks the spinner failed when starting the migration fails', async function () {
