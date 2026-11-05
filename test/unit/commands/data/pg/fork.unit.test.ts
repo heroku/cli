@@ -1,6 +1,7 @@
 
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import {type ForkResult} from '@heroku/sdk/extensions/data'
 import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import {Config} from '@oclif/core'
 import ansis from 'ansis'
@@ -34,6 +35,7 @@ type ForkBody = {
 type ForkOptions = {
   onPoll?: (status: unknown) => void
   onProvisioning?: (addon: unknown) => Promise<void> | void
+  onResolved?: (source: unknown) => Promise<void> | void
   wait?: boolean
 }
 
@@ -45,6 +47,10 @@ type ForkOptions = {
 // are exercised without any HTTP.
 const forkResolving = (forkAddon = createForkResponse, source = addon) =>
   async (_app: string, _source: string, body: ForkBody, options: ForkOptions = {}) => {
+    // The SDK resolves and tier-checks the source first, then fires onResolved
+    // (which starts the command's deferred create spinner) before creating.
+    await options.onResolved?.(source)
+
     if (options.wait) {
       await options.onProvisioning?.(forkAddon)
       options.onPoll?.({message: 'available', waiting: false})
@@ -153,6 +159,47 @@ describe('data:pg:fork', function () {
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp... done
       `)
     })
+
+    it('labels the spinner with the resolved source, not the raw identity typed', async function () {
+      // The user can pass an attachment name or config var; the SDK resolves it
+      // to the add-on and fires onResolved with the resolved add-on. The spinner
+      // the command defers to that hook must name the resolved add-on
+      // (advanced-horizontal-01234), not the raw "DATABASE_URL" the user typed.
+      const {stderr} = await runCommand(Fork, [
+        'DATABASE_URL',
+        '--app=myapp',
+      ])
+
+      const source = fakeData.postgres.fork.firstCall.args[1]
+      expect(source).to.equal('DATABASE_URL')
+      expect(ansis.strip(stderr)).to.equal(heredoc`
+        Creating a fork for advanced-horizontal-01234 on ⬢ myapp... done
+      `)
+    })
+
+    it('runs the two-phase wait UX and returns the fork result with --wait', async function () {
+      const {error, result, stderr, stdout} = await runCommand<ForkResult>(Fork, [
+        'advanced-horizontal-01234',
+        '--app=myapp',
+        '--wait',
+      ])
+
+      expect(error).to.be.undefined
+      expect(fakeData.postgres.fork.firstCall.args[3].wait).to.be.true
+      // Create phase closes, then the wait phase wraps the poll loop.
+      expect(ansis.strip(stderr)).to.equal(heredoc`
+        Creating a fork for advanced-horizontal-01234 on ⬢ myapp... done
+        Creating advanced-oblique-01234... done
+      `)
+      expect(stdout).to.equal(heredoc(`
+          Your forked database is being provisioned
+          Waiting for advanced-oblique-01234...
+          Created advanced-oblique-01234
+        `))
+      // run() returns the SDK result so the command composes.
+      expect(result?.addon).to.equal(createForkResponse)
+      expect(result?.source).to.equal(addon)
+    })
   })
 
   describe('rollback functionality', function () {
@@ -223,7 +270,7 @@ describe('data:pg:fork', function () {
     it('shows error for non-Advanced databases', async function () {
       fakeData.postgres.fork.rejects(new NotAdvancedDatabaseError(nonAdvancedAddon, 'not advanced'))
 
-      const {error} = await runCommand(Fork, [
+      const {error, stderr} = await runCommand(Fork, [
         'advanced-horizontal-01234',
         '--app=myapp',
       ])
@@ -231,6 +278,10 @@ describe('data:pg:fork', function () {
       expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
           Use heroku addons:create heroku-postgresql:standard-0 -a myapp -- --fork standard-database instead.`)
+      // The create spinner is deferred to the SDK's onResolved hook, which only
+      // fires once the tier check passes. A classic source rejects before that,
+      // so no "Creating a fork" line should ever reach the terminal.
+      expect(ansis.strip(stderr)).to.not.include('Creating a fork')
     })
 
     it('surfaces a captured wait failure as a thrown error', async function () {

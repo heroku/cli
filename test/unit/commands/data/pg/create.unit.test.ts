@@ -1,5 +1,6 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import {AddonConfirmationRequiredError} from '@heroku/sdk/resources/platform/add-on'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -7,6 +8,7 @@ import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgCreate from '../../../../../src/commands/data/pg/create.js'
+import ConfirmCommand from '../../../../../src/lib/confirm-command.js'
 import PoolConfig from '../../../../../src/lib/data/pool-config.js'
 import {clearLevelsAndPricingCache} from '../../../../../src/lib/data/utils.js'
 import {
@@ -55,6 +57,7 @@ const provisionResolving = (addon = createAddonResponse, pool = createPoolRespon
 describe('data:pg:create', function () {
   let fakeData: FakeData
   let promptStub: SinonStub
+  let notifyStub: SinonStub
   let poolConfigStubs: {
     followerInteractiveConfig: SinonStub
     instanceCountStep: SinonStub
@@ -85,6 +88,7 @@ describe('data:pg:create', function () {
     stub(PoolConfig.prototype, 'levelStep').callsFake(poolConfigStubs.levelStep)
     stub(DataPgCreate.prototype, 'prompt').callsFake(promptStub)
     stub(DataPgCreate.prototype, 'runCommand').resolves()
+    notifyStub = stub(DataPgCreate.prototype, 'notify').resolves()
   })
 
   afterEach(function () {
@@ -185,6 +189,58 @@ describe('data:pg:create', function () {
       expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a 4G-Performance database on ⬢ myapp... done
       `)
+    })
+
+    it('runs the two-phase wait UX and notifies on success with --wait', async function () {
+      const {error, stderr, stdout} = await runCommand(DataPgCreate, ['--app=myapp', '--level=4G-Performance', '--wait'])
+
+      expect(error).to.be.undefined
+      expect(fakeData.postgres.provisionAdvanced.firstCall.args[2].wait).to.be.true
+      // Create phase closes, then the wait phase wraps the poll loop.
+      expect(ansis.strip(stderr)).to.equal(heredoc`
+        Creating a 4G-Performance database on ⬢ myapp... done
+        Creating advanced-horizontal-01234... done
+      `)
+      expect(stdout).to.equal(heredoc(`
+        Your database is being provisioned
+        Waiting for advanced-horizontal-01234...
+        Created advanced-horizontal-01234
+      `))
+      expect(notifyStub.calledOnceWith('We successfully provisioned the database')).to.be.true
+    })
+
+    it('notifies on failure when --wait provisioning fails', async function () {
+      const waitError = new Error('wait polling failed')
+      fakeData.postgres.provisionAdvanced.callsFake(async () => ({addon: createAddonResponse, waitError}))
+
+      const {error} = await runCommand(DataPgCreate, ['--app=myapp', '--level=4G-Performance', '--wait'])
+
+      expect(error).to.equal(waitError)
+      expect(notifyStub.calledOnce).to.be.true
+      expect(notifyStub.firstCall.args[1]).to.be.false
+    })
+  })
+
+  describe('confirmation prompt retry', function () {
+    it('prompts for confirmation then retries the provision with the app as confirmation', async function () {
+      const confirmStub = stub(ConfirmCommand.prototype, 'confirm').resolves()
+      fakeData.postgres.provisionAdvanced
+        .onFirstCall().rejects(new AddonConfirmationRequiredError('confirmation required'))
+        .onSecondCall().callsFake(provisionResolving())
+
+      const {error, stdout} = await runCommand(DataPgCreate, ['--app=myapp', '--level=4G-Performance'])
+
+      expect(error).to.be.undefined
+      expect(confirmStub.calledOnce).to.be.true
+      expect(fakeData.postgres.provisionAdvanced.calledTwice).to.be.true
+      // First attempt carries no confirmation; the retry passes the app name.
+      expect(fakeData.postgres.provisionAdvanced.firstCall.args[1].confirm).to.be.undefined
+      expect(fakeData.postgres.provisionAdvanced.secondCall.args[1].confirm).to.equal('myapp')
+      expect(stdout).to.equal(heredoc(`
+        Your database is being provisioned
+        advanced-horizontal-01234 is being created in the background. The app will restart when complete...
+        Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
+      `))
     })
   })
 

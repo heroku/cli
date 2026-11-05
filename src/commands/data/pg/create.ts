@@ -4,7 +4,7 @@ import type {AddOn} from '@heroku/types/3.sdk'
 import {flags as Flags} from '@heroku-cli/command'
 import {color} from '@heroku/heroku-cli-util'
 import {postgresExtensions} from '@heroku/sdk/extensions/data'
-import {ux} from '@oclif/core/ux'
+import {ux} from '@oclif/core'
 import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
 
@@ -25,7 +25,7 @@ type Data = ReturnType<typeof createSDK<readonly [typeof postgresExtensions]>>['
 export default class DataPgCreate extends BaseCommand {
   static baseFlags = BaseCommand.baseFlagsWithoutPrompt()
   static description = 'create a Postgres Advanced database'
-  static examples = ['<%= config.bin %> <%= command.id %> --level 4G-Performance -a example-app']
+  static examples = ['<%= config.bin %> <%= command.id %> --level 4G-Performance --app example-app']
   static flags = {
     app: Flags.app({
       required: true,
@@ -65,6 +65,10 @@ export default class DataPgCreate extends BaseCommand {
   private followerInstanceCount: number = 0
   private highAvailability: boolean | undefined
   private leaderLevel: string | undefined
+
+  public async notify(message: string, success = true): Promise<void> {
+    notify('heroku data:pg:create', message, success)
+  }
 
   public async prompt<T extends inquirer.Answers>(...args: Parameters<typeof inquirer.prompt<T>>): Promise<T> {
     return prompt<T>(...args)
@@ -132,12 +136,11 @@ export default class DataPgCreate extends BaseCommand {
       pool = result.pool
 
       if (wait) {
-        notify('heroku data:pg:create', 'We successfully provisioned the database')
+        this.notify('We successfully provisioned the database')
       }
     } catch (error) {
       if (wait) {
-        notify(
-          'heroku data:pg:create',
+        this.notify(
           'We can’t provision the database. Try again or open a ticket with Heroku Support: https://help.heroku.com/.',
           false,
         )

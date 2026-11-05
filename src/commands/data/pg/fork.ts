@@ -2,7 +2,7 @@ import type {AddOn} from '@heroku/types/3.sdk'
 
 import {flags as Flags} from '@heroku-cli/command'
 import {color} from '@heroku/heroku-cli-util'
-import {postgresExtensions} from '@heroku/sdk/extensions/data'
+import {postgresExtensions, type ForkResult} from '@heroku/sdk/extensions/data'
 import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
@@ -93,7 +93,7 @@ export default class Fork extends BaseCommand {
     return parsedDate
   }
 
-  public async run(): Promise<void> {
+  public async run(): Promise<ForkResult> {
     const chrono = await lazyModuleLoader.loadChrono()
 
     const {args, flags} = await this.parse(Fork)
@@ -123,9 +123,13 @@ export default class Fork extends BaseCommand {
     }
 
     const rollbackMessage = `with a rollback ${rollbackTo ? `to ${rollbackTo}` : `by ${rollbackBy}`}`
-    const actionStartMessage = recoveryTime
-      ? `Creating a fork for ${color.addon(database)} on ${color.app(app)} ${rollbackMessage}`
-      : `Creating a fork for ${color.addon(database)} on ${color.app(app)}`
+    // The SDK resolves and tier-checks the source before this spinner should
+    // appear, so the message is built from the resolved source name (via the
+    // `onResolved` hook) rather than the raw identity the user typed. The
+    // raw-identity form is the pre-resolution fallback.
+    const buildActionStartMessage = (sourceName: string): string => recoveryTime
+      ? `Creating a fork for ${color.addon(sourceName)} on ${color.app(app)} ${rollbackMessage}`
+      : `Creating a fork for ${color.addon(sourceName)} on ${color.app(app)}`
 
     // Builds the classic-command hint from the resolved source the SDK carries
     // on NotAdvancedDatabaseError, so we never resolve the source twice.
@@ -139,9 +143,14 @@ export default class Fork extends BaseCommand {
         + `${rollbackBy ? ` --by '${rollbackBy}'` : ''}`
 
     try {
-      await provisionInteractively(
+      const result = await provisionInteractively(
         {
-          actionStartMessage, actionStopMessage: 'done', app, confirm, wait: Boolean(wait),
+          actionStartMessage: buildActionStartMessage(database),
+          actionStopMessage: 'done',
+          app,
+          confirm,
+          resolvedActionStartMessage: source => buildActionStartMessage(source.name || database),
+          wait: Boolean(wait),
         },
         (confirmValue, hooks) => data.postgres.fork(app, database, {
           as,
@@ -156,6 +165,8 @@ export default class Fork extends BaseCommand {
       if (wait) {
         this.notify('We successfully provisioned the database fork')
       }
+
+      return result
     } catch (error) {
       if (error instanceof NotAdvancedDatabaseError) {
         ux.error('You can only use this command on Advanced-tier databases.\n'

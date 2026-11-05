@@ -10,6 +10,12 @@ import ConfirmCommand from '../confirm-command.js'
 export type ProvisionHooks = {
   onPoll: (status: PostgresWaitStatusResult) => void
   onProvisioning: (addon: AddOn) => void
+  /**
+   * Fired by `fork` once the source is resolved and tier-checked. Used to start
+   * the deferred create spinner (see `resolvedActionStartMessage`); a no-op for
+   * `provisionAdvanced`, which never fires it.
+   */
+  onResolved: (source: AddOn) => void
   wait: boolean
 }
 
@@ -22,6 +28,16 @@ export type ProvisionInteractivelyOptions = {
   app: string
   /** Confirmation value supplied by the user (`--confirm`), if any. */
   confirm: string | undefined
+  /**
+   * For callers that resolve a source before creating (`fork`): when provided,
+   * the create spinner is not started up front but deferred to the SDK's
+   * `onResolved` hook and started with the message this returns from the
+   * resolved source — so the spinner never appears before a tier-check failure
+   * and names the resolved add-on rather than the raw identity. Omit it
+   * (`provisionAdvanced`) to start the spinner immediately with
+   * `actionStartMessage`.
+   */
+  resolvedActionStartMessage?: (source: AddOn) => string
   /** Poll the data `wait_status` until the leader is ready before returning. */
   wait: boolean
 }
@@ -61,9 +77,15 @@ function formatConfigVarsMessage(addon: AddOn): string {
  * provisioning fully succeeded.
  */
 export default async function provisionInteractively<T extends {addon: AddOn; poolError?: unknown; waitError?: unknown}>(
-  {actionStartMessage, actionStopMessage, app, confirm, wait}: ProvisionInteractivelyOptions,
+  {actionStartMessage, actionStopMessage, app, confirm, resolvedActionStartMessage, wait}: ProvisionInteractivelyOptions,
   provision: (confirm: string | undefined, hooks: ProvisionHooks) => Promise<T>,
 ): Promise<T> {
+  // When the caller resolves a source first (`fork`), defer the create spinner
+  // to `onResolved` so it never shows before a tier-check rejection and is
+  // labelled from the resolved add-on; otherwise (`provisionAdvanced`) start it
+  // immediately below.
+  const deferStart = resolvedActionStartMessage !== undefined
+
   // Two-phase UX during a wait: the create-phase action wraps the initial
   // create; `onProvisioning` closes it, prints the provision message, then
   // opens a second action that wraps the data `wait_status` poll loop and is
@@ -83,10 +105,20 @@ export default async function provisionInteractively<T extends {addon: AddOn; po
       ux.action.start(`Creating ${color.addon(created.name || '')}`)
       inWaitPhase = true
     },
+    onResolved(source) {
+      // Only `fork` fires this; start the deferred create spinner now that the
+      // tier check has passed, labelled from the resolved source.
+      if (resolvedActionStartMessage) {
+        ux.action.start(resolvedActionStartMessage(source))
+      }
+    },
     wait,
   }
 
-  ux.action.start(actionStartMessage)
+  if (!deferStart) {
+    ux.action.start(actionStartMessage)
+  }
+
   let result: T
   try {
     try {
@@ -95,7 +127,12 @@ export default async function provisionInteractively<T extends {addon: AddOn; po
       if (error instanceof AddonConfirmationRequiredError) {
         ux.action.stop(color.red('!'))
         await new ConfirmCommand().confirm(app, confirm, error.message)
-        ux.action.start(actionStartMessage)
+        // A deferred caller re-fires `onResolved` on retry, which restarts the
+        // spinner; a non-deferred caller restarts it here.
+        if (!deferStart) {
+          ux.action.start(actionStartMessage)
+        }
+
         result = await provision(app, hooks)
       } else {
         throw error
@@ -111,11 +148,13 @@ export default async function provisionInteractively<T extends {addon: AddOn; po
   // (`waitError`/`poolError`) so the SDK doesn't discard the created leader.
   // The CLI still treats either as a provisioning failure — close whichever
   // spinner phase is open and rethrow the captured cause, matching today's
-  // behavior where these surfaced as a thrown error.
+  // behavior where these surfaced as a thrown error. Both are typed `unknown`;
+  // the SDK always captures an `Error`, but normalize defensively so a stray
+  // non-`Error` cause still throws a real `Error`.
   const postCreateError = result.waitError ?? result.poolError
   if (postCreateError !== undefined) {
     ux.action.stop(color.red('!'))
-    throw postCreateError
+    throw postCreateError instanceof Error ? postCreateError : new Error(String(postCreateError))
   }
 
   const {addon} = result
