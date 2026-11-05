@@ -1,15 +1,13 @@
-import type {pg} from '@heroku/heroku-cli-util'
-
 import {flags as Flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {DatabaseResolver, isAdvancedDatabase} from '@heroku/heroku-cli-util/utils'
-import {HTTPError} from '@heroku/http-call'
+import {postgresExtensions, type PostgresWaitForReadyResult} from '@heroku/sdk/extensions/data'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import BaseCommand from '../../../lib/data/base-command.js'
-import {WaitStatus} from '../../../lib/data/types.js'
 import notify from '../../../lib/notify.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -45,75 +43,63 @@ export default class DataPgWait extends BaseCommand {
     return notify(...args)
   }
 
-  public async run(): Promise<void> {
+  public async run(): Promise<PostgresWaitForReadyResult> {
     const {args, flags} = await this.parse(DataPgWait)
     const {database} = args
     const {app, 'no-notify': noNotify, 'wait-interval': waitInterval} = flags
-    const databaseResolver = new DatabaseResolver(this.heroku)
-    const db = await databaseResolver.getAttachment(app, database)
-    const {addon} = db
 
-    if (!isAdvancedDatabase(addon)) {
-      ux.error(heredoc`
-        You can only use this command on Advanced-tier databases.
-        Use ${color.code(`heroku ${this.classicWaitCommand} ${addon.name} -a ${app}`)} instead.`)
-    }
+    const {data} = createSDK(this.heroku, {extensions: [postgresExtensions]})
 
-    await this.waitFor(addon, waitInterval || 5, noNotify)
-  }
-
-  public async wait(ms: number): Promise<void> {
-    return new Promise(resolve => {
-      setTimeout(resolve, ms)
-    })
-  }
-
-  private async waitFor(addon: pg.ExtendedAddonAttachment['addon'], interval: number, noNotify: boolean): Promise<void> {
-    let status: WaitStatus = {message: null, waiting: true}
+    // `name` is captured from `onResolved` (fired before the first poll) so the
+    // spinner and notification can reference the resolved add-on; `waiting`
+    // tracks whether we ever started the spinner, mirroring the previous
+    // first-poll ("is available.") vs waited ("stop") branches.
+    let name = database
     let waiting = false
-    let retries = 20
-    const notFoundMessage = 'Waiting to provision...'
 
-    while (status.waiting) {
-      try {
-        const response = await this.dataApi.get<WaitStatus>(`/data/postgres/v1/${addon.id}/wait_status`)
-        status = response.body
-      } catch (error) {
-        const httpError = error as HTTPError
-        if (!retries || httpError.statusCode !== 404) {
-          if (waiting) {
-            ux.action.stop(color.red('!'))
+    try {
+      const result = await data.postgres.waitForReady(app, database, {
+        onPoll(status) {
+          if (!status.waiting) {
+            if (waiting) {
+              ux.action.stop(status.message || 'available')
+            } else {
+              ux.stdout(`${color.datastore(name)} is available.`)
+            }
+
+            return
           }
 
-          throw httpError
-        }
+          if (!waiting) {
+            waiting = true
+            ux.action.start(`Waiting for database ${color.addon(name)}`, status.message || undefined)
+          }
 
-        retries--
-        status = {message: notFoundMessage, waiting: true}
+          ux.action.status = status.message || undefined
+        },
+        onResolved(addon) {
+          name = addon.name
+        },
+        waitIntervalMs: (waitInterval || 5) * 1000,
+      })
+
+      if (!noNotify && waiting) {
+        this.notify('heroku data:pg:wait', `Database ${name} is now available`)
       }
 
-      if (!status.waiting) {
-        if (waiting) {
-          ux.action.stop(status.message || 'available')
-        } else {
-          ux.stdout(`${color.datastore(addon.name)} is available.`)
-        }
-
-        break
+      return result
+    } catch (error) {
+      if (error instanceof NotAdvancedDatabaseError) {
+        ux.error(heredoc`
+          You can only use this command on Advanced-tier databases.
+          Use ${color.code(`heroku ${this.classicWaitCommand} ${error.addon.name} -a ${app}`)} instead.`)
       }
 
-      if (!waiting) {
-        waiting = true
-        ux.action.start(`Waiting for database ${color.addon(addon.name)}`, status.message || undefined)
+      if (waiting) {
+        ux.action.stop(color.red('!'))
       }
 
-      ux.action.status = status.message || undefined
-
-      await this.wait(interval * 1000)
-    }
-
-    if (!noNotify && waiting) {
-      this.notify('heroku data:pg:wait', `Database ${addon.name} is now available`)
+      throw error
     }
   }
 }

@@ -1,4 +1,6 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
+import {AddonConfirmationRequiredError} from '@heroku/sdk/resources/platform/add-on'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -6,6 +8,7 @@ import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgCreate from '../../../../../src/commands/data/pg/create.js'
+import ConfirmCommand from '../../../../../src/lib/confirm-command.js'
 import PoolConfig from '../../../../../src/lib/data/pool-config.js'
 import {clearLevelsAndPricingCache} from '../../../../../src/lib/data/utils.js'
 import {
@@ -17,8 +20,44 @@ import {
 
 const heredoc = tsheredoc
 
+interface FakeData {
+  postgres: {provisionAdvanced: SinonStub}
+  postgresPool: {create: SinonStub}
+}
+
+type ProvisionBody = {
+  [key: string]: unknown
+  config?: Record<string, unknown>
+  followers?: number
+}
+
+type ProvisionOptions = {
+  onPoll?: (status: unknown) => void
+  onProvisioning?: (addon: unknown) => Promise<void> | void
+  wait?: boolean
+}
+
+// The command owns flag parsing, the interactive level/pool prompts, the
+// spinner, and output rendering, but delegates create + optional wait-poll +
+// follower-pool creation to data.postgres.provisionAdvanced and the interactive
+// follower loop to data.postgresPool.create. This fake stands in for
+// provisionAdvanced: it returns the created leader add-on (and, when the caller
+// bundled `followers`, the follower pool), driving the wait hooks only when
+// `wait` is set — so the command's UX branches are exercised without any HTTP.
+const provisionResolving = (addon = createAddonResponse, pool = createPoolResponse) =>
+  async (_app: string, body: ProvisionBody, options: ProvisionOptions = {}) => {
+    if (options.wait) {
+      await options.onProvisioning?.(addon)
+      options.onPoll?.(createPoolResponse.wait_status)
+    }
+
+    return {addon, pool: body.followers && body.followers > 0 ? pool : undefined}
+  }
+
 describe('data:pg:create', function () {
+  let fakeData: FakeData
   let promptStub: SinonStub
+  let notifyStub: SinonStub
   let poolConfigStubs: {
     followerInteractiveConfig: SinonStub
     instanceCountStep: SinonStub
@@ -27,6 +66,12 @@ describe('data:pg:create', function () {
   }
 
   beforeEach(function () {
+    fakeData = {
+      postgres: {provisionAdvanced: stub().callsFake(provisionResolving())},
+      postgresPool: {create: stub().resolves(createPoolResponse)},
+    }
+    stub(HerokuSDK.prototype, 'data').get(() => fakeData)
+
     promptStub = stub()
 
     // Create stubs for PoolConfig methods
@@ -43,6 +88,7 @@ describe('data:pg:create', function () {
     stub(PoolConfig.prototype, 'levelStep').callsFake(poolConfigStubs.levelStep)
     stub(DataPgCreate.prototype, 'prompt').callsFake(promptStub)
     stub(DataPgCreate.prototype, 'runCommand').resolves()
+    notifyStub = stub(DataPgCreate.prototype, 'notify').resolves()
   })
 
   afterEach(function () {
@@ -52,12 +98,13 @@ describe('data:pg:create', function () {
 
   describe('non-interactive mode (--level flag provided)', function () {
     it('creates an advanced database', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/apps/myapp/addons')
-        .reply(200, createAddonResponse)
       const {stderr, stdout} = await runCommand(DataPgCreate, ['--app=myapp', '--level=4G-Performance'])
 
-      herokuApi.done()
+      const [app, body] = fakeData.postgres.provisionAdvanced.firstCall.args
+      expect(app).to.equal('myapp')
+      expect(body.level).to.equal('4G-Performance')
+      expect(body.network).to.be.undefined
+      expect(body.followers).to.be.undefined
       expect(stdout).to.equal(heredoc(`
         Your database is being provisioned
         advanced-horizontal-01234 is being created in the background. The app will restart when complete...
@@ -69,24 +116,11 @@ describe('data:pg:create', function () {
     })
 
     it('creates database with a follower pool', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/apps/myapp/addons', {
-          attachment: {},
-          config: {level: '4G-Performance'},
-          plan: 'heroku-postgresql:advanced',
-        })
-        .reply(200, createAddonResponse)
-      const dataApi = nock('https://api.data.heroku.com')
-        .post(`/data/postgres/v1/${createAddonResponse.id}/pools`, {
-          count: 2,
-          level: '4G-Performance',
-        })
-        .reply(200, createPoolResponse)
-
       const {stderr, stdout} = await runCommand(DataPgCreate, ['--app=myapp', '--level=4G-Performance', '--followers=2'])
 
-      herokuApi.done()
-      dataApi.done()
+      const [, body] = fakeData.postgres.provisionAdvanced.firstCall.args
+      expect(body.level).to.equal('4G-Performance')
+      expect(body.followers).to.equal(2)
       expect(stdout).to.equal(heredoc(`
         Your database is being provisioned
         advanced-horizontal-01234 is being created in the background. The app will restart when complete...
@@ -101,69 +135,22 @@ describe('data:pg:create', function () {
     })
 
     it('creates database in private network', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/apps/myapp/addons', {
-          attachment: {},
-          config: {level: '4G-Performance'},
-          plan: 'heroku-postgresql:advanced-private',
-        })
-        .reply(200, createAddonResponse)
+      await runCommand(DataPgCreate, ['--app=myapp', '--network=private', '--level=4G-Performance'])
 
-      const {stderr, stdout} = await runCommand(DataPgCreate, [
-        '--app=myapp',
-        '--network=private',
-        '--level=4G-Performance',
-      ])
-
-      herokuApi.done()
-      expect(stdout).to.equal(heredoc(`
-        Your database is being provisioned
-        advanced-horizontal-01234 is being created in the background. The app will restart when complete...
-        Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
-      `))
-      expect(ansis.strip(stderr)).to.equal(heredoc`
-        Creating a 4G-Performance database on ⬢ myapp... done
-      `)
+      const [, body] = fakeData.postgres.provisionAdvanced.firstCall.args
+      expect(body.level).to.equal('4G-Performance')
+      expect(body.network).to.equal('private')
     })
 
     it('creates database in shield network', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/apps/myapp/addons', {
-          attachment: {},
-          config: {level: '4G-Performance'},
-          plan: 'heroku-postgresql:advanced-shield',
-        })
-        .reply(200, createAddonResponse)
+      await runCommand(DataPgCreate, ['--app=myapp', '--network=shield', '--level=4G-Performance'])
 
-      const {stderr, stdout} = await runCommand(DataPgCreate, [
-        '--app=myapp',
-        '--network=shield',
-        '--level=4G-Performance',
-      ])
-
-      herokuApi.done()
-      expect(stdout).to.equal(heredoc(`
-        Your database is being provisioned
-        advanced-horizontal-01234 is being created in the background. The app will restart when complete...
-        Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
-      `))
-      expect(ansis.strip(stderr)).to.equal(heredoc`
-        Creating a 4G-Performance database on ⬢ myapp... done
-      `)
+      const [, body] = fakeData.postgres.provisionAdvanced.firstCall.args
+      expect(body.level).to.equal('4G-Performance')
+      expect(body.network).to.equal('shield')
     })
 
     it('creates database with provision options', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .post('/apps/myapp/addons', (body: any) => body.config.level === '4G-Performance'
-            && body.config.follow === 'otherdb'
-            && body.config.rollback === 'true'
-            && body.config.foo === 'true'
-            && body.config.bar === 'true'
-            && body.config.key === 'value:with:colons'
-            && body.config.timestamp === '2025-11-17T15:20:00')
-        .reply(200, createAddonResponse)
-
       await runCommand(DataPgCreate, [
         '--app=myapp',
         '--level=4G-Performance',
@@ -175,22 +162,19 @@ describe('data:pg:create', function () {
         '--provision-option=timestamp:2025-11-17T15:20:00',
       ])
 
-      herokuApi.done()
+      const [, body] = fakeData.postgres.provisionAdvanced.firstCall.args
+      expect(body.level).to.equal('4G-Performance')
+      expect(body.config).to.deep.equal({
+        bar: 'true',
+        follow: 'otherdb',
+        foo: 'true',
+        key: 'value:with:colons',
+        rollback: 'true',
+        timestamp: '2025-11-17T15:20:00',
+      })
     })
 
     it('creates database with confirm flag', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/apps/myapp/addons', {
-          attachment: {},
-          config: {
-            'high-availability': true,
-            level: '4G-Performance',
-          },
-          confirm: 'myapp',
-          plan: 'heroku-postgresql:advanced',
-        })
-        .reply(200, createAddonResponse)
-
       const {stderr} = await runCommand(DataPgCreate, [
         '--app=myapp',
         '--level=4G-Performance',
@@ -198,32 +182,101 @@ describe('data:pg:create', function () {
         '--high-availability',
       ])
 
-      herokuApi.done()
+      const [, body] = fakeData.postgres.provisionAdvanced.firstCall.args
+      expect(body.level).to.equal('4G-Performance')
+      expect(body.confirm).to.equal('myapp')
+      expect(body.highAvailability).to.equal(true)
       expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a 4G-Performance database on ⬢ myapp... done
       `)
     })
+
+    it('runs the two-phase wait UX and notifies on success with --wait', async function () {
+      const {error, stderr, stdout} = await runCommand(DataPgCreate, ['--app=myapp', '--level=4G-Performance', '--wait'])
+
+      expect(error).to.be.undefined
+      expect(fakeData.postgres.provisionAdvanced.firstCall.args[2].wait).to.be.true
+      // Create phase closes, then the wait phase wraps the poll loop.
+      expect(ansis.strip(stderr)).to.equal(heredoc`
+        Creating a 4G-Performance database on ⬢ myapp... done
+        Creating advanced-horizontal-01234... done
+      `)
+      expect(stdout).to.equal(heredoc(`
+        Your database is being provisioned
+        Waiting for advanced-horizontal-01234...
+        Created advanced-horizontal-01234
+      `))
+      expect(notifyStub.calledOnceWith('We successfully provisioned the database')).to.be.true
+    })
+
+    it('notifies on failure when --wait provisioning fails', async function () {
+      const waitError = new Error('wait polling failed')
+      fakeData.postgres.provisionAdvanced.callsFake(async () => ({addon: createAddonResponse, waitError}))
+
+      const {error} = await runCommand(DataPgCreate, ['--app=myapp', '--level=4G-Performance', '--wait'])
+
+      expect(error).to.equal(waitError)
+      expect(notifyStub.calledOnce).to.be.true
+      expect(notifyStub.firstCall.args[1]).to.be.false
+    })
+  })
+
+  describe('confirmation prompt retry', function () {
+    it('prompts for confirmation then retries the provision with the app as confirmation', async function () {
+      const confirmStub = stub(ConfirmCommand.prototype, 'confirm').resolves()
+      fakeData.postgres.provisionAdvanced
+        .onFirstCall().rejects(new AddonConfirmationRequiredError('confirmation required'))
+        .onSecondCall().callsFake(provisionResolving())
+
+      const {error, stdout} = await runCommand(DataPgCreate, ['--app=myapp', '--level=4G-Performance'])
+
+      expect(error).to.be.undefined
+      expect(confirmStub.calledOnce).to.be.true
+      expect(fakeData.postgres.provisionAdvanced.calledTwice).to.be.true
+      // First attempt carries no confirmation; the retry passes the app name.
+      expect(fakeData.postgres.provisionAdvanced.firstCall.args[1].confirm).to.be.undefined
+      expect(fakeData.postgres.provisionAdvanced.secondCall.args[1].confirm).to.equal('myapp')
+      expect(stdout).to.equal(heredoc(`
+        Your database is being provisioned
+        advanced-horizontal-01234 is being created in the background. The app will restart when complete...
+        Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
+      `))
+    })
+  })
+
+  describe('partial provisioning failure', function () {
+    // provisionAdvanced keeps the created leader and reports a post-creation
+    // failure on the result instead of throwing. The command must still surface
+    // these as a failed run (today's behavior), so the helper rethrows them.
+    it('surfaces a captured wait failure as a thrown error', async function () {
+      const waitError = new Error('wait polling failed')
+      fakeData.postgres.provisionAdvanced.callsFake(async () => ({addon: createAddonResponse, waitError}))
+
+      const {error} = await runCommand(DataPgCreate, ['--app=myapp', '--level=4G-Performance', '--wait'])
+
+      expect(error).to.equal(waitError)
+    })
+
+    it('surfaces a captured follower-pool failure as a thrown error', async function () {
+      const poolError = new Error('follower pool create failed')
+      fakeData.postgres.provisionAdvanced.callsFake(async () => ({addon: createAddonResponse, poolError}))
+
+      const {error} = await runCommand(DataPgCreate, ['--app=myapp', '--level=4G-Performance', '--followers=2'])
+
+      expect(error).to.equal(poolError)
+    })
   })
 
   describe('interactive mode (--level flag omitted)', function () {
-    it('provisions a database with high availability, without follower pools', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/apps/myapp/addons', {
-          attachment: {},
-          config: {
-            'high-availability': true,
-            level: levelsResponse.items[0].name,
-          },
-          plan: 'heroku-postgresql:advanced',
-        })
-        .reply(200, createAddonResponse)
-
-      const dataApi = nock('https://api.data.heroku.com')
+    beforeEach(function () {
+      nock('https://api.data.heroku.com')
         .get('/data/postgres/v1/levels/advanced')
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
         .reply(200, pricingResponse)
+    })
 
+    it('provisions a database with high availability, without follower pools', async function () {
       poolConfigStubs.leaderInteractiveConfig.resolves({
         highAvailability: true,
         level: levelsResponse.items[0].name,
@@ -232,9 +285,11 @@ describe('data:pg:create', function () {
 
       const {stderr, stdout} = await runCommand(DataPgCreate, ['--app=myapp'])
 
-      herokuApi.done()
-      dataApi.done()
-
+      const [, body] = fakeData.postgres.provisionAdvanced.firstCall.args
+      expect(body.level).to.equal(levelsResponse.items[0].name)
+      expect(body.highAvailability).to.equal(true)
+      expect(body.followers).to.be.undefined
+      expect(fakeData.postgresPool.create.called).to.be.false
       expect(stdout).to.equal(heredoc(`
         Your database is being provisioned
         advanced-horizontal-01234 is being created in the background. The app will restart when complete...
@@ -244,21 +299,6 @@ describe('data:pg:create', function () {
     })
 
     it('provisions a database with provision options in interactive mode', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .post('/apps/myapp/addons', (body: any) => body.config.level === levelsResponse.items[0].name
-            && body.config['high-availability'] === true
-            && body.config.follow === 'otherdb'
-            && body.config.rollback === 'true'
-            && body.config.foo === 'true')
-        .reply(200, createAddonResponse)
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get('/data/postgres/v1/levels/advanced')
-        .reply(200, levelsResponse)
-        .get('/data/postgres/v1/pricing')
-        .reply(200, pricingResponse)
-
       poolConfigStubs.leaderInteractiveConfig.resolves({
         highAvailability: true,
         level: levelsResponse.items[0].name,
@@ -272,28 +312,17 @@ describe('data:pg:create', function () {
         '--provision-option=foo:true',
       ])
 
-      herokuApi.done()
-      dataApi.done()
+      const [, body] = fakeData.postgres.provisionAdvanced.firstCall.args
+      expect(body.level).to.equal(levelsResponse.items[0].name)
+      expect(body.highAvailability).to.equal(true)
+      expect(body.config).to.deep.equal({
+        follow: 'otherdb',
+        foo: 'true',
+        rollback: 'true',
+      })
     })
 
     it('allows the user to remove the high availability standby', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/apps/myapp/addons', {
-          attachment: {},
-          config: {
-            'high-availability': false,
-            level: levelsResponse.items[0].name,
-          },
-          plan: 'heroku-postgresql:advanced',
-        })
-        .reply(200, createAddonResponse)
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get('/data/postgres/v1/levels/advanced')
-        .reply(200, levelsResponse)
-        .get('/data/postgres/v1/pricing')
-        .reply(200, pricingResponse)
-
       poolConfigStubs.leaderInteractiveConfig.resolves({
         highAvailability: false,
         level: levelsResponse.items[0].name,
@@ -302,9 +331,8 @@ describe('data:pg:create', function () {
 
       const {stderr, stdout} = await runCommand(DataPgCreate, ['--app=myapp'])
 
-      herokuApi.done()
-      dataApi.done()
-
+      const [, body] = fakeData.postgres.provisionAdvanced.firstCall.args
+      expect(body.highAvailability).to.equal(false)
       expect(stdout).to.equal(heredoc(`
         Your database is being provisioned
         advanced-horizontal-01234 is being created in the background. The app will restart when complete...
@@ -314,29 +342,6 @@ describe('data:pg:create', function () {
     })
 
     it('allows the user to configure a follower pool', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/apps/myapp/addons', {
-          attachment: {},
-          config: {
-            'high-availability': true,
-            level: levelsResponse.items[0].name,
-          },
-          plan: 'heroku-postgresql:advanced',
-        })
-        .reply(200, createAddonResponse)
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get('/data/postgres/v1/levels/advanced')
-        .reply(200, levelsResponse)
-        .get('/data/postgres/v1/pricing')
-        .reply(200, pricingResponse)
-        .post(`/data/postgres/v1/${createAddonResponse.id}/pools`, {
-          count: 2,
-          level: levelsResponse.items[0].name,
-          name: 'readonly',
-        })
-        .reply(200, createPoolResponse)
-
       poolConfigStubs.leaderInteractiveConfig.resolves({
         highAvailability: true,
         level: levelsResponse.items[0].name,
@@ -352,9 +357,10 @@ describe('data:pg:create', function () {
 
       const {stderr, stdout} = await runCommand(DataPgCreate, ['--app=myapp'])
 
-      herokuApi.done()
-      dataApi.done()
-
+      expect(fakeData.postgresPool.create.calledOnce).to.be.true
+      const [addonId, poolBody] = fakeData.postgresPool.create.firstCall.args
+      expect(addonId).to.equal(createAddonResponse.id)
+      expect(poolBody).to.deep.equal({count: 2, level: levelsResponse.items[0].name, name: 'readonly'})
       expect(stdout).to.equal(heredoc(`
         Your database is being provisioned
         advanced-horizontal-01234 is being created in the background. The app will restart when complete...
@@ -367,35 +373,6 @@ describe('data:pg:create', function () {
     })
 
     it('allows the user to configure more than one follower pool', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/apps/myapp/addons', {
-          attachment: {},
-          config: {
-            'high-availability': true,
-            level: levelsResponse.items[0].name,
-          },
-          plan: 'heroku-postgresql:advanced',
-        })
-        .reply(200, createAddonResponse)
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get('/data/postgres/v1/levels/advanced')
-        .reply(200, levelsResponse)
-        .get('/data/postgres/v1/pricing')
-        .reply(200, pricingResponse)
-        .post(`/data/postgres/v1/${createAddonResponse.id}/pools`, {
-          count: 2,
-          level: levelsResponse.items[0].name,
-          name: 'readonly',
-        })
-        .reply(200, {...createPoolResponse, name: 'readonly'})
-        .post(`/data/postgres/v1/${createAddonResponse.id}/pools`, {
-          count: 1,
-          level: levelsResponse.items[0].name,
-          name: 'readonly2',
-        })
-        .reply(200, {...createPoolResponse, name: 'readonly2'})
-
       poolConfigStubs.leaderInteractiveConfig.resolves({
         highAvailability: true,
         level: levelsResponse.items[0].name,
@@ -411,6 +388,9 @@ describe('data:pg:create', function () {
           level: levelsResponse.items[0].name,
           name: 'readonly2',
         }) // Second follower pool configuration
+      fakeData.postgresPool.create
+        .onCall(0).resolves({...createPoolResponse, name: 'readonly'})
+        .onCall(1).resolves({...createPoolResponse, name: 'readonly2'})
       promptStub
         .onCall(0).resolves({action: 'configure'}) // Configure a follower pool
         .onCall(1).resolves({oneMore: true}) // One more? (yes)
@@ -419,9 +399,9 @@ describe('data:pg:create', function () {
 
       const {stderr, stdout} = await runCommand(DataPgCreate, ['--app=myapp'])
 
-      herokuApi.done()
-      dataApi.done()
-
+      expect(fakeData.postgresPool.create.calledTwice).to.be.true
+      expect(fakeData.postgresPool.create.firstCall.args[1]).to.deep.equal({count: 2, level: levelsResponse.items[0].name, name: 'readonly'})
+      expect(fakeData.postgresPool.create.secondCall.args[1]).to.deep.equal({count: 1, level: levelsResponse.items[0].name, name: 'readonly2'})
       expect(stdout).to.equal(heredoc(`
         Your database is being provisioned
         advanced-horizontal-01234 is being created in the background. The app will restart when complete...
@@ -435,37 +415,14 @@ describe('data:pg:create', function () {
       `))
       expect(ansis.strip(stderr)).to.contain(heredoc`
         Configuring follower pool... done
-        
-        
+
+
         Configuring follower pool... done
       `)
       expect(ansis.strip(stderr)).to.contain('Running heroku data:pg:info advanced-horizontal-01234 --app=myapp...')
     })
 
     it('doesn\'t ask to configure another follower pool when the maximum number of follower pools is reached', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/apps/myapp/addons', {
-          attachment: {},
-          config: {
-            'high-availability': true,
-            level: levelsResponse.items[0].name,
-          },
-          plan: 'heroku-postgresql:advanced',
-        })
-        .reply(200, createAddonResponse)
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get('/data/postgres/v1/levels/advanced')
-        .reply(200, levelsResponse)
-        .get('/data/postgres/v1/pricing')
-        .reply(200, pricingResponse)
-        .post(`/data/postgres/v1/${createAddonResponse.id}/pools`, {
-          count: 13,
-          level: levelsResponse.items[0].name,
-          name: 'readonly',
-        })
-        .reply(200, {...createPoolResponse, name: 'readonly'})
-
       poolConfigStubs.leaderInteractiveConfig.resolves({
         highAvailability: true,
         level: levelsResponse.items[0].name,
@@ -476,13 +433,15 @@ describe('data:pg:create', function () {
           level: levelsResponse.items[0].name,
           name: 'readonly',
         }) // Follower pool configuration
+      fakeData.postgresPool.create.resolves({...createPoolResponse, name: 'readonly'})
       promptStub.onCall(0).resolves({action: 'configure'}) // Configure a follower pool
 
       const {stderr, stdout} = await runCommand(DataPgCreate, ['--app=myapp'])
 
-      herokuApi.done()
-      dataApi.done()
-
+      // No "configure another?" prompt fires once the cluster hits 13 instances.
+      expect(promptStub.calledOnce).to.be.true
+      expect(fakeData.postgresPool.create.calledOnce).to.be.true
+      expect(fakeData.postgresPool.create.firstCall.args[1]).to.deep.equal({count: 13, level: levelsResponse.items[0].name, name: 'readonly'})
       expect(stdout).to.equal(heredoc(`
         Your database is being provisioned
         advanced-horizontal-01234 is being created in the background. The app will restart when complete...
