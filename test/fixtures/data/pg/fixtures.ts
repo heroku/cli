@@ -1,15 +1,15 @@
 /* eslint-disable max-lines */
 import type {ResolvedAddOn} from '@heroku/sdk/resources/platform/add-on'
+import type {
+  PostgresCredentialInfoResult as AdvancedCredentialInfo,
+  PostgresCredentialListResult as AdvancedCredentialsList,
+} from '@heroku/types/data'
 
 import * as Heroku from '@heroku-cli/schema'
 import {pg} from '@heroku/heroku-cli-util'
 
 // TODO: these types should be removed and replaced with the types from @heroku/sdk or @heroku/types
 import {
-  AdvancedCredentialInfo,
-  AdvancedCredentialState,
-  CredentialInfo,
-  CredentialsInfo,
   DatabaseStatus,
   DeepRequired,
   InfoResponse,
@@ -721,14 +721,15 @@ export const createPoolResponse: PoolInfoResponse = {
   },
 }
 
-export const advancedCredentialsResponse: CredentialsInfo = {
+export const advancedCredentialsResponse: AdvancedCredentialsList = {
   items: [
     {
+      created_at: '2024-01-01T00:00:00Z',
       database: 'd4w8akz45kmru7',
       host: 'cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com',
       id: '3d1a0a2d-3e27-4f34-99fa-c701627c0e92',
       name: 'u2vi1nt40t3mcq',
-      port: '5432',
+      port: 5432,
       roles: [
         {
           password: 'secret1',
@@ -736,15 +737,16 @@ export const advancedCredentialsResponse: CredentialsInfo = {
           user: 'u2vi1nt40t3mcq',
         },
       ],
-      state: AdvancedCredentialState.ACTIVE,
+      state: 'active',
       type: 'owner',
     },
     {
+      created_at: '2024-01-01T00:00:00Z',
       database: 'd4w8akz45kmru7',
       host: 'cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com',
       id: '9eb68dd8-5b3e-410a-890a-e44de90356d3',
       name: 'analyst',
-      port: '5432',
+      port: 5432,
       roles: [
         {
           password: 'secret2',
@@ -752,7 +754,7 @@ export const advancedCredentialsResponse: CredentialsInfo = {
           user: 'analyst',
         },
       ],
-      state: AdvancedCredentialState.ACTIVE,
+      state: 'active',
       type: 'additional',
     },
   ],
@@ -1037,11 +1039,12 @@ export const nonAdvancedCredentialsMultipleAttachmentsResponse: Heroku.AddOnAtta
 ]
 
 export const createCredentialResponse: AdvancedCredentialInfo = {
+  created_at: '2024-01-01T00:00:00Z',
   database: 'd4w8akz45kmru7',
   host: 'cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com',
   id: '3d1a0a2d-3e27-4f34-99fa-c701627c0e92',
   name: 'my-credential',
-  port: '5432',
+  port: 5432,
   roles: [
     {
       password: 'secret123',
@@ -1049,24 +1052,7 @@ export const createCredentialResponse: AdvancedCredentialInfo = {
       user: 'my-credential',
     },
   ],
-  state: AdvancedCredentialState.ACTIVE,
-  type: 'additional',
-}
-
-export const inactiveCredentialResponse: CredentialInfo = {
-  database: 'd4w8akz45kmru7',
-  host: 'cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com',
-  id: '9eb68dd8-5b3e-410a-890a-e44de90356d3',
-  name: 'analyst',
-  port: '5432',
-  roles: [
-    {
-      password: 'secret2',
-      state: 'inactive',
-      user: 'analyst',
-    },
-  ],
-  state: AdvancedCredentialState.REVOKING,
+  state: 'active',
   type: 'additional',
 }
 

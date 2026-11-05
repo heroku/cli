@@ -1,106 +1,107 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
+import {match, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgUpgradeRun from '../../../../../../src/commands/data/pg/upgrade/run.js'
-import {
-  advancedAddonAttachment,
-  nonAdvancedAddonAttachment,
-  pgInfo,
-} from '../../../../../fixtures/data/pg/fixtures.js'
+import {advancedAddon, standardAddon} from '../../../../../fixtures/data/pg/fixtures.js'
+import {mockSDKData} from '../../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
 
+type FakeData = {
+  postgres: {runUpgrade: SinonStub}
+}
+
+function buildFakeData(): FakeData {
+  return {postgres: {runUpgrade: stub()}}
+}
+
 describe('data:pg:upgrade:run', function () {
+  let fakeData: FakeData
+  let sdkMock: ReturnType<typeof mockSDKData>
+
+  beforeEach(function () {
+    fakeData = buildFakeData()
+    sdkMock = mockSDKData(fakeData)
+  })
+
+  afterEach(function () {
+    sdkMock.restore()
+  })
+
   it('upgrades an advanced database to the latest version', async function () {
-    const resolveApi = nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve')
-      .reply(200, [advancedAddonAttachment])
-    const {addon, name: attachmentName} = advancedAddonAttachment
-    const dataApi = nock('https://api.data.heroku.com')
-      .get(`/data/postgres/v1/${addon.id}/info`)
-      .reply(200, {...pgInfo, version: '16.10'})
-      .post(`/data/postgres/v1/${addon.id}/upgrade/run`, {})
-      .reply(200, {message: 'Upgrade started. Monitor progress with heroku data:pg:info.'})
+    fakeData.postgres.runUpgrade.callsFake(async (_app, _database, _body, options) => {
+      await options?.beforeRunUpgrade?.({addon: advancedAddon, currentVersion: '16.10'})
+      return {addon: advancedAddon, result: {message: 'Upgrade started. Monitor progress with heroku data:pg:info.'}}
+    })
 
     const {stderr, stdout} = await runCommand(DataPgUpgradeRun, [
-      attachmentName,
+      advancedAddon.name,
       '--app=myapp',
       '--confirm=myapp',
     ])
 
-    resolveApi.done()
-    dataApi.done()
-
     expect(ansis.strip(stderr)).to.equal(heredoc(`
-        Upgrading your ⛁ ${addon.name} database from 16.10 to the latest supported Postgres version... done
-        Upgrade started. Use heroku data:pg:upgrade:wait advanced-horizontal-01234 -a myapp to monitor progress.
+        Upgrading your ⛁ ${advancedAddon.name} database from 16.10 to the latest supported Postgres version... done
+        Upgrade started. Use heroku data:pg:upgrade:wait ${advancedAddon.name} -a myapp to monitor progress.
       `))
     expect(stdout).to.equal('')
+    expect(fakeData.postgres.runUpgrade.calledOnceWithExactly(
+      'myapp',
+      advancedAddon.name,
+      {version: undefined},
+      {beforeRunUpgrade: match.func},
+    )).to.equal(true)
   })
 
   it('upgrades an advanced database to a specific version with --version', async function () {
-    const resolveApi = nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve')
-      .reply(200, [advancedAddonAttachment])
-    const {addon, name: attachmentName} = advancedAddonAttachment
-    const dataApi = nock('https://api.data.heroku.com')
-      .get(`/data/postgres/v1/${addon.id}/info`)
-      .reply(200, {...pgInfo, version: '16.10'})
-      .post(`/data/postgres/v1/${addon.id}/upgrade/run`, {version: '17.5'})
-      .reply(200, {message: 'Backend returned message should be ignored.'})
+    fakeData.postgres.runUpgrade.callsFake(async (_app, _database, _body, options) => {
+      await options?.beforeRunUpgrade?.({addon: advancedAddon, currentVersion: '16.10'})
+      return {addon: advancedAddon, result: {message: 'Backend returned message should be ignored.'}}
+    })
 
     const {stderr} = await runCommand(DataPgUpgradeRun, [
-      attachmentName,
+      advancedAddon.name,
       '--app=myapp',
       '--confirm=myapp',
       '--version=17.5',
     ])
 
-    resolveApi.done()
-    dataApi.done()
-
     expect(ansis.strip(stderr)).to.include('from 16.10 to 17.5')
     expect(ansis.strip(stderr)).to.include('Upgrade started.')
     expect(ansis.strip(stderr)).not.to.include('Backend returned message should be ignored.')
+    expect(fakeData.postgres.runUpgrade.firstCall.args[2]).to.deep.equal({version: '17.5'})
   })
 
   it('errors if database is not Advanced-tier', async function () {
-    const resolveApi = nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve')
-      .reply(200, [nonAdvancedAddonAttachment])
-    const {addon, name: attachmentName} = nonAdvancedAddonAttachment
+    fakeData.postgres.runUpgrade.rejects(new NotAdvancedDatabaseError(standardAddon, 'not an advanced-tier database'))
 
     const {error} = await runCommand(DataPgUpgradeRun, [
-      attachmentName,
+      standardAddon.name,
       '--app=myapp',
       '--confirm=myapp',
     ])
-    resolveApi.done()
+
     expect(ansis.strip((error as Error).message)).to.equal('You can only use this command on Advanced-tier databases.\n'
-          + `Use heroku pg:upgrade:run ${addon.name} --app myapp instead.`)
+          + `Use heroku pg:upgrade:run ${standardAddon.name} --app myapp instead.`)
   })
 
   it('displays the correct error when the upgrade API fails', async function () {
-    const resolveApi = nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve')
-      .reply(200, [advancedAddonAttachment])
-    const {addon, name: attachmentName} = advancedAddonAttachment
-    const dataApi = nock('https://api.data.heroku.com')
-      .get(`/data/postgres/v1/${addon.id}/info`)
-      .reply(200, {...pgInfo, version: '16.10'})
-      .post(`/data/postgres/v1/${addon.id}/upgrade/run`)
-      .reply(422, {message: 'Database is not ready for upgrade.'})
+    fakeData.postgres.runUpgrade.callsFake(async (_app, _database, _body, options) => {
+      await options?.beforeRunUpgrade?.({addon: advancedAddon, currentVersion: '16.10'})
+      throw new Error('Database is not ready for upgrade.')
+    })
 
-    const {error} = await runCommand(DataPgUpgradeRun, [
-      attachmentName,
+    const {error, stderr} = await runCommand(DataPgUpgradeRun, [
+      advancedAddon.name,
       '--app=myapp',
       '--confirm=myapp',
     ])
-    resolveApi.done()
-    dataApi.done()
+
     expect(ansis.strip((error as Error).message)).to.include('Database is not ready for upgrade.')
+    expect(ansis.strip(stderr)).to.include(`Upgrading your ⛁ ${advancedAddon.name} database from 16.10 to the latest supported Postgres version... !`)
   })
 })

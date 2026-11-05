@@ -1,23 +1,25 @@
-import type {pg} from '@heroku/heroku-cli-util'
+import type {ResolvedAddOn} from '@heroku/sdk/resources/platform/add-on'
+import type {AddOnAttachment} from '@heroku/types/3.sdk'
+import type {PostgresCredentialListResult, PostgresInfoResult} from '@heroku/types/data'
 
-import {flags as Flags, HerokuAPIError} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
-import * as color from '@heroku/heroku-cli-util/color'
-import {AddonResolver, getAddonService, isAdvancedDatabase} from '@heroku/heroku-cli-util/utils'
+import {flags as Flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
+import {NotFoundError} from '@heroku/heroku-fetch'
+import {databaseCredentialExtensions, postgresDatabaseExtensions} from '@heroku/sdk/extensions/data'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import {Args, ux} from '@oclif/core'
 import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
 
 import {trapConfirmationRequired} from '../../../../lib/addons/util.js'
 import BaseCommand from '../../../../lib/data/base-command.js'
-// import {sortByLeaderAndName, sortByOwnerAndName} from '../../../../lib/data/credential-utils.js'
-import {sortByLeaderAndName} from '../../../../lib/data/credential-utils.js'
-import {
-  AdvancedCredentialState, type CredentialsInfo, type InfoResponse, PoolStatus,
-} from '../../../../lib/data/types.js'
+import {sortByLeaderAndName, sortByOwnerAndName} from '../../../../lib/data/credential-utils.js'
+import {createSDK} from '../../../../lib/sdk.js'
 
 const {prompt} = inquirer
 const heredoc = tsheredoc
+
+type AdvancedCredentials = PostgresCredentialListResult['items']
 
 export default class DataPgAttachmentsCreate extends BaseCommand {
   static args = {
@@ -51,29 +53,40 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     const {args, flags} = await this.parse(DataPgAttachmentsCreate)
     const {database: databaseArg} = args
     let {app, as, confirm, credential, pool} = flags
-    const addonResolver = new AddonResolver(this.heroku)
+    const {data} = createSDK(this.heroku, {extensions: [databaseCredentialExtensions, postgresDatabaseExtensions]})
 
     // For attachment creation, app is always the target app where the attachment will be created.
     // When attaching to the same app, both add-on name and attachment name will resolve without issues
     // by passing the app name for resolution, but when attaching to a different app using the add-on name
     // to specify the source add-on, we have to remove the app name from the resolution for the resolver to
     // find the correct add-on.
-    let addon: pg.ExtendedAddon
+    let addon: ResolvedAddOn
+    let credentials: AdvancedCredentials
     try {
-      addon = await addonResolver.resolve(databaseArg, app, getAddonService())
-    } catch (error: unknown) {
-      if (error instanceof HerokuAPIError && error.http.statusCode === 404) {
-        addon = await addonResolver.resolve(databaseArg, undefined, getAddonService())
-      } else {
-        throw error
-      }
-    }
+      let result
+      // TODO: push this scoped-then-unscoped resolve into an SDK composite instead
+      // of re-issuing the full credential list here just to change resolve scope.
+      try {
+        result = await data.databaseCredential.list(databaseArg, {appIdentity: app})
+      } catch (error) {
+        if (!(error instanceof NotFoundError)) {
+          throw error
+        }
 
-    if (!isAdvancedDatabase(addon)) {
-      const cmd = `heroku addons:attach ${addon.name} -a ${app}${as ? ` --as ${as}` : ''}`
-        + `${credential ? ` --credential ${credential}` : ''}`
-      ux.error('You can only use this command on Advanced-tier databases.\n'
-          + `Use ${color.code(cmd)} instead.`)
+        result = await data.databaseCredential.list(databaseArg)
+      }
+
+      addon = result.addon
+      credentials = result.credentials.items
+    } catch (error) {
+      if (error instanceof NotAdvancedDatabaseError) {
+        const cmd = `heroku addons:attach ${error.addon.name} -a ${app}${as ? ` --as ${as}` : ''}`
+          + `${credential ? ` --credential ${credential}` : ''}`
+        ux.error('You can only use this command on Advanced-tier databases.\n'
+            + `Use ${color.code(cmd)} instead.`)
+      }
+
+      throw error
     }
 
     if (!credential || !pool || !as) {
@@ -86,18 +99,19 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     }
 
     if (credential === undefined) {
-      credential = await this.promptCredential(addon.id)
+      credential = await this.promptCredential(credentials)
     }
 
     if (pool === undefined) {
-      pool = await this.promptPool(addon.id)
+      const {pools} = await data.postgres.info(addon.id)
+      pool = await this.promptPool(pools)
     }
 
     if (as === undefined) {
       as = await this.promptAttachmentName()
     }
 
-    const createAttachment = async (confirmed?: string): Promise<Required<Heroku.AddOnAttachment>> => {
+    const createAttachment = async (confirmed?: string): Promise<AddOnAttachment> => {
       const namespaceConfig = {
         pool,
         proxy: 'false',
@@ -111,8 +125,6 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
       const attachMessage = `Attaching ${color.addon(addon.name)}${partsStr}${as ? ' as ' + color.attachment(as) : ''} to ${color.app(app)}`
 
       const body = {
-        addon: {name: addon.name},
-        app: {name: app},
         confirm: confirmed,
         name: as,
         namespace_config: namespaceConfig,
@@ -120,8 +132,13 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
 
       try {
         ux.action.start(attachMessage)
-        const {body: attachment} = await this.heroku.post<Required<Heroku.AddOnAttachment>>('/addon-attachments', {body})
-        ux.action.stop()
+        const {attachment, releaseVersion} = await data.postgresDatabase.createAttachment(app, addon.name, body, {
+          onAttached(attachment) {
+            ux.action.stop()
+            ux.action.start(`Setting ${color.attachment(attachment.name!)} config vars and restarting ${color.app(app)}`)
+          },
+        })
+        ux.action.stop(releaseVersion === undefined ? 'done' : `done, v${releaseVersion}`)
 
         return attachment
       } catch (error) {
@@ -151,18 +168,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
       }
     }
 
-    const attachment = await trapConfirmationRequired<Required<Heroku.AddOnAttachment>>(app, confirm, (confirmed?: string) => createAttachment(confirmed))
-
-    try {
-      ux.action.start(`Setting ${color.attachment(attachment.name)} config vars and restarting ${color.app(app)}`)
-      const {body: releases} = await this.heroku.get<Required<Heroku.Release>[]>(`/apps/${app}/releases`, {
-        headers: {Range: 'version ..; max=1, order=desc'}, partial: true,
-      })
-      ux.action.stop(`done, v${releases[0].version}`)
-    } catch (error) {
-      ux.action.stop(color.red('!'))
-      throw error
-    }
+    await trapConfirmationRequired(app, confirm, createAttachment)
   }
 
   private async promptAttachmentName(): Promise<string | undefined> {
@@ -176,8 +182,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     return attachmentName.trim() || undefined
   }
 
-  private async promptCredential(addonId: string): Promise<string | undefined> {
-    const {body: {items: credentials}} = await this.dataApi.get<CredentialsInfo>(`/data/postgres/v1/${addonId}/credentials`)
+  private async promptCredential(credentials: AdvancedCredentials): Promise<string | undefined> {
     const sortedCredentials = sortByOwnerAndName(credentials)
 
     if (sortedCredentials.length === 0) {
@@ -191,7 +196,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     const choices = sortedCredentials.map(cred => {
       const choiceName = cred.type === 'owner' ? `${cred.name} (owner)` : cred.name
 
-      if (cred.state === AdvancedCredentialState.ACTIVE) {
+      if (cred.state === 'active') {
         return {
           name: choiceName,
           value: cred.name,
@@ -216,9 +221,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     return credential || undefined
   }
 
-  private async promptPool(addonId: string): Promise<string | undefined> {
-    const {body: {pools}} = await this.dataApi.get<InfoResponse>(`/data/postgres/v1/${addonId}/info`)
-
+  private async promptPool(pools: PostgresInfoResult['pools']): Promise<string | undefined> {
     const sortedPools = sortByLeaderAndName(pools)
 
     if (sortedPools.length === 0) {
@@ -232,7 +235,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     const choices = sortedPools.map(p => {
       const choiceName = `${p.name} (${p.expected_count} @ ${p.expected_level})`
 
-      if (p.status === PoolStatus.AVAILABLE) {
+      if (p.status === 'available') {
         return {
           name: choiceName,
           value: p.name,
@@ -256,20 +259,4 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
 
     return pool || undefined
   }
-}
-
-// TODO: Remove this once data:pg:attachments:create is migrated to use the SDK
-import type {CredentialInfo} from '../../../../lib/data/types.js'
-
-function isOwnerCredential(cred: CredentialInfo): boolean {
-  return cred.type === 'owner'
-}
-
-function sortByOwnerAndName(credentials: CredentialInfo[]) {
-  return credentials.sort((a, b) => {
-    const isOwnerA = isOwnerCredential(a)
-    const isOwnerB = isOwnerCredential(b)
-
-    return isOwnerB < isOwnerA ? -1 : (isOwnerA < isOwnerB ? 1 : a.name.localeCompare(b.name))
-  })
 }

@@ -1,10 +1,12 @@
 import {flags as Flags} from '@heroku-cli/command'
-import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {postgresExtensions} from '@heroku/sdk/extensions/data'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import BaseCommand from '../../../../lib/data/base-command.js'
-import {InfoResponse, UpgradeResponse} from '../../../../lib/data/types.js'
+import {createSDK} from '../../../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -33,35 +35,31 @@ export default class DataPgUpgradeRun extends BaseCommand {
     const {args, flags} = await this.parse(DataPgUpgradeRun)
     const {app, confirm, version} = flags
     const {database} = args
-
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const {addon} = await dbResolver.getAttachment(app, database)
-
-    if (!utils.pg.isAdvancedDatabase(addon)) {
-      ux.error('You can only use this command on Advanced-tier databases.\n'
-          + `Use ${color.code(`heroku pg:upgrade:run ${addon.name} --app ${app}`)} instead.`)
-    }
-
-    const {body: databaseInfo} = await this.dataApi.get<InfoResponse>(`/data/postgres/v1/${addon.id}/info`)
-    const {version: currentVersion} = databaseInfo
+    const {data} = createSDK(this.heroku, {extensions: [postgresExtensions]})
     const newVersion = version ?? 'the latest supported Postgres version'
-    await hux.confirmCommand({
-      comparison: app,
-      confirmation: confirm,
-      warningMessage: heredoc(`
-        This command immediately upgrades your ${color.datastore(addon.name)} database from ${currentVersion} to ${newVersion}.
-        Your database will be unavailable until the upgrade is complete.`),
-    })
 
     try {
-      ux.action.start(`Upgrading your ${color.datastore(addon.name)} database from ${currentVersion} to ${newVersion}`)
-      await this.dataApi.post<UpgradeResponse>(
-        `/data/postgres/v1/${addon.id}/upgrade/run`,
-        {body: {version}},
-      )
+      const {addon} = await data.postgres.runUpgrade(app, database, {version}, {
+        async beforeRunUpgrade({addon, currentVersion}) {
+          await hux.confirmCommand({
+            comparison: app,
+            confirmation: confirm,
+            warningMessage: heredoc(`
+              This command immediately upgrades your ${color.datastore(addon.name)} database from ${currentVersion} to ${newVersion}.
+              Your database will be unavailable until the upgrade is complete.`),
+          })
+
+          ux.action.start(`Upgrading your ${color.datastore(addon.name)} database from ${currentVersion} to ${newVersion}`)
+        },
+      })
       ux.action.stop()
       ux.stderr(`Upgrade started. Use ${color.code(`heroku data:pg:upgrade:wait ${addon.name} -a ${app}`)} to monitor progress.`)
-    } catch (error: unknown) {
+    } catch (error) {
+      if (error instanceof NotAdvancedDatabaseError) {
+        ux.error('You can only use this command on Advanced-tier databases.\n'
+            + `Use ${color.code(`heroku pg:upgrade:run ${error.addon.name} --app ${app}`)} instead.`)
+      }
+
       ux.action.stop(color.red('!'))
       throw error
     }

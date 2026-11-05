@@ -6,13 +6,6 @@ export enum DatabaseStatus {
   UNAVAILABLE = 'unavailable',
 }
 
-export enum AdvancedCredentialState {
-  ACTIVE = 'active',
-  ENABLING = 'enabling',
-  REVOKING = 'revoking',
-  ROTATING = 'rotating',
-}
-
 export enum MaintenanceStatus {
   completed = 'completed',
   none = 'none',
@@ -45,21 +38,6 @@ export enum PoolStatus {
   PROVISIONING = 'provisioning',
   UNKNOWN = 'unknown',
 }
-export interface AdvancedCredentialInfo extends Record<string, unknown> {
-  database: string
-  host: string
-  id: string
-  name: string
-  port: string
-  roles: Array<{
-    password: string
-    state: string
-    user: string
-  }>
-  state: AdvancedCredentialState
-  type: 'additional' | 'owner'
-}
-
 export type ComputeInstance = {
   id: string
   level: string
@@ -80,10 +58,6 @@ export type CreatePoolParameters = {
   level: string
   name?: string
 }
-
-export type CredentialInfo = AdvancedCredentialInfo | NonAdvancedCredentialInfo
-
-export type CredentialsInfo = {items: Array<AdvancedCredentialInfo>}
 
 // This can be removed if at any point we get to generate a correct TypeScript schema from the Platform API
 // HyperSchema, but that's not easy due to API variants and some other header-selectable serialization expansion
@@ -192,6 +166,7 @@ export interface NonAdvancedCredentialInfo extends Record<string, unknown> {
 
 export type PlanLimit = ConnectionLimit | StorageLimitInGb | TableLimit
 
+// TODO: delete this type and use PostgresInfoResult from @heroku/types/data instead
 export type PoolInfoResponse = {
   compute_instances: Array<ComputeInstance>
   connections_used: null | number

@@ -1,8 +1,11 @@
-import type {PostgresCredentialInfoResult as AdvancedCredentialInfo} from '@heroku/types/data'
+import type {
+  PostgresCredentialInfoResult as AdvancedCredentialInfo,
+  PostgresInfoResult,
+} from '@heroku/types/data'
 
-import type {PoolInfoResponse} from './types.js'
+type PoolInfo = PostgresInfoResult['pools'][number]
 
-export function isLeaderPool(pool: PoolInfoResponse): boolean {
+export function isLeaderPool(pool: PoolInfo): boolean {
   return pool.name === 'leader'
 }
 
@@ -10,7 +13,7 @@ export function isOwnerCredential(cred: AdvancedCredentialInfo): boolean {
   return cred.type === 'owner'
 }
 
-export function sortByLeaderAndName(pools: PoolInfoResponse[]) {
+export function sortByLeaderAndName(pools: PoolInfo[]) {
   return pools.sort((a, b) => {
     const isLeaderA = isLeaderPool(a)
     const isLeaderB = isLeaderPool(b)
