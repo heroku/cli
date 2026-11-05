@@ -27,6 +27,7 @@ describe('config:edit', function () {
   let editedConfig = ''
   let createEditorStub: SinonStub
   let editorEditStub: SinonStub
+  let confirmStub: SinonStub
   let fakePlatform: FakePlatform
 
   beforeEach(function () {
@@ -54,11 +55,39 @@ describe('config:edit', function () {
       createEditorStub = stub(EditorFactory, 'createEditor').callsFake(() => ({
         edit: editorEditStub,
       }) as any)
-      stub(hux, 'confirm').returns(Promise.resolve(true) as any)
+      confirmStub = stub(hux, 'confirm').returns(Promise.resolve(true) as any)
     })
 
     afterEach(function () {
       restore()
+    })
+
+    describe('editor failures', function () {
+      it('returns the editor error without updating the full config', async function () {
+        const editorError = new Error('editor rejected')
+        editorEditStub.rejects(editorError)
+
+        fakePlatform.configVar.infoForApp.resolves({FIRST: '1'})
+
+        const {error} = await runCommand(Cmd, ['--app=myapp'])
+
+        expect(error).to.equal(editorError)
+        expect(confirmStub.notCalled).to.be.true
+        expect(fakePlatform.configVar.update.notCalled).to.be.true
+      })
+
+      it('returns the editor error without updating a single key', async function () {
+        const editorError = new Error('editor rejected')
+        editorEditStub.rejects(editorError)
+
+        fakePlatform.configVar.infoForApp.resolves({FIRST: '1'})
+
+        const {error} = await runCommand(Cmd, ['--app=myapp', 'FIRST'])
+
+        expect(error).to.equal(editorError)
+        expect(confirmStub.notCalled).to.be.true
+        expect(fakePlatform.configVar.update.notCalled).to.be.true
+      })
     })
 
     describe('deleting config var', function () {
