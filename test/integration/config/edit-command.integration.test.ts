@@ -606,7 +606,8 @@ describe('config:edit full CLI signal cleanup', function () {
         const {requests, result} = await runScenario(signal, false)
         // SDK-owned interrupts (SIGINT/SIGTERM) exit 1 on v12.x; unowned signals
         // (SIGHUP) re-raise and terminate by signal. See runScenario for details.
-        if (signal === 'SIGINT' || signal === 'SIGTERM') {
+        // This loop only covers SIGINT and SIGHUP; SIGTERM shares SIGINT's path.
+        if (signal === 'SIGINT') {
           expect(result.exitCode).to.equal(1)
           expect(result.signal).to.equal(null)
         } else {
