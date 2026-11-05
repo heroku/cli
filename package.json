@@ -346,7 +346,7 @@
     },
     "update": {
       "node": {
-        "version": "24.22.0"
+        "version": "24.22.2"
       },
       "s3": {
         "bucket": "heroku-cli-assets",
