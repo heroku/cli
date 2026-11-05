@@ -7,6 +7,7 @@ import {
 import {
   type Migration, type MigrationSource, type MigrationTarget, postgresMigrationExtensions,
 } from '@heroku/sdk/extensions/data'
+import {isCancellable, isRunnable} from '@heroku/sdk/resources/data/postgres-migration'
 import {ux} from '@oclif/core'
 import inquirer, {DistinctChoice, ListChoiceMap} from 'inquirer'
 import tsheredoc from 'tsheredoc'
@@ -110,7 +111,8 @@ export default class DataPgMigrate extends BaseCommand {
 
   // eslint-disable-next-line complexity
   private async actOnReadyMigration(data: Data, migrationAction: 'cancel' | 'start'): Promise<void> {
-    const readyMigrations = this.migrationTargets.filter(migration => migration.status === 'ready')
+    const eligible = migrationAction === 'start' ? isRunnable : isCancellable
+    const readyMigrations = this.migrationTargets.filter(migration => eligible(migration.status))
     let currentStep = '__select_migration'
     let selectedMigrationId: string | undefined
 
@@ -499,7 +501,7 @@ export default class DataPgMigrate extends BaseCommand {
       })
     }
 
-    if (this.migrationTargets.some(migration => migration.status === 'ready')) {
+    if (this.migrationTargets.some(migration => isRunnable(migration.status) || isCancellable(migration.status))) {
       choices.push({
         name: 'Start a migration',
         value: '__start_migration',
