@@ -2,7 +2,7 @@ import type {AddOn} from '@heroku/types/3.sdk'
 
 import {flags as Flags} from '@heroku-cli/command'
 import {color} from '@heroku/heroku-cli-util'
-import {postgresExtensions, type ForkResult} from '@heroku/sdk/extensions/data'
+import {type ForkResult, postgresExtensions} from '@heroku/sdk/extensions/data'
 import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
