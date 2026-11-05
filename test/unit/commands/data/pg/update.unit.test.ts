@@ -280,6 +280,41 @@ describe('data:pg:update', function () {
       expect(ansis.strip(stdout)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 1 instance starting at ~$0.083/hour ($60/month)')
     })
 
+    it('surfaces the error and marks the spinner failed when a pool mutation fails', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .post('/actions/addons/resolve')
+        .reply(200, [addon])
+
+      const dataApi = nock('https://api.data.heroku.com')
+        .get('/data/postgres/v1/levels/advanced')
+        .reply(200, levelsResponse)
+        .get('/data/postgres/v1/pricing')
+        .reply(200, pricingResponse)
+
+      fakeData.postgres.info.resolves(structuredClone(pgInfo))
+      fakeData.postgresPool.update.rejects(new Error('update boom'))
+
+      // Simulate the user selections
+      mockedStdinInput = [
+        '\n',         // Pool selection prompt: selects 'Leader' pool
+        '\u001B[B\n', // Pool action prompt: selects 'Remove high availability' (update rejects, command throws)
+      ]
+
+      const {error, stderr} = await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(fakeData.postgresPool.update.calledOnceWith(
+        addon.id,
+        pgInfo.pools[0].id,
+        {count: 1},
+      )).to.be.true
+      expect((error as Error)?.message).to.equal('update boom')
+      // The spinner stops with the failure marker instead of "done".
+      expect(ansis.strip(stderr)).to.contain('Removing the high availability (HA) standby instance from advanced-horizontal-01234... !')
+      expect(ansis.strip(stderr)).to.not.contain('done')
+    })
+
     it('allows the user to add a high availability (HA) standby instance to the leader pool', async function () {
       const herokuApi = nock('https://api.heroku.com')
         .post('/actions/addons/resolve')

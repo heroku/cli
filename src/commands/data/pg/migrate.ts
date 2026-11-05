@@ -155,10 +155,16 @@ export default class DataPgMigrate extends BaseCommand {
             ux.stdout()
             ux.action.start(`${migrationAction === 'start' ? 'Starting' : 'Canceling'} migration of ${color.datastore(sourceDatabase?.name ?? color.gray('unknown'))} `
               + `to ${color.datastore(targetDatabase?.name ?? color.gray('unknown'))}`)
-            await (migrationAction === 'start'
-              ? data.postgresMigration.startWhenReady(selectedMigration.target_id)
-              : data.postgresMigration.abortBeforeRun(selectedMigration.target_id))
-            ux.action.stop()
+            try {
+              await (migrationAction === 'start'
+                ? data.postgresMigration.startWhenReady(selectedMigration.target_id)
+                : data.postgresMigration.abortBeforeRun(selectedMigration.target_id))
+              ux.action.stop()
+            } catch (error) {
+              ux.action.stop(color.red('!'))
+              throw error
+            }
+
             currentStep = '__exit'
           }
 
@@ -337,12 +343,7 @@ export default class DataPgMigrate extends BaseCommand {
             currentStep = this.methodProvidedViaFlag ? '__select_target' : '__select_method'
           } else if (action === '__confirm') {
             ux.stdout('')
-            ux.action.start('Configuring migration')
-            await data.postgresMigration.prepare(targetDatabaseId!, {
-              method: this.selectedMigrationMethod!,
-              source_id: sourceDatabaseId!,
-            })
-            ux.action.stop()
+            await this.prepareMigration(data, sourceDatabaseId, targetDatabaseId, this.selectedMigrationMethod)
             currentStep = '__exit'
           }
 
@@ -528,5 +529,34 @@ export default class DataPgMigrate extends BaseCommand {
       type: 'list',
     })
     return action
+  }
+
+  // Guard the resolved source/target ids before issuing the prepare request: the
+  // ids arrive as `string | undefined` (they're `let`s mutated inside the
+  // selectSource/selectTarget closures, which TS can't narrow across the closure
+  // boundary). Guarding here lets the call sites drop their non-null assertions
+  // and keeps a leaked menu sentinel (a `__`-prefixed value) from ever being sent
+  // to the API as a database id.
+  private async prepareMigration(
+    data: Data,
+    sourceId: string | undefined,
+    targetId: string | undefined,
+    method: 'cdc' | 'full-load' | undefined,
+  ): Promise<void> {
+    if (!sourceId || sourceId.startsWith('__') || !targetId || targetId.startsWith('__') || !method) {
+      throw new Error('Migration configuration is incomplete. Reconfigure the migration and try again.')
+    }
+
+    ux.action.start('Configuring migration')
+    try {
+      await data.postgresMigration.prepare(targetId, {
+        method,
+        source_id: sourceId,
+      })
+      ux.action.stop()
+    } catch (error) {
+      ux.action.stop(color.red('!'))
+      throw error
+    }
   }
 }

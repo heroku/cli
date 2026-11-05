@@ -15,7 +15,6 @@ import PoolConfig from '../../../lib/data/pool-config.js'
 import {
   DeepRequired,
   ExtendedPostgresLevelInfo,
-  InfoResponse,
   PoolInfoResponse,
 } from '../../../lib/data/types.js'
 import {fetchLevelsAndPricing, renderPricingInfo} from '../../../lib/data/utils.js'
@@ -360,8 +359,13 @@ export default class DataPgUpdate extends BaseCommand {
 
   private async poolSelectionStep(data: Data): Promise<void> {
     // Fetch the info each time we render this menu to show the updated database configuration
-    const databaseInfo = await data.postgres.info(this.database!.id) as unknown as InfoResponse
-    const {pools} = databaseInfo
+    const databaseInfo = await data.postgres.info(this.database!.id)
+    // The SDK's pool shape is a structural subset of the CLI's PoolInfoResponse
+    // (it marks id/status/endpoints optional and omits metrics_sources), so this
+    // single narrow assertion is sound while databaseInfo itself stays fully
+    // typed — a drift in info()'s shape (e.g. a renamed/removed `pools`) now fails
+    // to compile instead of being silently erased by `as unknown`.
+    const pools = databaseInfo.pools as PoolInfoResponse[]
     if (pools.length === 0) {
       ux.error('No pools found on the database.') // It should never happen, but just for the sake of safety
     }

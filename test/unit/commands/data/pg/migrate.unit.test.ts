@@ -4,6 +4,7 @@ import type {Migration, MigrationSource, MigrationTarget} from '@heroku/sdk/exte
 import * as Heroku from '@heroku-cli/schema'
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import inquirer from 'inquirer'
 import mockStdin from 'mock-stdin'
@@ -383,6 +384,25 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.match(/⛁ postgresql-convex-12345\s+⛁ postgresql-obscured-12345\s+Preparing databases/)
     })
 
+    it('surfaces the error and marks the spinner failed when preparing the migration fails', async function () {
+      fakeData.postgresMigration.prepare.rejects(new Error('prepare boom'))
+
+      mockedStdinInput = [
+        '\n', // Main menu: > Configure a database migration
+        '\n', // Select source database: > Premium database
+        '\n', // Select target database: > Non-target Advanced database
+        '\n', // Confirm migration configuration: > Confirm (prepare rejects, command throws)
+      ]
+
+      const {error, stderr} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
+
+      expect(fakeData.postgresMigration.prepare.calledOnce).to.be.true
+      expect((error as Error)?.message).to.equal('prepare boom')
+      // The spinner stops with the failure marker instead of "done".
+      expect(ansis.strip(stderr)).to.contain('Configuring migration... !')
+      expect(stderr).to.not.contain('done')
+    })
+
     it('shows the expected list of source databases', async function () {
       mockedStdinInput = [
         '\n', // Main menu: > Configure a database migration
@@ -631,6 +651,23 @@ describe('data:pg:migrate', function () {
       expect(stderr).to.equal('Starting migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
     })
 
+    it('surfaces the error and marks the spinner failed when starting the migration fails', async function () {
+      fakeData.postgresMigration.startWhenReady.rejects(new Error('start boom'))
+
+      mockedStdinInput = [
+        '\n', // Main menu: > Start a migration
+        '\n', // Select the migration to start: > first ready migration
+        '\n', // Confirm to start migration: > Confirm (startWhenReady rejects, command throws)
+      ]
+
+      const {error, stderr} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      expect(fakeData.postgresMigration.startWhenReady.calledOnce).to.be.true
+      expect((error as Error)?.message).to.equal('start boom')
+      expect(ansis.strip(stderr)).to.contain('Starting migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... !')
+      expect(stderr).to.not.contain('done')
+    })
+
     it('shows the expected list of migrations to choose from', async function () {
       mockedStdinInput = [
         '\n', // Main menu: > Start a migration
@@ -696,6 +733,23 @@ describe('data:pg:migrate', function () {
       expect(fakeData.postgresMigration.abortBeforeRun.calledOnce).to.be.true
       expect(fakeData.postgresMigration.abortBeforeRun.firstCall.args[0]).to.equal(targetAdvancedDbAttachment.addon.id)
       expect(stderr).to.equal('Canceling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
+    })
+
+    it('surfaces the error and marks the spinner failed when canceling the migration fails', async function () {
+      fakeData.postgresMigration.abortBeforeRun.rejects(new Error('cancel boom'))
+
+      mockedStdinInput = [
+        '\u001B[B\n', // Main menu: > Cancel a migration (down from Start)
+        '\n',         // Select the migration to cancel: > first ready migration
+        '\n',         // Confirm to cancel migration: > Confirm (abortBeforeRun rejects, command throws)
+      ]
+
+      const {error, stderr} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      expect(fakeData.postgresMigration.abortBeforeRun.calledOnce).to.be.true
+      expect((error as Error)?.message).to.equal('cancel boom')
+      expect(ansis.strip(stderr)).to.contain('Canceling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... !')
+      expect(stderr).to.not.contain('done')
     })
 
     it('shows the expected list of migrations to choose from', async function () {
