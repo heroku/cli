@@ -1,5 +1,7 @@
 import * as Heroku from '@heroku-cli/schema'
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import ansis from 'ansis'
+import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
@@ -74,6 +76,42 @@ describe('pg:links', function () {
        * redis-link-1
       created_at: 100
       remote:     REDIS (⛁ redis-001)
+    `))
+  })
+
+  it('errors when the app has no databases', async function () {
+    api
+      .get(`/apps/${appName}/addon-attachments`)
+      .reply(200, [])
+
+    const {error} = await runCommand(Cmd, ['--app', appName])
+
+    expect(ansis.strip(error?.message ?? '')).to.equal('No databases on ⬢ myapp')
+  })
+
+  it('lists every database in attachment order, separated by a blank line', async function () {
+    const other = fixtures.addons['dwh-db']
+    api
+      .get(`/apps/${appName}/addon-attachments`)
+      .reply(200, [{addon, name: 'DATABASE'}, {addon: other, name: 'HEROKU_POSTGRESQL_RED'}, {addon, name: 'HEROKU_POSTGRESQL_BLUE'}])
+    dataApi
+      .get(`/client/v11/databases/${addon.id}/links`)
+      .reply(200, [redisLink])
+      .get(`/client/v11/databases/${other.id}/links`)
+      .reply(200, [])
+
+    const {stdout} = await runCommand(Cmd, ['--app', appName])
+
+    expectOutput(stdout, heredoc(`
+      === ⛁ ${addon.name}
+
+       * redis-link-1
+      created_at: 100
+      remote:     REDIS (⛁ redis-001)
+
+      === ⛁ ${other.name}
+
+      No data sources are linked into this database
     `))
   })
 })
