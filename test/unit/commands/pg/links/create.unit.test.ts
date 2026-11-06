@@ -82,4 +82,49 @@ describe('pg:links:create', function () {
       `))
     })
   })
+
+  describe('remote resolution and validation', function () {
+    const db = {
+      id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
+    }
+
+    it('creates a link without --as', async function () {
+      const redis = {
+        app: {name: 'myapp'}, id: 'r1', name: 'redis-1', plan: {name: 'heroku-redis:premium-0'},
+      }
+      api.post('/actions/addon-attachments/resolve').reply(200, [{addon: db}])
+      api.post('/actions/addons/resolve', {addon: 'redis-1', app: 'myapp'}).reply(200, [redis])
+      pg.post('/client/v11/databases/1/links', {target: 'redis-1'})
+        .reply(200, {name: 'generated-link'})
+
+      const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'redis-1', 'DATABASE_URL'])
+
+      expect(stdout).to.equal('')
+      expect(stderr).to.equal('Adding link from ⛁ redis-1 to ⛁ postgres-1... done, generated-link\n')
+    })
+
+    it('errors when the remote is not a Heroku Postgres or Key-Value Store add-on', async function () {
+      const papertrail = {
+        app: {name: 'myapp'}, id: 'p1', name: 'papertrail-1', plan: {name: 'papertrail:basic'},
+      }
+      api.post('/actions/addon-attachments/resolve').reply(200, [{addon: db}])
+      api.post('/actions/addons/resolve').reply(200, [papertrail])
+
+      const {error} = await runCommand(Cmd, ['--app', 'myapp', 'papertrail-1', 'DATABASE_URL'])
+
+      expect(error?.message).to.equal('Remote database must be heroku-redis or heroku-postgresql')
+    })
+
+    it('errors when the remote is an Essential-tier database', async function () {
+      const essentialRemote = {
+        app: {name: 'myapp'}, id: 'e1', name: 'postgres-essential', plan: {name: 'heroku-postgresql:essential-0'},
+      }
+      api.post('/actions/addon-attachments/resolve').reply(200, [{addon: db}])
+      api.post('/actions/addons/resolve').reply(200, [essentialRemote])
+
+      const {error} = await runCommand(Cmd, ['--app', 'myapp', 'postgres-essential', 'DATABASE_URL'])
+
+      expect(error?.message).to.equal('pg:links isn\'t available for Essential-tier databases.')
+    })
+  })
 })
