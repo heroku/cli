@@ -1,12 +1,19 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import {
+  type CreateLinkResult, EssentialDatabaseNotSupportedError, InvalidLinkRemoteError, linkExtensions,
+} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 
-import type {Link} from '../../../lib/pg/types.js'
-
-import {addonResolver} from '../../../lib/addons/resolve.js'
-import {essentialPlan} from '../../../lib/pg/util.js'
+import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
+
+/** Maps the SDK's link-validation errors to the CLI's existing messages. */
+function toCliError(error: unknown): unknown {
+  if (error instanceof InvalidLinkRemoteError) return new Error('Remote database must be heroku-redis or heroku-postgresql')
+  if (error instanceof EssentialDatabaseNotSupportedError) return new Error('pg:links isn\'t available for Essential-tier databases.')
+  return error
+}
 
 export default class Create extends Command {
   /* eslint-disable perfectionist/sort-objects */
@@ -26,43 +33,24 @@ export default class Create extends Command {
   }
   static topic = 'pg'
 
-  public async run(): Promise<void> {
+  public async run(): Promise<CreateLinkResult> {
     const {args, flags} = await this.parse(Create)
     const {app} = flags
+    const {data} = createSDK(this.heroku, {extensions: [linkExtensions]})
 
-    const service = async (remoteId: string) => {
-      const addon = await addonResolver(this.heroku, app, remoteId)
-      if (!/^heroku-(redis|postgresql)/.test(addon.plan.name))
-        throw new Error('Remote database must be heroku-redis or heroku-postgresql')
-      return addon
+    let spinning = false
+    try {
+      const result = await data.link.createForDatabase(app, args.database, args.remote, {as: flags.as}, {
+        beforeCreate({addon, target}) {
+          ux.action.start(`Adding link from ${color.datastore(target.name)} to ${color.datastore(addon.name)}`)
+          spinning = true
+        },
+      })
+      ux.action.stop(`done, ${color.name(result.link.name)}`)
+      return result
+    } catch (error) {
+      if (spinning) ux.action.stop(color.red('!'))
+      throw toCliError(error)
     }
-
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const [{addon: db}, target] = await Promise.all([
-      dbResolver.getAttachment(app, args.database),
-      service(args.remote),
-    ])
-
-    if (essentialPlan(db))
-      throw new Error("pg:links isn't available for Essential-tier databases.")
-    if (essentialPlan(target as any))
-      throw new Error("pg:links isn't available for Essential-tier databases.")
-
-    ux.action.start(`Adding link from ${color.datastore(target.name)} to ${color.datastore(db.name)}`)
-    const {body: link} = await this.heroku.post<Link>(`/client/v11/databases/${db.id}/links`, {
-      body: {
-        as: flags.as,
-        target: target.name,
-      },
-      hostname: utils.pg.host(),
-    })
-
-    // This doesn't exist according to Shogun's link serializer. May it be that the original idea was to use to catch
-    // a Data API error and then show an re-throw the error here?
-    // if (link.message) {
-    //   throw new Error(link.message)
-    // }
-
-    ux.action.stop(`done, ${color.name(link.name)}`)
   }
 }
