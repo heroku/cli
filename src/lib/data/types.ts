@@ -96,6 +96,17 @@ export type ExtendedPostgresLevelInfo = PostgresLevelInfo & {
   pricing: PricingInfo | undefined
 }
 
+export type Link = {
+  created_at: string
+  id: string
+  name: string
+  remote: {
+    attachment_name: string
+    name: string
+  }
+  remote_name: string
+}
+
 export type InfoResponse = {
   addon: AddonReference
   app: AppReference
@@ -318,7 +329,7 @@ type PreassessmentCheck = {
 type PreassessmentResults = Array<PreassessmentCheck>
 
 type PrivateSpaceRegion = 'california' | 'dublin' | 'frankfurt' | 'london' | 'montreal' | 'mumbai'
-    | 'ohio' | 'oregon' | 'paris' | 'singapore' | 'sydney' | 'tokyo' | 'virginia'
+  | 'ohio' | 'oregon' | 'paris' | 'singapore' | 'sydney' | 'tokyo' | 'virginia'
 
 type ResourceReference = {
   id: string
