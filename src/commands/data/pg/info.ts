@@ -8,6 +8,7 @@ import BaseCommand from '../../../lib/data/base-command.js'
 import {formatQuotaStatus} from '../../../lib/data/display-quota.js'
 import {parseAttachmentFactors} from '../../../lib/data/parse-attachment-factors.js'
 import {InfoResponse, PoolInfoResponse, Quota} from '../../../lib/data/types.js'
+import {renderTimestamp} from '../../../lib/data/utils.js'
 
 const heredoc = tsheredoc
 
@@ -70,7 +71,7 @@ export default class DataPgInfo extends BaseCommand {
 
     const rollbackInfo = features.rollback.enabled
       ? (features.rollback.earliest_time
-        ? `earliest from ${this.renderDateInfo(features.rollback.earliest_time!)}`
+        ? `earliest from ${renderTimestamp(features.rollback.earliest_time!)}`
         : 'Unavailable')
       : 'Unsupported'
 
@@ -92,7 +93,7 @@ export default class DataPgInfo extends BaseCommand {
 
     Object.assign(infoObject, {
       ...infoObject,
-      Created: this.renderDateInfo(createdAt),
+      Created: renderTimestamp(createdAt),
       Quotas: ' ',
     })
 
@@ -124,17 +125,6 @@ export default class DataPgInfo extends BaseCommand {
     }
 
     return `${hux.toHumanReadableDataSize(storageLimit.current)} / ${hux.toHumanReadableDataSize(storageLimit.limit)}`
-  }
-
-  private renderDateInfo(dateStr: string): string {
-    const date = new Date(dateStr)
-    const year = date.getUTCFullYear()
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0')
-    const day = String(date.getUTCDate()).padStart(2, '0')
-    const hours = String(date.getUTCHours()).padStart(2, '0')
-    const minutes = String(date.getUTCMinutes()).padStart(2, '0')
-
-    return `${year}-${month}-${day} ${hours}:${minutes} UTC`
   }
 
   private renderQuotasInfo(quotas: Quota[]): Record<string, string> {
