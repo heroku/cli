@@ -74,4 +74,44 @@ describe('pg:connection-pooling:attach', function () {
       expect(stderr).to.contain('Setting HEROKU_COLOR config vars and restarting ⬢ myapp... done, v0')
     })
   })
+
+  context('database resolution and release lookup', function () {
+    beforeEach(function () {
+      // The shared beforeEach queues a resolve for an explicit database argument; these tests set up their own.
+      nock.cleanAll()
+      api = nock('https://api.heroku.com')
+      pg = nock('https://api.data.heroku.com')
+    })
+
+    it('uses DATABASE_URL when no database is given and reports the newest release', async function () {
+      api
+        .post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', app: 'myapp'})
+        .reply(200, [resolvedAttachments['myapp::postgres-1']])
+        .get('/apps/myapp/releases')
+        .matchHeader('range', 'version ..; max=1, order=desc')
+        .reply(200, [{version: 42}])
+      pg.post(`/client/v11/databases/${addon.name}/connection-pooling`, {app: 'myapp', credential: defaultCredential})
+        .reply(201, {name: 'DATABASE_CONNECTION_POOL'})
+
+      const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp'])
+
+      expect(stdout).to.equal('')
+      expect(stderr).to.contain('Enabling Connection Pooling on ⛁ postgres-1 to ⬢ myapp... done')
+      expect(stderr).to.contain('Setting DATABASE_CONNECTION_POOL config vars and restarting ⬢ myapp... done, v42')
+    })
+
+    it('refuses an Essential-tier database without attaching', async function () {
+      const essential = {
+        ...resolvedAttachments['myapp::postgres-1'],
+        addon: {...resolvedAttachments['myapp::postgres-1'].addon, plan: {name: 'heroku-postgresql:essential-0'}},
+      }
+      api
+        .post('/actions/addon-attachments/resolve')
+        .reply(200, [essential])
+
+      const {error} = await runCommand(Cmd, ['--app', 'myapp', 'postgres-1'])
+
+      expect(error?.message).to.equal('You can\'t perform this operation on Essential-tier databases.')
+    })
+  })
 })
