@@ -1,10 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import {
+  type AttachConnectionPoolingResult, connectionPoolingExtensions, EssentialDatabaseNotSupportedError,
+} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import {essentialPlan} from '../../../lib/pg/util.js'
+import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc
@@ -24,26 +26,32 @@ export default class Attach extends Command {
   }
   static topic = 'pg'
 
-  public async run(): Promise<void> {
+  public async run(): Promise<AttachConnectionPoolingResult> {
     const {args, flags} = await this.parse(Attach)
     const {app} = flags
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const {addon: db} = await dbResolver.getAttachment(app, args.database)
+    const {data} = createSDK(this.heroku, {extensions: [connectionPoolingExtensions]})
 
-    if (essentialPlan(db))
-      ux.error('You can\'t perform this operation on Essential-tier databases.')
+    let spinning = false
+    try {
+      const result = await data.connectionPooling.attach(app, args.database, {name: flags.as}, {
+        onAttached(attachment) {
+          ux.action.stop()
+          ux.action.start(`Setting ${color.attachment(attachment.name as string)} config vars and restarting ${color.app(app)}`)
+        },
+        onResolved(addon) {
+          ux.action.start(`Enabling Connection Pooling on ${color.datastore(addon.name)} to ${color.app(app)}`)
+          spinning = true
+        },
+      })
+      ux.action.stop(result.releaseVersion === undefined ? 'done' : `done, v${result.releaseVersion}`)
+      return result
+    } catch (error) {
+      if (spinning) ux.action.stop(color.red('!'))
+      if (error instanceof EssentialDatabaseNotSupportedError) {
+        ux.error('You can\'t perform this operation on Essential-tier databases.')
+      }
 
-    ux.action.start(`Enabling Connection Pooling on ${color.datastore(db.name)} to ${color.app(app)}`)
-    const {body: attachment} = await this.heroku.post<Required<Heroku.AddOnAttachment>>(`/client/v11/databases/${encodeURIComponent(db.name)}/connection-pooling`, {
-      body: {app, credential: 'default', name: flags.as}, hostname: utils.pg.host(),
-    })
-    ux.action.stop()
-
-    ux.action.start(`Setting ${color.attachment(attachment.name)} config vars and restarting ${color.app(app)}`)
-    const {body: releases} = await this.heroku.get<Required<Heroku.Release>[]>(
-      `/apps/${app}/releases`,
-      {headers: {Range: 'version ..; max=1, order=desc'}, partial: true},
-    )
-    ux.action.stop(`done, v${releases[0].version}`)
+      throw error
+    }
   }
 }
