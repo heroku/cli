@@ -1,9 +1,10 @@
-import {Maintenance, MaintenanceStatus, Window} from '../../../../src/lib/data/types.js'
+import type {MaintenanceInfoResult, MaintenanceWindowResult} from '@heroku/types/data'
 import {addon} from '../pg/fixtures.js'
 
-export const maintenance: Maintenance = {
+export const maintenance: MaintenanceInfoResult = {
   addon: {
     attachments: ['DATABASE_URL'],
+    uuid: 'addon-123',
     kind: 'heroku-postgresql',
     name: addon.name,
     plan: addon.plan?.name || 'heroku-postgresql:standard-0',
@@ -11,6 +12,7 @@ export const maintenance: Maintenance = {
   },
   app: {
     name: 'my-cedar-app',
+    uuid: 'app-456',
   },
   completed_at: null,
   duration_seconds: null,
@@ -21,7 +23,7 @@ export const maintenance: Maintenance = {
   scheduled_for: '2019-11-07 22:00:00 +0000',
   server_created_at: '2019-10-24 23:24:47 +0000',
   started_at: null,
-  status: MaintenanceStatus.none,
+  status: 'none',
   window: 'Thursdays 22:00 to Fridays 02:00 UTC',
 }
 
@@ -32,9 +34,9 @@ export const maintenancesResponse = {
   window: maintenance.window,
 }
 
-export const maintenanceWindow: Window = {
+export const maintenanceWindow: MaintenanceWindowResult = {
   previous_window: 'Fridays 17:30 to 21:30 UTC',
-  previously_scheduled_at: null,
-  scheduled_at: null,
+  previously_scheduled_for: null,
+  scheduled_for: null,
   window: 'Tuesdays 17:30 to 21:30 UTC',
 }

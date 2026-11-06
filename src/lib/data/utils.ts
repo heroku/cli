@@ -6,7 +6,7 @@ import inquirer from 'inquirer'
 import printf from 'printf'
 
 import {
-  ExtendedPostgresLevelInfo, Maintenance, MaintenanceStatus,
+  ExtendedPostgresLevelInfo,
   PoolInfoResponse,
   PostgresLevelsResponse,
   PricingInfo,
@@ -172,30 +172,3 @@ export async function renderLevelChoices(
   ]
 }
 
-const promiseDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-
-const retryAsync = async (retries: number, delay: number, fn: () => any, current = 0): Promise<any> => {
-  if (current >= retries) {
-    throw new Error('Max retries attempted')
-  }
-
-  const [complete, result] = await fn()
-  if (complete) return result
-
-  await promiseDelay(delay)
-  return retryAsync(retries, delay, fn, current++)
-}
-
-export async function waitUntilMaintenanceComplete(addonId: string, shogun: APIClient) {
-  return retryAsync(Number.POSITIVE_INFINITY, 5000, async () => {
-    const {body: maintenance} = await shogun.get<Maintenance>(
-      `/data/maintenances/v1/${addonId}`,
-      shogun.defaults,
-    )
-
-    // eslint-disable-next-line unicorn/no-negated-condition
-    return maintenance.status !== MaintenanceStatus.running
-      ? [true, maintenance]
-      : [false, maintenance]
-  })
-}

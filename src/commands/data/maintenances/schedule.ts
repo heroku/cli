@@ -1,12 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
-import {color, utils} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
-import {MaintenanceInfoResult, MaintenanceScheduleResult} from '@heroku/types/data'
+import {color} from '@heroku/heroku-cli-util'
+import {maintenanceExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import {createSDK} from '../../../lib/sdk.js'
+
+type Data = ReturnType<typeof createSDK<readonly [typeof maintenanceExtensions]>>['data']
 
 export default class DataMaintenancesSchedule extends Command {
   static args = {
@@ -37,8 +37,8 @@ export default class DataMaintenancesSchedule extends Command {
     }),
   }
 
-  protected async computeDelayWeeks(addon: Heroku.AddOn, week: string, differenceInCalendarWeeks: any, data: HerokuSDK['data']) {
-    const maintenance: MaintenanceInfoResult = await data.maintenance.info(addon.id!)
+  protected async computeDelayWeeks(data: Data, addon: string, app: string | undefined, week: string, differenceInCalendarWeeks: any) {
+    const {maintenance} = await data.maintenance.info(addon, {appIdentity: app})
 
     const scheduled = (maintenance.status === 'completed' || !maintenance.scheduled_for)
       ? Date.now()
@@ -56,30 +56,32 @@ export default class DataMaintenancesSchedule extends Command {
     const {differenceInCalendarWeeks} = await lazyModuleLoader.loadDateFns()
 
     const {args, flags} = await this.parse(DataMaintenancesSchedule)
-    const addonResolver = new utils.AddonResolver(this.heroku)
     const {app, week, weeks} = flags
 
-    const addon = await addonResolver.resolve(args.addon, app)
-    const {data} = createSDK(this.heroku)
+    const {data} = createSDK(this.heroku, {extensions: [maintenanceExtensions]})
 
     const delayWeeks = week === undefined
       ? weeks
-      : await this.computeDelayWeeks(addon, week, differenceInCalendarWeeks, data)
+      : await this.computeDelayWeeks(data, args.addon, app, week, differenceInCalendarWeeks)
 
-    await this.scheduleMaintenance(addon, delayWeeks, data)
+    await this.scheduleMaintenance(data, args.addon, app, delayWeeks)
   }
 
-  protected async scheduleMaintenance(addon: Heroku.AddOn, delayWeeks: string, data: HerokuSDK['data']) {
-    ux.action.start(`Scheduling maintenance for ${color.addon(addon.name!)}`)
-    const schedule: MaintenanceScheduleResult = await data.maintenance.schedule(addon.id!, {delay_weeks: Number(delayWeeks)})
+  protected async scheduleMaintenance(data: Data, addon: string, app: string | undefined, delayWeeks: string) {
+    const {addon: resolvedAddon, schedule} = await data.maintenance.schedule(addon, {delay_weeks: Number(delayWeeks)}, {
+      appIdentity: app,
+      beforeSchedule({addon}) {
+        ux.action.start(`Scheduling maintenance for ${color.addon(addon.name)}`)
+      },
+    })
     ux.action.stop('maintenance scheduled')
 
     const alreadyScheduled = Boolean(schedule.previously_scheduled_for)
 
     if (alreadyScheduled) {
-      this.log(`Scheduled maintenance for ${color.addon(addon.name!)} changed from ${schedule.previously_scheduled_for} to ${schedule.scheduled_for}`)
+      this.log(`Scheduled maintenance for ${color.addon(resolvedAddon.name)} changed from ${schedule.previously_scheduled_for} to ${schedule.scheduled_for}`)
     } else {
-      this.log(`Maintenance for ${color.addon(addon.name!)} scheduled for ${schedule.scheduled_for}`)
+      this.log(`Maintenance for ${color.addon(resolvedAddon.name)} scheduled for ${schedule.scheduled_for}`)
     }
   }
 }

@@ -1,10 +1,8 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
 import {MaintenanceInfoByAppResult} from '@heroku/types/data'
 import {ux} from '@oclif/core/ux'
 
-import {MaintenanceStatus} from '../../../lib/data/types.js'
 import {createSDK} from '../../../lib/sdk.js'
 import {constructSortFilterTableOptions, constructTableColumns, outputCSV} from '../../../lib/utils/table-utils.js'
 
@@ -52,9 +50,9 @@ export default class DataMaintenancesIndex extends Command {
 
   private async fetchMaintenances(appName: string) {
     ux.action.start('Fetching maintenances')
-    const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
-    const {data} = createSDK(this.heroku)
-    const result = await data.maintenance.infoByApp(app.id!)
+    const {data, platform} = createSDK(this.heroku)
+    const app = await platform.app.info(appName)
+    const result = await data.maintenance.infoByApp(app.id)
     ux.action.stop()
 
     return result.maintenances
@@ -83,7 +81,7 @@ export default class DataMaintenancesIndex extends Command {
       },
       required_by: {
         get(row: MaintenanceItem) {
-          if (row.status === MaintenanceStatus.completed) {
+          if (row.status === 'completed') {
             return '-'
           }
 
@@ -93,7 +91,7 @@ export default class DataMaintenancesIndex extends Command {
       },
       scheduled_for: {
         get(row: MaintenanceItem) {
-          if (row.status === MaintenanceStatus.completed) {
+          if (row.status === 'completed') {
             return '-'
           }
 
