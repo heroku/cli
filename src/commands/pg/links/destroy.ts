@@ -17,7 +17,7 @@ export default class Destroy extends Command {
     link: Args.string({description: 'name of the linked data store', required: true}),
   }
   static description = 'destroys a link between data stores'
-  static example = `${color.command('heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100')}`
+  static example = `${color.command('heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN my_link')}`
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({char: 'c'}),

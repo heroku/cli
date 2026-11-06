@@ -12,7 +12,7 @@ const heredoc = tsheredoc
 type Addon = {id: string; name: string; plan: {name: string}}
 
 const db: Addon = {id: 'db-1', name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}}
-const redis: Addon = {id: 'r1', name: 'redis-1', plan: {name: 'heroku-redis:premium-0'}}
+const remotePg: Addon = {id: 'r1', name: 'postgres-2', plan: {name: 'heroku-postgresql:standard-0'}}
 
 /** Fakes `createForDatabase`, running `beforeCreate` the way the SDK does before the create. */
 function fakeCreate(target: Addon, linkName: string) {
@@ -45,7 +45,7 @@ describe('pg:links:create', function () {
         'myapp',
         '--as',
         'foobar',
-        'heroku-redis',
+        'HEROKU_POSTGRESQL_BLUE',
         'heroku-postgres',
       ])
       expect(error?.message).to.equal('pg:links isn\'t available for Essential-tier databases.')
@@ -61,7 +61,7 @@ describe('pg:links:create', function () {
         'myapp',
         '--as',
         'foobar',
-        'heroku-redis',
+        'HEROKU_POSTGRESQL_BLUE',
         'heroku-postgres',
       ])
       expect(stdout).to.equal('')
@@ -69,37 +69,37 @@ describe('pg:links:create', function () {
       Adding link from ⛁ postgres-1 to ⛁ postgres-1... done, foobar
       `))
       expect(createForDatabase.calledOnce).to.equal(true)
-      expect(createForDatabase.firstCall.args.slice(0, 4)).to.deep.equal(['myapp', 'heroku-postgres', 'heroku-redis', {as: 'foobar'}])
+      expect(createForDatabase.firstCall.args.slice(0, 4)).to.deep.equal(['myapp', 'heroku-postgres', 'HEROKU_POSTGRESQL_BLUE', {as: 'foobar'}])
     })
   })
 
   describe('remote resolution and validation', function () {
     it('creates a link without --as', async function () {
-      stubSDK(fakeCreate(redis, 'generated-link'))
+      stubSDK(fakeCreate(remotePg, 'generated-link'))
 
-      const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'redis-1', 'DATABASE_URL'])
+      const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'postgres-2', 'DATABASE_URL'])
 
       expect(stdout).to.equal('')
-      expect(stderr).to.equal('Adding link from ⛁ redis-1 to ⛁ postgres-1... done, generated-link\n')
-      expect(createForDatabase.firstCall.args.slice(0, 4)).to.deep.equal(['myapp', 'DATABASE_URL', 'redis-1', {as: undefined}])
+      expect(stderr).to.equal('Adding link from ⛁ postgres-2 to ⛁ postgres-1... done, generated-link\n')
+      expect(createForDatabase.firstCall.args.slice(0, 4)).to.deep.equal(['myapp', 'DATABASE_URL', 'postgres-2', {as: undefined}])
     })
 
     it('links a remote owned by another app', async function () {
-      const remote = {id: 'r2', name: 'redis-other', plan: {name: 'heroku-redis:premium-0'}}
+      const remote = {id: 'r2', name: 'postgres-other', plan: {name: 'heroku-postgresql:standard-0'}}
       stubSDK(fakeCreate(remote, 'cross'))
 
-      const {stderr} = await runCommand(Cmd, ['--app', 'myapp', '--as', 'cross', 'redis-other', 'DATABASE_URL'])
+      const {stderr} = await runCommand(Cmd, ['--app', 'myapp', '--as', 'cross', 'postgres-other', 'DATABASE_URL'])
 
-      expect(stderr).to.equal('Adding link from ⛁ redis-other to ⛁ postgres-1... done, cross\n')
+      expect(stderr).to.equal('Adding link from ⛁ postgres-other to ⛁ postgres-1... done, cross\n')
     })
 
-    it('errors when the remote is not a Heroku Postgres or Key-Value Store add-on', async function () {
+    it('errors when the remote is not a Heroku Postgres add-on', async function () {
       const papertrail = {id: 'p1', name: 'papertrail-1', plan: {name: 'papertrail:basic'}}
       stubSDK(sinon.stub().rejects(new InvalidLinkRemoteError(papertrail as never)))
 
       const {error} = await runCommand(Cmd, ['--app', 'myapp', 'papertrail-1', 'DATABASE_URL'])
 
-      expect(error?.message).to.equal('Remote database must be heroku-redis or heroku-postgresql')
+      expect(error?.message).to.equal('Remote database must be heroku-postgresql')
     })
 
     it('errors when the remote is an Essential-tier database', async function () {
@@ -114,14 +114,14 @@ describe('pg:links:create', function () {
     it('stops the spinner with a failure marker and rethrows when the create fails', async function () {
       stubSDK(sinon.stub().callsFake(async (...args) => {
         const opts = args[4]
-        await opts?.beforeCreate?.({addon: db, target: redis})
+        await opts?.beforeCreate?.({addon: db, target: remotePg})
         throw new Error('link create failed')
       }))
 
-      const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'redis-1', 'DATABASE_URL'])
+      const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'postgres-2', 'DATABASE_URL'])
 
       expect(error?.message).to.equal('link create failed')
-      expect(stderr).to.contain('Adding link from ⛁ redis-1 to ⛁ postgres-1... !')
+      expect(stderr).to.contain('Adding link from ⛁ postgres-2 to ⛁ postgres-1... !')
     })
   })
 })

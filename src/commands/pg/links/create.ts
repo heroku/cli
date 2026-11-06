@@ -17,7 +17,7 @@ export default class Create extends Command {
   }
   /* eslint-enable perfectionist/sort-objects */
   static description = 'create a link between data stores'
-  static example = `${color.command('heroku pg:links:create HEROKU_REDIS_RED HEROKU_POSTGRESQL_CERULEAN')}`
+  static example = `${color.command('heroku pg:links:create HEROKU_POSTGRESQL_BLUE HEROKU_POSTGRESQL_CERULEAN')}`
   static flags = {
     app: flags.app({required: true}),
     as: flags.string({description: 'name of link to create'}),
