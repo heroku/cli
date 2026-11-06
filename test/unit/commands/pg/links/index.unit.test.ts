@@ -1,20 +1,18 @@
-import * as Heroku from '@heroku-cli/schema'
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/links/index.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
+import {MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
 
 describe('pg:links', function () {
-  let api: nock.Scope
-  let dataApi: nock.Scope
-  let addon: Heroku.AddOn
   const appName = 'myapp'
+  const addon = fixtures.addons['www-db']
   const redisLink = {
     created_at: '100',
     name: 'redis-link-1',
@@ -23,26 +21,20 @@ describe('pg:links', function () {
       name: 'redis-001',
     },
   }
+  let listByApp: sinon.SinonStub
+  let sdkMock: MockSDK
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
-    dataApi = nock('https://api.data.heroku.com')
-    addon = fixtures.addons['www-db']
+    listByApp = sinon.stub()
+    sdkMock = mockSDKData({link: {listByApp}})
   })
 
   afterEach(function () {
-    nock.cleanAll()
-    api.done()
-    dataApi.done()
+    sdkMock.restore()
   })
 
   it('shows links', async function () {
-    api
-      .get(`/apps/${appName}/addon-attachments`)
-      .reply(200, [{addon}])
-    dataApi
-      .get(`/client/v11/databases/${addon.id}/links`)
-      .reply(200, [redisLink])
+    listByApp.resolves([{addon, links: [redisLink]}])
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -55,15 +47,12 @@ describe('pg:links', function () {
       created_at: 100
       remote:     REDIS (⛁ redis-001)
     `))
+    expect(listByApp.calledOnce).to.equal(true)
+    expect(listByApp.firstCall.args).to.deep.equal([appName, undefined])
   })
 
   it('shows links when args are present', async function () {
-    api
-      .post('/actions/addon-attachments/resolve')
-      .reply(200, [{addon}])
-    dataApi
-      .get(`/client/v11/databases/${addon.id}/links`)
-      .reply(200, [redisLink])
+    listByApp.resolves([{addon, links: [redisLink]}])
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -77,12 +66,11 @@ describe('pg:links', function () {
       created_at: 100
       remote:     REDIS (⛁ redis-001)
     `))
+    expect(listByApp.calledOnceWithExactly('myapp', 'test-database')).to.equal(true)
   })
 
   it('errors when the app has no databases', async function () {
-    api
-      .get(`/apps/${appName}/addon-attachments`)
-      .reply(200, [])
+    listByApp.resolves([])
 
     const {error} = await runCommand(Cmd, ['--app', appName])
 
@@ -91,14 +79,7 @@ describe('pg:links', function () {
 
   it('lists every database in attachment order, separated by a blank line', async function () {
     const other = fixtures.addons['dwh-db']
-    api
-      .get(`/apps/${appName}/addon-attachments`)
-      .reply(200, [{addon, name: 'DATABASE'}, {addon: other, name: 'HEROKU_POSTGRESQL_RED'}, {addon, name: 'HEROKU_POSTGRESQL_BLUE'}])
-    dataApi
-      .get(`/client/v11/databases/${addon.id}/links`)
-      .reply(200, [redisLink])
-      .get(`/client/v11/databases/${other.id}/links`)
-      .reply(200, [])
+    listByApp.resolves([{addon, links: [redisLink]}, {addon: other, links: []}])
 
     const {stdout} = await runCommand(Cmd, ['--app', appName])
 
