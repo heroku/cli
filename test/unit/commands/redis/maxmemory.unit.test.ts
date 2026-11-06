@@ -22,10 +22,15 @@ describe('heroku redis:maxmemory', function () {
     nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
       .reply(200, [
-        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'},
+        {
+          addon_service: {name: 'heroku-redis'},
+          config_vars: ['REDIS_FOO', 'REDIS_BAR'],
+          id: 'b5e0b6ce-1a1d-4f3c-9d1a-6f0e3a2c7d11',
+          name: 'redis-haiku',
+        },
       ])
     nock('https://api.data.heroku.com:443')
-      .patch('/redis/v0/databases/redis-haiku/config', {maxmemory_policy: 'noeviction'})
+      .patch('/redis/v0/databases/b5e0b6ce-1a1d-4f3c-9d1a-6f0e3a2c7d11/config', {maxmemory_policy: 'noeviction'})
       .reply(200, {
         maxmemory_policy: {value: 'noeviction', values: {noeviction: 'return errors when memory limit is reached'}},
       })
