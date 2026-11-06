@@ -53,8 +53,8 @@ describe('pg:links:create', function () {
   })
 
   describe('on a production database', function () {
-    it('errors when attempting to create a link', async function () {
-      stubSDK(fakeCreate(db, 'foobar'))
+    it('creates a link with --as', async function () {
+      stubSDK(fakeCreate(remotePg, 'foobar'))
 
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
@@ -66,7 +66,7 @@ describe('pg:links:create', function () {
       ])
       expect(stdout).to.equal('')
       expect(stderr).to.equal(heredoc(`
-      Adding link from ⛁ postgres-1 to ⛁ postgres-1... done, foobar
+      Adding link from ⛁ postgres-2 to ⛁ postgres-1... done, foobar
       `))
       expect(createForDatabase.calledOnce).to.equal(true)
       expect(createForDatabase.firstCall.args.slice(0, 4)).to.deep.equal(['myapp', 'heroku-postgres', 'HEROKU_POSTGRESQL_BLUE', {as: 'foobar'}])
@@ -95,11 +95,13 @@ describe('pg:links:create', function () {
 
     it('errors when the remote is not a Heroku Postgres add-on', async function () {
       const papertrail = {id: 'p1', name: 'papertrail-1', plan: {name: 'papertrail:basic'}}
-      stubSDK(sinon.stub().rejects(new InvalidLinkRemoteError(papertrail as never)))
+      const sdkError = new InvalidLinkRemoteError(papertrail as never)
+      stubSDK(sinon.stub().rejects(sdkError))
 
       const {error} = await runCommand(Cmd, ['--app', 'myapp', 'papertrail-1', 'DATABASE_URL'])
 
-      expect(error?.message).to.equal('Remote database must be heroku-postgresql')
+      expect(error?.message).to.equal('papertrail-1 isn\'t a Heroku Postgres add-on, so it can\'t be linked. Data Links only connect Heroku Postgres databases.')
+      expect(error).to.equal(sdkError)
     })
 
     it('errors when the remote is an Essential-tier database', async function () {

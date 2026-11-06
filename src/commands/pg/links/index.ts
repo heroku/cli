@@ -33,11 +33,6 @@ export default class Index extends Command {
       else
         once = true
       hux.styledHeader(color.datastore(addon.name))
-      // This doesn't exist according to Shogun's link serializer. May it be that the original idea was to use Promise.allSettled
-      // and capture here and show only the error message if an error was returned for some database? Currently a CLI error is
-      // thrown instead, because Promise.all will reject if any of the promises reject and there's no catch block for that.
-      // if (db.links?.message)
-      //   return this.log(db.links.message)
       if (links.length === 0) {
         this.log('No data sources are linked into this database')
         continue
