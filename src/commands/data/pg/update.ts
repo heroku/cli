@@ -11,20 +11,23 @@ import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
 
 import BaseCommand from '../../../lib/data/base-command.js'
-import createPool from '../../../lib/data/create-pool.js'
 import PoolConfig from '../../../lib/data/pool-config.js'
 import {
   DeepRequired,
   ExtendedPostgresLevelInfo,
-  InfoResponse,
   PoolInfoResponse,
 } from '../../../lib/data/types.js'
 import {fetchLevelsAndPricing, renderPricingInfo} from '../../../lib/data/utils.js'
 import {getAllAdvancedDatabases} from '../../../lib/pg/util.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
 const {prompt, Separator} = inquirer
+
+// Only route-derived data methods are used (postgresPool.{update,delete,create},
+// postgres.info), so no SDK extensions are registered.
+type Data = ReturnType<typeof createSDK>['data']
 
 export default class DataPgUpdate extends BaseCommand {
   static args = {
@@ -51,7 +54,7 @@ export default class DataPgUpdate extends BaseCommand {
     await hux.confirmCommand({comparison})
   }
 
-  public async followerPoolActionStep(pool: PoolInfoResponse): Promise<string> {
+  public async followerPoolActionStep(data: Data, pool: PoolInfoResponse): Promise<string> {
     const choices: Array<DistinctChoice<{action: string}, ListChoiceMap<{action: string}>>> = [
       {name: 'Change pool level', value: '__change_level'},
       {name: 'Update number of instances', value: '__update_count'},
@@ -77,9 +80,7 @@ export default class DataPgUpdate extends BaseCommand {
           ux.action.start('Changing follower pool level')
 
           try {
-            await this.dataApi.patch(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`, {
-              body: {level: newLevel},
-            })
+            await data.postgresPool.update(this.database!.id, pool.id, {level: newLevel})
             ux.action.stop()
             ux.stdout(heredoc`
               ${color.green('✓ Success:')} Level changed from ${pool.expected_level} to ${newLevel} for follower pool ${pool.name}.
@@ -99,7 +100,7 @@ export default class DataPgUpdate extends BaseCommand {
         ux.action.start(`Destroying follower pool ${color.name(`${pool.name}`)} on ${color.datastore(`${this.database!.name}`)}`)
 
         try {
-          await this.dataApi.delete(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`)
+          await data.postgresPool.delete(this.database!.id, pool.id)
           ux.action.stop()
         } catch (error) {
           ux.action.stop(color.red('!'))
@@ -119,9 +120,7 @@ export default class DataPgUpdate extends BaseCommand {
           ux.action.start('Updating follower pool instances count')
 
           try {
-            await this.dataApi.patch(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`, {
-              body: {count: Number(newCount)},
-            })
+            await data.postgresPool.update(this.database!.id, pool.id, {count: Number(newCount)})
             ux.action.stop()
             ux.stdout(heredoc`
               ${color.success('✓ Success:')} The ${color.name(pool.name)} follower pool now has ${newCount} instance${Number(newCount) === 1 ? '' : 's'}.
@@ -142,7 +141,7 @@ export default class DataPgUpdate extends BaseCommand {
     return action
   }
 
-  public async leaderPoolActionStep(pool: PoolInfoResponse): Promise<string> {
+  public async leaderPoolActionStep(data: Data, pool: PoolInfoResponse): Promise<string> {
     const leaderPricing = this.extendedLevelsInfo!.find(level => level.name === pool.expected_level)?.pricing
     const choices: Array<DistinctChoice<{action: string}, ListChoiceMap<{action: string}>>> = [
       {name: 'Change pool level', value: '__change_level'},
@@ -186,9 +185,7 @@ export default class DataPgUpdate extends BaseCommand {
         ux.action.start(`Adding a high availability (HA) standby instance for ${color.addon(`${this.database!.name}`)}`)
 
         try {
-          await this.dataApi.patch(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`, {
-            body: {count: 2},
-          })
+          await data.postgresPool.update(this.database!.id, pool.id, {count: 2})
           ux.action.stop()
           pool.expected_count = 2
         } catch (error) {
@@ -205,9 +202,7 @@ export default class DataPgUpdate extends BaseCommand {
           ux.action.start('Changing leader pool level')
 
           try {
-            await this.dataApi.patch(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`, {
-              body: {level: newLevel},
-            })
+            await data.postgresPool.update(this.database!.id, pool.id, {level: newLevel})
             ux.action.stop()
             ux.stdout(heredoc`
               ${color.green('✓ Success:')} Level changed from ${pool.expected_level} to ${newLevel} for leader pool.
@@ -230,9 +225,7 @@ export default class DataPgUpdate extends BaseCommand {
         ux.action.start(`Removing the high availability (HA) standby instance from ${color.addon(`${this.database!.name}`)}`)
 
         try {
-          await this.dataApi.patch(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`, {
-            body: {count: 1},
-          })
+          await data.postgresPool.update(this.database!.id, pool.id, {count: 1})
           ux.action.stop()
           pool.expected_count = 1
         } catch (error) {
@@ -256,6 +249,7 @@ export default class DataPgUpdate extends BaseCommand {
     const {args, flags} = await this.parse(DataPgUpdate)
     const {app} = flags
     const {database: dbIdentifier} = args
+    const {data} = createSDK(this.heroku)
 
     // Database selection stage
     if (dbIdentifier) {
@@ -301,16 +295,16 @@ export default class DataPgUpdate extends BaseCommand {
       this.extendedLevelsInfo = extendedLevelsInfo
 
       // Pool selection stage
-      await this.poolSelectionLoopStage()
+      await this.poolSelectionLoopStage(data)
     }
   }
 
-  private async addFollowerPoolStage(): Promise<void> {
+  private async addFollowerPoolStage(data: Data): Promise<void> {
     const poolConfig = new PoolConfig(this.extendedLevelsInfo!, this.followerInstanceCount)
     const {count, level, name} = await poolConfig.followerInteractiveConfig()
     try {
       ux.action.start('Configuring follower pool')
-      const poolInfo = await createPool(this.dataApi, this.database!, {count, level, name})
+      const poolInfo = await data.postgresPool.create(this.database!.id, {count, level, name})
       ux.action.stop()
       ux.stdout(heredoc`
         ${color.green('✓ Success:')} we're provisioning ${color.bold(poolInfo.name)} follower pool on ${color.addon(this.database!.name)}.
@@ -325,20 +319,20 @@ export default class DataPgUpdate extends BaseCommand {
     this.followerInstanceCount += count
   }
 
-  private async poolSelectionLoopStage(): Promise<void> {
+  private async poolSelectionLoopStage(data: Data): Promise<void> {
     let currentStep = 'poolSelectionStep'
 
     do {
       let action: string | undefined
       switch (currentStep) {
         case 'addFollowerPoolStage': {
-          await this.addFollowerPoolStage()
+          await this.addFollowerPoolStage(data)
           currentStep = 'poolSelectionStep'
           break
         }
 
         case 'poolActionStage': {
-          action = await (this.pool!.name === 'leader' ? this.leaderPoolActionStep(this.pool!) : this.followerPoolActionStep(this.pool!))
+          action = await (this.pool!.name === 'leader' ? this.leaderPoolActionStep(data, this.pool!) : this.followerPoolActionStep(data, this.pool!))
 
           if (action === '__go_back' || action === '__destroy_pool') {
             currentStep = 'poolSelectionStep'
@@ -348,7 +342,7 @@ export default class DataPgUpdate extends BaseCommand {
         }
 
         case 'poolSelectionStep': {
-          await this.poolSelectionStep()
+          await this.poolSelectionStep(data)
           if (this.selectedPoolOption === '__exit') {
             currentStep = '__exit'
           } else if (this.selectedPoolOption === '__add_follower_pool') {
@@ -363,10 +357,15 @@ export default class DataPgUpdate extends BaseCommand {
     } while (currentStep !== '__exit')
   }
 
-  private async poolSelectionStep(): Promise<void> {
+  private async poolSelectionStep(data: Data): Promise<void> {
     // Fetch the info each time we render this menu to show the updated database configuration
-    const {body: databaseInfo} = await this.dataApi.get<InfoResponse>(`/data/postgres/v1/${this.database!.id}/info`)
-    const {pools} = databaseInfo
+    const databaseInfo = await data.postgres.info(this.database!.id)
+    // The SDK's pool shape is a structural subset of the CLI's PoolInfoResponse
+    // (it marks id/status/endpoints optional and omits metrics_sources), so this
+    // single narrow assertion is sound while databaseInfo itself stays fully
+    // typed — a drift in info()'s shape (e.g. a renamed/removed `pools`) now fails
+    // to compile instead of being silently erased by `as unknown`.
+    const pools = databaseInfo.pools as PoolInfoResponse[]
     if (pools.length === 0) {
       ux.error('No pools found on the database.') // It should never happen, but just for the sake of safety
     }

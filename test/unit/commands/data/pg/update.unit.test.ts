@@ -1,4 +1,5 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import inquirer from 'inquirer'
@@ -25,9 +26,41 @@ import {
 const heredoc = tsheredoc
 const {prompt} = inquirer
 
+// The rendered pool menu right-pads each choice, so every line carries a
+// trailing space. Strip per-line trailing whitespace from the captured output
+// before matching so the multi-line heredoc expectations stay free of
+// invisible trailing spaces.
+const stripTrailing = (output: string): string =>
+  ansis.strip(output).split('\n').map(line => line.replace(/[ \t]+$/, '')).join('\n')
+
+// Keystroke that selects a list prompt's last option ("Exit" / "Go back").
+// inquirer's list prompt re-indexes only the enabled, non-separator choices
+// starting at 0, and arrow keys wrap around that list, so a single Up press
+// from the initial cursor lands on the last choice. A bare Enter selects the
+// first option; under SDK stubs that resolve indefinitely, re-entering the menu
+// on empty stdin would hang, so every menu-exit keystroke uses an Up press.
+const EXIT = '\u001B[A\n'
+
+// The command fetches pool info and performs pool mutations through the SDK's
+// data service (data.postgres.info, data.postgresPool.{create,delete,update}).
+// Tests stub these directly; the Platform calls (addon-attachment listing,
+// addon resolution) and the levels/pricing lookup still go through nock because
+// they run on this.heroku / this.dataApi, not the SDK.
+interface FakeData {
+  postgres: {
+    info: SinonStub
+  }
+  postgresPool: {
+    create: SinonStub
+    delete: SinonStub
+    update: SinonStub
+  }
+}
+
 describe('data:pg:update', function () {
   let stdin: mockStdin.MockSTDIN
   let mockedStdinInput: string[] = []
+  let fakeData: FakeData
   let poolConfigLevelStepStub: SinonStub
   let poolConfigInstanceCountStepStub: SinonStub
   let poolConfigFollowerInteractiveConfigStub: SinonStub
@@ -38,6 +71,17 @@ describe('data:pg:update', function () {
     poolConfigLevelStepStub = stub(PoolConfig.prototype, 'levelStep')
     poolConfigInstanceCountStepStub = stub(PoolConfig.prototype, 'instanceCountStep')
     poolConfigFollowerInteractiveConfigStub = stub(PoolConfig.prototype, 'followerInteractiveConfig')
+    fakeData = {
+      postgres: {
+        info: stub().resolves(structuredClone(pgInfo)),
+      },
+      postgresPool: {
+        create: stub().resolves(structuredClone(createPoolResponse)),
+        delete: stub().resolves(),
+        update: stub().resolves(),
+      },
+    }
+    stub(HerokuSDK.prototype, 'data').get(() => fakeData)
     stub(DataPgUpdate.prototype, 'prompt').callsFake(async (...args: Parameters<typeof prompt>) => {
       process.nextTick(() => {
         const input = mockedStdinInput.shift()
@@ -55,6 +99,7 @@ describe('data:pg:update', function () {
     clearLevelsAndPricingCache()
     restore()
     stdin.restore()
+    nock.cleanAll()
   })
 
   describe('interactive database selection (no DATABASE argument)', function () {
@@ -68,7 +113,7 @@ describe('data:pg:update', function () {
         ])
 
       // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
-      mockedStdinInput = ['\u001B[A\n']
+      mockedStdinInput = [EXIT]
 
       const {stdout} = await runCommand(DataPgUpdate, ['--app=myapp'])
 
@@ -104,16 +149,17 @@ describe('data:pg:update', function () {
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
         .reply(200, pricingResponse)
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, pgInfo)
+
+      fakeData.postgres.info.resolves(structuredClone(pgInfo))
 
       // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
-      mockedStdinInput = ['\u001B[A\n']
+      mockedStdinInput = [EXIT]
 
       const {stdout} = await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
+      expect(fakeData.postgres.info.calledWith(addon.id)).to.be.true
       expect(stdout).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
       expect(stdout).to.contain('Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
       expect(stdout).to.contain('Add a follower pool')
@@ -145,19 +191,10 @@ describe('data:pg:update', function () {
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
         .reply(200, pricingResponse)
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, pgInfo)
-        .patch(
-          `/data/postgres/v1/${addon.id}/pools/${pgInfo.pools[0].id}`,
-          {level: levelsResponse.items[1].name},
-        )
-        .reply(200, {
-          ...pgInfo.pools[0],
-          expected_level: '8G-Performance',
-          status: 'modifying',
-        })
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, {
+
+      fakeData.postgres.info
+        .onFirstCall().resolves(structuredClone(pgInfo))
+        .onSecondCall().resolves(structuredClone({
           ...pgInfo,
           pools: [
             {
@@ -167,7 +204,7 @@ describe('data:pg:update', function () {
             },
             pgInfo.pools[1],
           ],
-        })
+        }))
 
       // Simulate the user selections
       mockedStdinInput = [
@@ -185,6 +222,11 @@ describe('data:pg:update', function () {
 
       herokuApi.done()
       dataApi.done()
+      expect(fakeData.postgresPool.update.calledOnceWith(
+        addon.id,
+        pgInfo.pools[0].id,
+        {level: levelsResponse.items[1].name},
+      )).to.be.true
       expect(ansis.strip(stdout)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
       expect(ansis.strip(stdout)).to.contain('Success: Level changed from 4G-Performance to 8G-Performance for leader pool.')
       expect(ansis.strip(stdout)).to.contain('Leader: 8G-Performance 4 vCPU 8 GB MEM 2 instances starting at ~$0.278/hour ($200/month) each')
@@ -200,19 +242,10 @@ describe('data:pg:update', function () {
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
         .reply(200, pricingResponse)
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, pgInfo)
-        .patch(
-          `/data/postgres/v1/${addon.id}/pools/${pgInfo.pools[0].id}`,
-          {count: 1},
-        )
-        .reply(200, {
-          ...pgInfo.pools[0],
-          expected_count: 1,
-          status: 'modifying',
-        })
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, {
+
+      fakeData.postgres.info
+        .onFirstCall().resolves(structuredClone(pgInfo))
+        .onSecondCall().resolves(structuredClone({
           ...pgInfo,
           pools: [
             {
@@ -222,7 +255,7 @@ describe('data:pg:update', function () {
             },
             pgInfo.pools[1],
           ],
-        })
+        }))
 
       // Simulate the user selections
       mockedStdinInput = [
@@ -237,9 +270,49 @@ describe('data:pg:update', function () {
 
       herokuApi.done()
       dataApi.done()
+      expect(fakeData.postgresPool.update.calledOnceWith(
+        addon.id,
+        pgInfo.pools[0].id,
+        {count: 1},
+      )).to.be.true
       expect(ansis.strip(stdout)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
       expect(ansis.strip(stderr)).to.contain('Removing the high availability (HA) standby instance from advanced-horizontal-01234... done')
       expect(ansis.strip(stdout)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 1 instance starting at ~$0.083/hour ($60/month)')
+    })
+
+    it('surfaces the error and marks the spinner failed when a pool mutation fails', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .post('/actions/addons/resolve')
+        .reply(200, [addon])
+
+      const dataApi = nock('https://api.data.heroku.com')
+        .get('/data/postgres/v1/levels/advanced')
+        .reply(200, levelsResponse)
+        .get('/data/postgres/v1/pricing')
+        .reply(200, pricingResponse)
+
+      fakeData.postgres.info.resolves(structuredClone(pgInfo))
+      fakeData.postgresPool.update.rejects(new Error('update boom'))
+
+      // Simulate the user selections
+      mockedStdinInput = [
+        '\n',         // Pool selection prompt: selects 'Leader' pool
+        '\u001B[B\n', // Pool action prompt: selects 'Remove high availability' (update rejects, command throws)
+      ]
+
+      const {error, stderr} = await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(fakeData.postgresPool.update.calledOnceWith(
+        addon.id,
+        pgInfo.pools[0].id,
+        {count: 1},
+      )).to.be.true
+      expect((error as Error)?.message).to.equal('update boom')
+      // The spinner stops with the failure marker instead of "done".
+      expect(ansis.strip(stderr)).to.contain('Removing the high availability (HA) standby instance from advanced-horizontal-01234... !')
+      expect(ansis.strip(stderr)).to.not.contain('done')
     })
 
     it('allows the user to add a high availability (HA) standby instance to the leader pool', async function () {
@@ -252,8 +325,9 @@ describe('data:pg:update', function () {
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
         .reply(200, pricingResponse)
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, {
+
+      fakeData.postgres.info
+        .onFirstCall().resolves(structuredClone({
           ...pgInfo,
           pools: [
             {
@@ -265,18 +339,8 @@ describe('data:pg:update', function () {
             },
             pgInfo.pools[1],
           ],
-        })
-        .patch(
-          `/data/postgres/v1/${addon.id}/pools/${pgInfo.pools[0].id}`,
-          {count: 2},
-        )
-        .reply(200, {
-          ...pgInfo.pools[0],
-          expected_count: 2,
-          status: 'modifying',
-        })
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, {
+        }))
+        .onSecondCall().resolves(structuredClone({
           ...pgInfo,
           pools: [
             {
@@ -286,7 +350,7 @@ describe('data:pg:update', function () {
             },
             pgInfo.pools[1],
           ],
-        })
+        }))
 
       // Simulate the user selections
       mockedStdinInput = [
@@ -301,6 +365,11 @@ describe('data:pg:update', function () {
 
       herokuApi.done()
       dataApi.done()
+      expect(fakeData.postgresPool.update.calledOnceWith(
+        addon.id,
+        pgInfo.pools[0].id,
+        {count: 2},
+      )).to.be.true
       expect(ansis.strip(stdout)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 1 instance starting at ~$0.083/hour ($60/month)')
       expect(ansis.strip(stderr)).to.contain('Adding a high availability (HA) standby instance for advanced-horizontal-01234... done')
       expect(ansis.strip(stdout)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
@@ -318,19 +387,10 @@ describe('data:pg:update', function () {
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
         .reply(200, pricingResponse)
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, pgInfo)
-        .patch(
-          `/data/postgres/v1/${addon.id}/pools/${pgInfo.pools[1].id}`,
-          {level: levelsResponse.items[1].name},
-        )
-        .reply(200, {
-          ...pgInfo.pools[1],
-          expected_level: '8G-Performance',
-          status: 'modifying',
-        })
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, {
+
+      fakeData.postgres.info
+        .onFirstCall().resolves(structuredClone(pgInfo))
+        .onSecondCall().resolves(structuredClone({
           ...pgInfo,
           pools: [
             pgInfo.pools[0],
@@ -340,7 +400,7 @@ describe('data:pg:update', function () {
               status: 'modifying',
             },
           ],
-        })
+        }))
 
       // Simulate the user selections
       mockedStdinInput = [
@@ -358,6 +418,11 @@ describe('data:pg:update', function () {
 
       herokuApi.done()
       dataApi.done()
+      expect(fakeData.postgresPool.update.calledOnceWith(
+        addon.id,
+        pgInfo.pools[1].id,
+        {level: levelsResponse.items[1].name},
+      )).to.be.true
       expect(ansis.strip(stdout)).to.contain('Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
       expect(ansis.strip(stdout)).to.contain('Success: Level changed from 4G-Performance to 8G-Performance for follower pool analytics.')
       expect(ansis.strip(stdout)).to.contain('Follower analytics: 8G-Performance 4 vCPU 8 GB MEM 2 instances starting at ~$0.278/hour ($200/month) each')
@@ -373,19 +438,10 @@ describe('data:pg:update', function () {
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
         .reply(200, pricingResponse)
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, pgInfo)
-        .patch(
-          `/data/postgres/v1/${addon.id}/pools/${pgInfo.pools[1].id}`,
-          {count: 1},
-        )
-        .reply(200, {
-          ...pgInfo.pools[1],
-          expected_count: 1,
-          status: 'modifying',
-        })
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, {
+
+      fakeData.postgres.info
+        .onFirstCall().resolves(structuredClone(pgInfo))
+        .onSecondCall().resolves(structuredClone({
           ...pgInfo,
           pools: [
             pgInfo.pools[0],
@@ -395,7 +451,7 @@ describe('data:pg:update', function () {
               status: 'modifying',
             },
           ],
-        })
+        }))
 
       // Simulate the user selections
       mockedStdinInput = [
@@ -413,6 +469,11 @@ describe('data:pg:update', function () {
 
       herokuApi.done()
       dataApi.done()
+      expect(fakeData.postgresPool.update.calledOnceWith(
+        addon.id,
+        pgInfo.pools[1].id,
+        {count: 1},
+      )).to.be.true
       expect(ansis.strip(stdout)).to.contain('Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
       expect(ansis.strip(stderr)).to.contain('Updating follower pool instances count... done')
       expect(ansis.strip(stdout)).to.contain('Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 1 instance starting at ~$0.083/hour ($60/month)')
@@ -428,24 +489,21 @@ describe('data:pg:update', function () {
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
         .reply(200, pricingResponse)
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, pgInfo)
-        .delete(`/data/postgres/v1/${addon.id}/pools/${pgInfo.pools[1].id}`)
-        .reply(204)
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, {
+
+      fakeData.postgres.info
+        .onFirstCall().resolves(structuredClone(pgInfo))
+        .onSecondCall().resolves(structuredClone({
           ...pgInfo,
           pools: [
             pgInfo.pools[0],
           ],
-        })
+        }))
 
       // Simulate the user selections
       mockedStdinInput = [
         '\u001B[B\n', // Pool selection prompt: selects 'Follower analytics' pool
         '\u001B[B\u001B[B\n', // Pool action prompt: selects 'Destroy pool'
-        // Pool destroyed, returns to the action prompt
-        '\u001B[A\n', // Pool action prompt: selects 'Go back'
+        // Pool destroyed, returns to the pool selection prompt
         '\u001B[A\n', // Pool selection prompt: selects 'Exit'
       ]
 
@@ -459,13 +517,14 @@ describe('data:pg:update', function () {
 
       herokuApi.done()
       dataApi.done()
-      expect(ansis.strip(stdout)).to.contain(heredoc`
-        Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 
-          Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 
+      expect(fakeData.postgresPool.delete.calledOnceWith(addon.id, pgInfo.pools[1].id)).to.be.true
+      expect(stripTrailing(stdout)).to.contain(heredoc`
+        Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each
+          Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each
       `)
       expect(ansis.strip(stderr)).to.contain('Destroying follower pool analytics on ⛁ advanced-horizontal-01234... done')
-      expect(ansis.strip(stdout)).to.contain(heredoc`
-        Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 
+      expect(stripTrailing(stdout)).to.contain(heredoc`
+        Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each
           ──────────────
       `)
     })
@@ -482,22 +541,17 @@ describe('data:pg:update', function () {
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
         .reply(200, pricingResponse)
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, pgInfo)
-        .post(`/data/postgres/v1/${addon.id}/pools`, {
-          count: 2,
-          level: levelsResponse.items[0].name,
-          name: 'readers',
-        })
-        .reply(200, createPoolResponse)
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, {
+
+      fakeData.postgres.info
+        .onFirstCall().resolves(structuredClone(pgInfo))
+        .onSecondCall().resolves(structuredClone({
           ...pgInfo,
           pools: [
             ...pgInfo.pools,
             createPoolResponse,
           ],
-        })
+        }))
+      fakeData.postgresPool.create.resolves(structuredClone(createPoolResponse))
 
       // Simulate the user selections
       mockedStdinInput = [
@@ -517,16 +571,21 @@ describe('data:pg:update', function () {
 
       herokuApi.done()
       dataApi.done()
-      expect(ansis.strip(stdout)).to.contain(heredoc`
-        Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 
-          Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 
+      expect(fakeData.postgresPool.create.calledOnceWith(addon.id, {
+        count: 2,
+        level: levelsResponse.items[0].name,
+        name: 'readers',
+      })).to.be.true
+      expect(stripTrailing(stdout)).to.contain(heredoc`
+        Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each
+          Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each
           ──────────────
       `)
       expect(ansis.strip(stderr)).to.contain('Configuring follower pool... done')
-      expect(ansis.strip(stdout)).to.contain(heredoc`
-        Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 
-          Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 
-          Follower readers: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 
+      expect(stripTrailing(stdout)).to.contain(heredoc`
+        Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each
+          Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each
+          Follower readers: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each
           ──────────────
       `)
     })
