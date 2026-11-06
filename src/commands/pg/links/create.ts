@@ -1,19 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color} from '@heroku/heroku-cli-util'
-import {
-  type CreateLinkResult, EssentialDatabaseNotSupportedError, InvalidLinkRemoteError, linkExtensions,
-} from '@heroku/sdk/extensions/data'
+import {type CreateLinkResult, linkExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 
+import {toLinkCommandError} from '../../../lib/pg/links.js'
 import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
-
-/** Maps the SDK's link-validation errors to the CLI's existing messages. */
-function toCliError(error: unknown): unknown {
-  if (error instanceof InvalidLinkRemoteError) return new Error('Remote database must be heroku-redis or heroku-postgresql')
-  if (error instanceof EssentialDatabaseNotSupportedError) return new Error('pg:links isn\'t available for Essential-tier databases.')
-  return error
-}
 
 export default class Create extends Command {
   /* eslint-disable perfectionist/sort-objects */
@@ -50,7 +42,7 @@ export default class Create extends Command {
       return result
     } catch (error) {
       if (spinning) ux.action.stop(color.red('!'))
-      throw toCliError(error)
+      throw toLinkCommandError(error)
     }
   }
 }
