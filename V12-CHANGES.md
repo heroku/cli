@@ -38,6 +38,10 @@ Many commands now resolve add-ons, add-on attachments, and Postgres databases th
 - `pg:backups:unschedule` now names the `DATABASE` argument, or the auto-selected schedule name, in the “no daily backups found” error instead of the add-on resource name.
 - `pg:backups:schedule` now names the `DATABASE` argument, or `DATABASE_URL` when that argument is omitted, in the "not yet provisioned" error instead of the add-on resource name. The scheduling spinner still shows that add-on name when `database.describe` returns `name`; if `name` is absent it falls back to the `DATABASE` argument, then `DATABASE_URL`.
 - `pg:backups:capture` now names the `DATABASE` argument, or `DATABASE_URL` when that argument is omitted, in the "not yet provisioned" error instead of the add-on resource name. The backup spinner still shows the resolved add-on name, since `captureAndWait` resolves it independently.
+- `pg:links`, `pg:links:create`, `pg:links:destroy`, and `pg:connection-pooling:attach` now resolve databases through `@heroku/sdk`, so their not-found errors use the SDK's wording. For example, `Unknown database: FOO on <app>. Valid options are: …` (previously `Unknown database: FOO. Valid options are: …`) and `<app> has no heroku-postgresql databases` (previously `<app> has no databases`).
+- `pg:links:create` now links a remote add-on that belongs to a different app when you pass its add-on name. Previously the CLI's fallback to a global add-on lookup never ran, so the command failed with `Couldn't find that add on.` A not-found error for the app itself still fails without retrying.
+- `pg:links:create` now requires the remote's add-on service to be exactly `heroku-redis` or `heroku-postgresql` (or the `HEROKU_POSTGRESQL_ADDON_NAME` override). Previously the plan name only had to start with `heroku-redis` or `heroku-postgresql`. The error message is unchanged.
+- `pg:connection-pooling:attach` now prints `done` without a release version when the newest release can't be read after the pool is attached. Previously the command failed even though the attachment had been created.
 
 ## Run commands
 
