@@ -28,10 +28,8 @@ export class BuildpackCommand {
   async clear(app: string, command: 'clear' | 'remove', action: 'cleared' | 'removed', json = false) {
     await this.put(app, [])
 
-    if (json) {
-      ux.stdout(ux.colorizeJson([]))
-      return
-    }
+    // The caller prints the now-empty buildpack list with this.logJson([]).
+    if (json) return
 
     const configVars: any = await this.heroku.get(`/apps/${app}/config-vars`)
     const message = `Buildpack${command === 'clear' ? 's' : ''} ${action}.`

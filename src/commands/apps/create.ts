@@ -85,14 +85,6 @@ async function configureGitRemote(context: Interfaces.ParserOutput, app: App) {
   return remoteUrl
 }
 
-function printAppSummary(context: Interfaces.ParserOutput, app: App, remoteUrl: string) {
-  if (context.flags.json) {
-    ux.stdout(ux.colorizeJson(app))
-  } else {
-    ux.stdout(`${color.info(app.web_url || '')} | ${color.info(remoteUrl)}`)
-  }
-}
-
 async function runFromFlags(context: Interfaces.ParserOutput, platform: Platform, config: Interfaces.Config) {
   const {args, flags} = context
   if (flags['internal-routing'] && !flags.space) {
@@ -109,9 +101,8 @@ async function runFromFlags(context: Interfaces.ParserOutput, platform: Platform
   const remoteUrl = await configureGitRemote(context, app)
 
   await config.runHook('recache', {app: app.name, type: 'app'})
-  printAppSummary(context, app, remoteUrl)
 
-  return app
+  return {app, remoteUrl}
 }
 
 export default class Create extends Command {
@@ -162,6 +153,14 @@ ${color.command('heroku apps:create --region eu')}`]
   }
   static hiddenAliases = ['create']
 
+  printAppSummary(context: Interfaces.ParserOutput, app: App, remoteUrl: string) {
+    if (context.flags.json) {
+      this.logJson(app)
+    } else {
+      this.log(`${color.info(app.web_url || '')} | ${color.info(remoteUrl)}`)
+    }
+  }
+
   async readManifest() {
     const {parse} = await lazyModuleLoader.loadYaml()
     const buffer = await fs.readFile('heroku.yml')
@@ -177,7 +176,10 @@ ${color.command('heroku apps:create --region eu')}`]
       return this.runFromManifest(context, platform)
     }
 
-    return runFromFlags(context, platform, this.config)
+    const {app, remoteUrl} = await runFromFlags(context, platform, this.config)
+    this.printAppSummary(context, app, remoteUrl)
+
+    return app
   }
 
   async runFromManifest(context: Interfaces.ParserOutput, platform: Platform) {
@@ -196,7 +198,7 @@ ${color.command('heroku apps:create --region eu')}`]
 
     const remoteUrl = await configureGitRemote(context, app)
 
-    printAppSummary(context, app, remoteUrl)
+    this.printAppSummary(context, app, remoteUrl)
 
     return app
   }
