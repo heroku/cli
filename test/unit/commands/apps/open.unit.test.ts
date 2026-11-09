@@ -8,6 +8,7 @@ import childProcess from 'node:child_process'
 import * as sinon from 'sinon'
 
 import OpenCommand from '../../../../src/commands/apps/open.js'
+import {spawnArgsInclude} from '../../../helpers/spawned-url.js'
 
 type FakePlatform = {
   app: {info: sinon.SinonStub}
@@ -32,11 +33,13 @@ describe('apps:open', function () {
     fakePlatform = buildFakePlatform()
     sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
     spawnStub = sinon.stub(childProcess, 'spawn').returns({
-      on(event: string, cb: CallableFunction) {
-        if (event === 'exit') {
-          cb()
-        }
-      }, unref() {},
+      off() {},
+      on() {},
+      // `open` resolves once the launcher emits 'spawn'.
+      once(event: string, cb: CallableFunction) {
+        if (event === 'spawn') cb()
+      },
+      unref() {},
     } as any)
   })
 
@@ -52,11 +55,9 @@ describe('apps:open', function () {
     // Opens without the "Press any key" prompt; the status line goes to stderr.
     expect(stdout).to.equal('')
     expect(ansis.strip(stderr)).to.contain('Opening https://myapp.herokuapp.com/ in your default browser…')
+    expect(ansis.strip(stderr)).not.to.contain('can\'t open')
     const urlArgArray = spawnStub.getCall(0).args[1]
-    // For darwin-based platforms this arg is an array that contains the site url.
-    // For windows-based platforms this arg is an array that contains an encoded command that includes the url
-    const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAvACIA')
-    expect(hasCorrectUrl).to.be.true
+    expect(spawnArgsInclude(urlArgArray, 'https://myapp.herokuapp.com/')).to.be.true
     expect(fakePlatform.app.info.calledOnceWithExactly('myapp')).to.equal(true)
   })
 
@@ -70,11 +71,13 @@ describe('apps:open', function () {
     // fall back to the env value, flipping the header).
     sinon.restore()
     sinon.stub(childProcess, 'spawn').returns({
-      on(event: string, cb: CallableFunction) {
-        if (event === 'exit') {
-          cb()
-        }
-      }, unref() {},
+      off() {},
+      on() {},
+      // `open` resolves once the launcher emits 'spawn'.
+      once(event: string, cb: CallableFunction) {
+        if (event === 'spawn') cb()
+      },
+      unref() {},
     } as any)
     sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
@@ -105,11 +108,13 @@ describe('apps:open', function () {
     process.env.HEROKU_HOST = 'staging.herokudev.com'
     sinon.restore()
     sinon.stub(childProcess, 'spawn').returns({
-      on(event: string, cb: CallableFunction) {
-        if (event === 'exit') {
-          cb()
-        }
-      }, unref() {},
+      off() {},
+      on() {},
+      // `open` resolves once the launcher emits 'spawn'.
+      once(event: string, cb: CallableFunction) {
+        if (event === 'spawn') cb()
+      },
+      unref() {},
     } as any)
     sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
@@ -136,9 +141,6 @@ describe('apps:open', function () {
     await runCommand(OpenCommand, ['-a', 'myapp', '/mypath'])
 
     const urlArgArray = spawnStub.getCall(0).args[1]
-    // For darwin-based platforms this arg is an array that contains the site url.
-    // For windows-based platforms this arg is an array that contains an encoded command that includes the url
-    const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/mypath') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAvAG0AeQBwAGEAdABoACIA')
-    expect(hasCorrectUrl).to.be.true
+    expect(spawnArgsInclude(urlArgArray, 'https://myapp.herokuapp.com/mypath')).to.be.true
   })
 })

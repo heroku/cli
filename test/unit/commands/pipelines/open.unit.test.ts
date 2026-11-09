@@ -6,6 +6,7 @@ import childProcess from 'node:child_process'
 import {restore, stub} from 'sinon'
 
 import OpenCommand from '../../../../src/commands/pipelines/open.js'
+import {spawnArgsInclude} from '../../../helpers/spawned-url.js'
 
 describe('pipelines:open', function () {
   const pipeline = {id: '0123', name: 'Rigel'}
@@ -22,13 +23,14 @@ describe('pipelines:open', function () {
   })
 
   it('opens the url', async function () {
-    let hasCorrectUrl = false
     const spawnStub = stub(childProcess, 'spawn').returns({
-      on(event: string, cb: CallableFunction) {
-        if (event === 'exit') {
-          cb()
-        }
-      }, unref() {},
+      off() {},
+      on() {},
+      // `open` resolves once the launcher emits 'spawn'.
+      once(event: string, cb: CallableFunction) {
+        if (event === 'spawn') cb()
+      },
+      unref() {},
     } as any)
 
     api
@@ -40,11 +42,9 @@ describe('pipelines:open', function () {
 
     expect(stdout).to.equal('')
     expect(ansis.strip(stderr)).to.contain('Opening https://dashboard.heroku.com/pipelines/0123 in your default browser…')
+    expect(ansis.strip(stderr)).not.to.contain('can\'t open')
 
     const urlArgArray = spawnStub.getCall(0).args[1]
-    // For darwin-based platforms this arg is an array that contains the site url.
-    // For windows-based platforms this arg is an array that contains an encoded command that includes the url
-    hasCorrectUrl = urlArgArray.includes('https://dashboard.heroku.com/pipelines/0123') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AZABhAHMAaABiAG8AYQByAGQALgBoAGUAcgBvAGsAdQAuAGMAbwBtAC8AcABpAHAAZQBsAGkAbgBlAHMALwAwADEAMgAzACIA')
-    expect(hasCorrectUrl).to.be.true
+    expect(spawnArgsInclude(urlArgArray, 'https://dashboard.heroku.com/pipelines/0123')).to.be.true
   })
 })
