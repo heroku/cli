@@ -4,6 +4,7 @@ import {expect} from 'chai'
 import * as sinon from 'sinon'
 
 import Regions from '../../../src/commands/regions.js'
+import {expectJsonSnapshot, runCommandJson} from '../../helpers/json-snapshot.js'
 import removeAllWhitespace from '../../helpers/utils/remove-whitespaces.js'
 
 type FakePlatform = {
@@ -63,11 +64,50 @@ describe('regions', function () {
     expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('us   United States   Common Runtime'))
   })
 
-  it('--json', async function () {
-    fakePlatform.region.list.resolves(regionData)
+  it('sorts the table: common runtime first, then by name', async function () {
+    fakePlatform.region.list.resolves([...regionData].reverse())
 
-    const {stdout} = await runCommand(Regions, ['--json'])
+    const {stdout} = await runCommand(Regions, [])
 
-    expect(JSON.parse(stdout)[0].name).to.equal('eu')
+    const order = ['eu', 'us', 'oregon'].map(name => stdout.indexOf(`${name} `))
+    expect(order).to.deep.equal([...order].sort((a, b) => a - b))
+  })
+
+  describe('--json', function () {
+    it('returns the SDK region list in API order', async function () {
+      fakePlatform.region.list.resolves([...regionData].reverse())
+
+      const {json, stderr} = await expectJsonSnapshot(this, Regions)
+
+      expect((json as Array<{name: string}>).map(r => r.name)).to.deep.equal(['oregon', 'us', 'eu'])
+      expect(stderr).to.equal('')
+    })
+
+    it('--private selects private-capable regions', async function () {
+      fakePlatform.region.list.resolves(regionData)
+
+      await expectJsonSnapshot(this, Regions, ['--private'])
+    })
+
+    it('--common selects common runtime regions', async function () {
+      fakePlatform.region.list.resolves(regionData)
+
+      await expectJsonSnapshot(this, Regions, ['--common'])
+    })
+
+    it('returns an empty list when there are no regions', async function () {
+      fakePlatform.region.list.resolves([])
+
+      await expectJsonSnapshot(this, Regions)
+    })
+
+    it('renders API errors as a JSON error document and exits non-zero', async function () {
+      fakePlatform.region.list.rejects(new Error('service unavailable'))
+
+      const {exitCode, json} = await runCommandJson(Regions)
+
+      expect(exitCode).to.equal(1)
+      expect(json).to.have.nested.property('error.message', 'service unavailable')
+    })
   })
 })

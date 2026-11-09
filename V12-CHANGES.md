@@ -43,6 +43,11 @@ Many commands now resolve add-ons, add-on attachments, and Postgres databases th
 - `pg:links:create` now accepts only Heroku Postgres remotes, matching what Heroku Data Links supports, and fails before calling the API with `<remote> isn't a Heroku Postgres add-on, so it can't be linked. Data Links only connect Heroku Postgres databases.` (previously `Remote database must be heroku-redis or heroku-postgresql`). Previously it also accepted Heroku Key-Value Store (`heroku-redis`) remotes, which the Data Links API then rejected with a 404, and it accepted any plan whose name merely started with `heroku-redis` or `heroku-postgresql`. The remote's add-on service must now be exactly `heroku-postgresql` (or the `HEROKU_POSTGRESQL_ADDON_NAME` override).
 - `pg:connection-pooling:attach` now prints `done` without a release version when the newest release can't be read, or the app has no releases, after the pool is attached. Previously the command failed even though the attachment had been created.
 
+## Regions commands
+
+- `regions` now uses the CLI's standard `--json` flag, so `HEROKU_CONTENT_TYPE=json` also switches it to JSON output and errors are rendered as a JSON error document.
+- **`regions --json` output order changes (breaking)**: regions are returned in the order the API returns them. Previously the JSON list was sorted (common runtime regions first, then by name). The table output is still sorted. `--common` and `--private` still select regions, and each region's fields are unchanged.
+
 ## Run commands
 
 - `run`, `run:detached`, and `run:inside` now create dynos through `@heroku/sdk` (`platform.dyno.run`) instead of raw API calls.

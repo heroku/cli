@@ -5,9 +5,9 @@ import {createSDK} from '../lib/sdk.js'
 
 export default class Regions extends Command {
   static description = 'list available regions for deployment'
+  static enableJsonFlag = true
   static flags = {
     common: flags.boolean({description: 'show regions for common runtime'}),
-    json: flags.boolean({description: 'output in json format'}),
     private: flags.boolean({description: 'show regions for private spaces'}),
   }
   static topic = 'regions'
@@ -17,35 +17,32 @@ export default class Regions extends Command {
     const {flags} = await this.parse(Regions)
     let regions = await platform.region.list()
     if (flags.private) {
-      regions = regions.filter((region: any) => region.private_capable)
+      regions = regions.filter(region => region.private_capable)
     } else if (flags.common) {
-      regions = regions.filter((region: any) => !region.private_capable)
+      regions = regions.filter(region => !region.private_capable)
     }
 
-    regions = regions.sort((a, b) => {
-      if (a.private_capable !== b.private_capable) {
-        return a.private_capable ? 1 : -1
-      }
+    if (!this.jsonEnabled()) {
+      // Display-only ordering: sort a copy so the returned (--json) list keeps the API order.
+      const sorted = [...regions].sort((a, b) => {
+        if (a.private_capable !== b.private_capable) {
+          return a.private_capable ? 1 : -1
+        }
 
-      return (a.name ?? '').localeCompare(b.name ?? '')
-    })
+        return (a.name ?? '').localeCompare(b.name ?? '')
+      })
 
-    if (flags.json) {
-      hux.styledJSON(regions)
-    } else {
+      const rows = sorted.map(({description, name, private_capable}) => ({
+        description,
+        name: color.name(name ?? ''),
+        runtime: private_capable ? 'Private Spaces' : 'Common Runtime',
+      }))
+
       /* eslint-disable perfectionist/sort-objects */
-      hux.table(regions, {
-        name: {
-          header: 'ID',
-          get: ({name}: any) => color.name(name),
-        },
-        description: {
-          header: 'Location',
-        },
-        private_capable: {
-          header: 'Runtime',
-          get: ({private_capable}: any) => private_capable ? 'Private Spaces' : 'Common Runtime',
-        },
+      hux.table(rows, {
+        name: {header: 'ID'},
+        description: {header: 'Location'},
+        runtime: {header: 'Runtime'},
       })
       /* eslint-enable perfectionist/sort-objects */
     }

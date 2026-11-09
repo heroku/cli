@@ -1,0 +1,39 @@
+{
+  "regions --json --common selects common runtime regions": [
+    {
+      "description": "Europe",
+      "name": "eu",
+      "private_capable": false
+    },
+    {
+      "description": "United States",
+      "name": "us",
+      "private_capable": false
+    }
+  ],
+  "regions --json --private selects private-capable regions": [
+    {
+      "description": "Oregon, United States",
+      "name": "oregon",
+      "private_capable": true
+    }
+  ],
+  "regions --json returns an empty list when there are no regions": [],
+  "regions --json returns the SDK region list in API order": [
+    {
+      "description": "Oregon, United States",
+      "name": "oregon",
+      "private_capable": true
+    },
+    {
+      "description": "United States",
+      "name": "us",
+      "private_capable": false
+    },
+    {
+      "description": "Europe",
+      "name": "eu",
+      "private_capable": false
+    }
+  ]
+}
