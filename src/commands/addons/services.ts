@@ -16,10 +16,10 @@ export default class Services extends Command {
     const {platform} = createSDK(this.heroku)
     const services = await platform.addOnService.list()
     if (flags.json) {
-      hux.styledJSON(services)
+      this.logJson(services)
     } else {
       /* eslint-disable perfectionist/sort-objects */
-      hux.table(services as unknown as Array<Record<string, unknown>>, {
+      this.log(hux.table(services as unknown as Array<Record<string, unknown>>, {
         name: {
           header: 'Slug',
         },
@@ -29,7 +29,7 @@ export default class Services extends Command {
         state: {
           header: 'State',
         },
-      })
+      }))
       /* eslint-enable perfectionist/sort-objects */
       ux.stdout(`\nSee plans with ${color.code('heroku addons:plans SERVICE')}`)
     }

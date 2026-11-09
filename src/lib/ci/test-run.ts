@@ -123,7 +123,7 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
 
   if (!jsonOption) {
     const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${color.pipeline(pipeline.name ?? '')} pipeline`
-    hux.styledHeader(header)
+    ux.stdout(hux.styledHeader(header))
   }
 
   draw(testRuns, watchOption, jsonOption)
@@ -212,7 +212,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
   const latestTestRuns = sort(testRuns).slice(0, count)
 
   if (jsonOption) {
-    hux.styledJSON(latestTestRuns)
+    ux.stdout(ux.colorizeJson(latestTestRuns))
     return
   }
 
@@ -235,7 +235,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
   }
 
   /* eslint-disable perfectionist/sort-objects */
-  hux.table(
+  ux.stdout(hux.table(
     data,
     {
       iconStatus: {
@@ -248,7 +248,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
       sha: {},
       status: {},
     },
-  )
+  ))
   /* eslint-enable perfectionist/sort-objects */
   if (watchOption) {
     process.stdout.write(ansiEscapes.cursorUp(latestTestRuns.length))

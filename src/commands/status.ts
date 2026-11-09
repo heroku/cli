@@ -166,7 +166,7 @@ export default class Status extends Command {
     if (!herokuStatus && !formattedTrustStatus) ux.error(errorMessage, {exit: 1})
 
     if (flags.json) {
-      hux.styledJSON(herokuStatus ?? formattedTrustStatus)
+      this.logJson(herokuStatus ?? formattedTrustStatus)
       return
     }
 
@@ -185,7 +185,7 @@ export default class Status extends Command {
     if (herokuStatus) {
       for (const incident of herokuStatus.incidents) {
         ux.stdout()
-        hux.styledHeader(`${incident.title} ${color.warning(incident.created_at)} ${color.info(incident.full_url)}`)
+        this.log(hux.styledHeader(`${incident.title} ${color.warning(incident.created_at)} ${color.info(incident.full_url)}`))
 
         const padding = getMaxUpdateTypeLength(incident.updates.map(update => update.update_type))
         for (const u of incident.updates) {
@@ -196,7 +196,7 @@ export default class Status extends Command {
     } else if (formattedTrustStatus) {
       for (const incident of formattedTrustStatus.incidents) {
         ux.stdout()
-        hux.styledHeader(`${incident.id} ${color.warning(incident.createdAt)} ${color.info(`https://status.salesforce.com/incidents/${incident.id}`)}`)
+        this.log(hux.styledHeader(`${incident.id} ${color.warning(incident.createdAt)} ${color.info(`https://status.salesforce.com/incidents/${incident.id}`)}`))
 
         const padding = getMaxUpdateTypeLength(incident.IncidentEvents.map(event => event.localizedType ?? event.type))
         for (const event of incident.IncidentEvents) {

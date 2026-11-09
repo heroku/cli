@@ -1,6 +1,6 @@
 import {flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {Args} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/webhooks/base.js'
 
@@ -40,10 +40,10 @@ export default class DeliveriesInfo extends BaseCommand {
     }
     /* eslint-enable perfectionist/sort-objects */
 
-    hux.styledHeader(delivery.id)
-    hux.styledObject(obj)
+    this.log(hux.styledHeader(delivery.id))
+    this.log(hux.styledObject(obj))
 
-    hux.styledHeader('Event Payload')
-    hux.styledJSON(event.payload)
+    this.log(hux.styledHeader('Event Payload'))
+    this.log(ux.colorizeJson(event.payload))
   }
 }

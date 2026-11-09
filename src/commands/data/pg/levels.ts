@@ -18,7 +18,7 @@ export default class DataPgLevels extends BaseCommand {
     const {data} = createSDK(this.heroku)
     const {items: levels} = await data.postgresLevel.info('advanced')
 
-    hux.styledHeader('Available levels for Heroku Postgres Advanced databases')
+    this.log(hux.styledHeader('Available levels for Heroku Postgres Advanced databases'))
 
     const defaultStyle = {
       borderColor: 'whiteBright',

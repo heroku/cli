@@ -62,7 +62,7 @@ export default class DataPgInfo extends BaseCommand {
       version,
     } = info
 
-    hux.styledHeader(`${color.datastore(info.addon.name)} on ${color.app(info.app.name!)}`)
+    this.log(hux.styledHeader(`${color.datastore(info.addon.name)} on ${color.app(info.app.name!)}`))
 
     const statusInfo = status === 'available'
       ? color.success(hux.toTitleCase(status)!)
@@ -97,7 +97,7 @@ export default class DataPgInfo extends BaseCommand {
     })
 
     const quotasInfo = this.renderQuotasInfo(quotas)
-    hux.styledObject({...infoObject, ...quotasInfo}, [...Object.keys(infoObject), ...Object.keys(quotasInfo)])
+    this.log(hux.styledObject({...infoObject, ...quotasInfo}, [...Object.keys(infoObject), ...Object.keys(quotasInfo)]))
     ux.stdout('')
 
     if (pools.length > 0) {
@@ -184,9 +184,9 @@ function renderPoolSummary(pool: PoolInfoResponse, attachments: Required<Heroku.
   }
 
   if (poolName === 'leader') {
-    hux.styledHeader(`Leader pool${poolAttachmentNames ? color.gray(` (attached as ${poolAttachmentNames})`) : ''}`)
+    ux.stdout(hux.styledHeader(`Leader pool${poolAttachmentNames ? color.gray(` (attached as ${poolAttachmentNames})`) : ''}`))
   } else {
-    hux.styledHeader(`Follower pool ${color.name(poolName)}${poolAttachmentNames ? color.gray(` (attached as ${poolAttachmentNames})`) : ''}`)
+    ux.stdout(hux.styledHeader(`Follower pool ${color.name(poolName)}${poolAttachmentNames ? color.gray(` (attached as ${poolAttachmentNames})`) : ''}`))
   }
 
   ux.stdout(`  ${poolStatus}\n`

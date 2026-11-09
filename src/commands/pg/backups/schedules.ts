@@ -21,7 +21,7 @@ export default class Schedules extends Command {
     if (schedules.length === 0) {
       ux.warn(`No backup schedules found on ${color.app(app)}\nUse ${color.code('heroku pg:backups:schedule')} to set one up`)
     } else {
-      hux.styledHeader('Backup Schedules')
+      this.log(hux.styledHeader('Backup Schedules'))
       for (const s of schedules) {
         ux.stdout(`${color.name(s.name)}: daily at ${s.hour}:00 ${s.timezone}\n`)
       }

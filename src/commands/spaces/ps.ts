@@ -46,7 +46,7 @@ export default class Ps extends Command {
     }
 
     if (flags.json) {
-      hux.styledJSON(spaceDynos)
+      this.logJson(spaceDynos)
     } else {
       this.render(spaceDynos)
     }
@@ -76,7 +76,7 @@ export default class Ps extends Command {
     }
 
     for (const [key, dynos] of dynosByCommand) {
-      hux.styledHeader(`${appName} ${key} (${color.info(dynos.length.toString())})`)
+      this.log(hux.styledHeader(`${appName} ${key} (${color.info(dynos.length.toString())})`))
       dynos.sort((a, b) => getProcessNum(a) - getProcessNum(b))
       for (const dyno of dynos) {
         ux.stdout(dyno)

@@ -43,7 +43,7 @@ export default class Pull extends Command {
 
     for (const process of argv as string[]) {
       const tag = `${registry}/${app}/${process}`
-      hux.styledHeader(`Pulling ${process} as ${tag}`)
+      this.log(hux.styledHeader(`Pulling ${process} as ${tag}`))
       await this.dockerHelper.pullImage(tag)
     }
   }

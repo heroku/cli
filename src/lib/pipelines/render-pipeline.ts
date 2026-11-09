@@ -18,7 +18,7 @@ export default async function renderPipeline(
   // eslint-disable-next-line unicorn/no-object-as-default-parameter
   {showOwnerWarning, withOwners} = {showOwnerWarning: false, withOwners: false},
 ) {
-  hux.styledHeader(color.pipeline(pipeline.name!))
+  ux.stdout(hux.styledHeader(color.pipeline(pipeline.name!)))
 
   let owner
 
@@ -78,7 +78,7 @@ export default async function renderPipeline(
     .sort(sortByName)
   const apps = developmentApps.concat(reviewApps).concat(stagingApps).concat(productionApps)
 
-  hux.table(apps as IndexedAppWithPipelineCoupling[], columns)
+  ux.stdout(hux.table(apps as IndexedAppWithPipelineCoupling[], columns))
 
   if (showOwnerWarning && pipeline.owner && owner) {
     warnMixedOwnership(pipelineApps, pipeline, owner)

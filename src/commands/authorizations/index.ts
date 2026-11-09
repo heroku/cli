@@ -23,15 +23,15 @@ export default class AuthorizationsIndex extends Command {
       : await platform.oauthAuthorization.list()
 
     if (flags.json) {
-      hux.styledJSON(authorizations.sort((a, b) => a.description.localeCompare(b.description)))
+      this.logJson(authorizations.sort((a, b) => a.description.localeCompare(b.description)))
     } else if (authorizations.length === 0) {
       ux.stdout('No OAuth authorizations.')
     } else {
-      hux.table(authorizations, {
+      this.log(hux.table(authorizations, {
         Description: {get: (v: any) => color.name(v.description)},
         ID: {get: (v: any) => v.id},
         Scope: {get: (v: any) => v.scope.join(',')},
-      }, {sort: 'Description'})
+      }, {sort: 'Description'}))
     }
   }
 }

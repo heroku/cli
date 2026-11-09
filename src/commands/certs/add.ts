@@ -60,7 +60,7 @@ export default class Add extends Command {
           },
           resolveDomains: async (candidates: string[]) => {
             ux.action.stop()
-            hux.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?')
+            this.log(hux.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?'))
             const {domains} = await this.selectDomains(candidates, inquirer)
             return domains
           },

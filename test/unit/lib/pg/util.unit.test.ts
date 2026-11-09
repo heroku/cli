@@ -2,6 +2,7 @@ import type {CredentialInfo as NonAdvancedCredentialInfo} from '@heroku/sdk/reso
 import type {ResolvedAddOnAttachment} from '@heroku/sdk/resources/platform/add-on-attachment'
 
 import {APIClient} from '@heroku-cli/command'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import sinon from 'sinon'
 
@@ -59,6 +60,25 @@ describe('util', function () {
 
       expect(result).to.include(cred)
       expect(result).to.include('DATABASE')
+    })
+
+    it('includes the rotating-usernames table in the returned string', function () {
+      const credentials = [{
+        credentials: [
+          {connections: 0, state: 'revoking', user: 'jeff'},
+          {connections: 2, state: 'active', user: 'jeff-rotating'},
+        ],
+        database: 'd123',
+        host: 'localhost',
+        name: 'jeff',
+        port: 5442,
+        state: 'rotating',
+      }] as unknown as NonAdvancedCredentialInfo[]
+
+      const result = ansis.strip(presentCredentialAttachments('myapp', [], credentials, 'jeff'))
+
+      expect(result).to.include('Usernames currently active for this credential:')
+      expect(result).to.match(/2 connections\s+active\s+jeff-rotating/)
     })
   })
 

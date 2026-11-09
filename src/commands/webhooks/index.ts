@@ -31,7 +31,7 @@ export default class Webhooks extends BaseCommand {
 
     webhooks.sort((a: any, b: any) => Date.parse(a.created_at) - Date.parse(b.created_at))
     /* eslint-disable perfectionist/sort-objects */
-    hux.table(webhooks, {
+    this.log(hux.table(webhooks, {
       id: {
         header: 'Webhook ID',
       },
@@ -45,7 +45,7 @@ export default class Webhooks extends BaseCommand {
       level: {
         header: 'Level',
       },
-    })
+    }))
     /* eslint-enable perfectionist/sort-objects */
   }
 }

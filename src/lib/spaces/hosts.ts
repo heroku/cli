@@ -12,9 +12,9 @@ export type Host = {
 }
 
 export function displayHosts(space: string, hosts: Host[]) {
-  hux.styledHeader(`${space} Hosts`)
+  ux.stdout(hux.styledHeader(`${space} Hosts`))
   /* eslint-disable perfectionist/sort-objects */
-  hux.table(hosts, {
+  ux.stdout(hux.table(hosts, {
     host_id: {
       header: 'Host ID',
     },
@@ -34,7 +34,7 @@ export function displayHosts(space: string, hosts: Host[]) {
       header: 'Released At',
       get: host => host.released_at || '',
     },
-  })
+  }))
   /* eslint-enable perfectionist/sort-objects */
 }
 

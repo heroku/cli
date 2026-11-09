@@ -19,16 +19,16 @@ export default class Index extends Command {
     if (telemetryDrains.length === 0) {
       ux.stdout(`There are no telemetry drains in ${owner}`)
     } else {
-      hux.styledHeader(`${owner} Telemetry Drains`)
+      this.log(hux.styledHeader(`${owner} Telemetry Drains`))
       /* eslint-disable perfectionist/sort-objects */
-      hux.table(
+      this.log(hux.table(
         telemetryDrains,
         {
           ID: {get: (telemetryDrain: any) => telemetryDrain.id},
           Signals: {get: (telemetryDrain: any) => telemetryDrain.signals},
           Endpoint: {get: (telemetryDrain: any) => telemetryDrain.exporter.endpoint},
         },
-      )
+      ))
       /* eslint-enable perfectionist/sort-objects */
     }
   }

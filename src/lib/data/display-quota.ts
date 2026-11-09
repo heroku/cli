@@ -1,4 +1,5 @@
 import {hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 import type {Quota} from './types.js'
 
@@ -49,12 +50,12 @@ export const formatQuotaStatus = (quota: Quota): string => {
  * @returns {void}
  */
 export const displayQuota = (quota: Quota): void => {
-  hux.styledHeader(hux.toTitleCase(quota.type) || '')
-  hux.styledObject({
+  ux.stdout(hux.styledHeader(hux.toTitleCase(quota.type) || ''))
+  ux.stdout(hux.styledObject({
     'Enforcement Action': hux.toTitleCase(quota.enforcement_action),
     // eslint-disable-next-line perfectionist/sort-objects
     Critical: quota.critical_gb ? hux.toHumanReadableDataSize(quota.critical_gb) : 'Not set',
     Status: formatQuotaStatus(quota),
     Warning: quota.warning_gb ? hux.toHumanReadableDataSize(quota.warning_gb) : 'Not set',
-  }, ['Warning', 'Critical', 'Enforcement Action', 'Status']) // this order isn't being respected by the new implementation
+  }, ['Warning', 'Critical', 'Enforcement Action', 'Status'])) // this order isn't being respected by the new implementation
 }

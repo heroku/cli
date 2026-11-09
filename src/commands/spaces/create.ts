@@ -84,9 +84,9 @@ export default class Create extends Command {
     ux.warn(`${color.warning('Spend Alert.')} Each Heroku ${spaceType} Private Space costs ~${dollarAmountHourly}/hour (max ${dollarAmountMonthly}/month), pro-rated to the second.`)
     ux.warn(`Use ${color.code('heroku spaces:wait')} to track allocation.`)
 
-    hux.styledHeader(color.space(space.name))
+    this.log(hux.styledHeader(color.space(space.name)))
     /* eslint-disable perfectionist/sort-objects */
-    hux.styledObject({
+    this.log(hux.styledObject({
       ID: space.id,
       Team: color.team(space.team.name || ''),
       Region: space.region.name,
@@ -96,7 +96,7 @@ export default class Create extends Command {
       Shield: displayShieldState(space),
       Generation: getGeneration(space),
       'Created at': space.created_at,
-    }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Generation', 'Created at'])
+    }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Generation', 'Created at']))
     /* eslint-enable perfectionist/sort-objects */
   }
 }

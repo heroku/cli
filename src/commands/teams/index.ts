@@ -14,16 +14,16 @@ export default class Index extends Command {
     const {body: teams} = await this.heroku.get<Heroku.Team[]>('/teams')
 
     if (flags.json)
-      hux.styledJSON(teams)
+      this.logJson(teams)
     else {
-      hux.table(teams.sort((a: Heroku.Team, b: Heroku.Team) => {
+      this.log(hux.table(teams.sort((a: Heroku.Team, b: Heroku.Team) => {
         const aName = a?.name || ''
         const bName = b?.name || ''
         return (aName > bName) ? 1 : ((bName > aName) ? -1 : 0)
       }), {
         name: {header: 'Team'},
         role: {get: ({role}) => color.info(role || ''),  header: 'Role'},
-      })
+      }))
     }
   }
 }

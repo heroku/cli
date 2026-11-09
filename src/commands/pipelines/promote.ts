@@ -138,7 +138,7 @@ export default class Promote extends Command {
       process.exitCode = 1
     }
 
-    hux.styledObject(styledTargets)
+    this.log(hux.styledObject(styledTargets))
   }
 }
 

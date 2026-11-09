@@ -1,5 +1,4 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
@@ -57,7 +56,7 @@ export default class Remove extends Command {
     } else {
       const buildpackUpdates = await buildpackCommand.mutate(flags.app, buildpacks, spliceIndex, args.buildpack as string, 'remove')
       if (flags.json) {
-        hux.styledJSON(buildpackUpdates)
+        this.logJson(buildpackUpdates)
       } else {
         buildpackCommand.displayUpdate(flags.app, flags.remote || '', buildpackUpdates, 'removed')
       }

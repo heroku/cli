@@ -39,9 +39,9 @@ export default class DataPgAttachmentsIndex extends BaseCommand {
         return
       }
 
-      hux.styledHeader(`Attachments for ${color.datastore(addon.name)}`)
+      this.log(hux.styledHeader(`Attachments for ${color.datastore(addon.name)}`))
       // hux.table needs Record<string, unknown>; the SDK's interface-based AddOnAttachment has no implicit index signature.
-      hux.table<AddOnAttachment & Record<string, unknown>>(attachments as (AddOnAttachment & Record<string, unknown>)[], {
+      this.log(hux.table<AddOnAttachment & Record<string, unknown>>(attachments as (AddOnAttachment & Record<string, unknown>)[], {
         Attachment: {
           get: attachment => `${color.attachment(attachment.app.name + '::' + attachment.name)}`,
         },
@@ -61,7 +61,7 @@ export default class DataPgAttachmentsIndex extends BaseCommand {
             return color.name(attachmentPoolFactor ?? 'leader')
           },
         },
-      })
+      }))
     } catch (error) {
       if (error instanceof NotAdvancedDatabaseError) {
         ux.error('You can only use this command on Advanced-tier databases.\n'

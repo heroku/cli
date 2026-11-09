@@ -31,7 +31,7 @@ export default class Topology extends Command {
 
   protected render(topology: SpaceTopology, appInfo: Heroku.App[], json: boolean) {
     if (json) {
-      hux.styledJSON(topology)
+      this.logJson(topology)
     } else if (topology.apps) {
       for (const app of topology.apps) {
         const formations: string[] = []
@@ -69,10 +69,10 @@ export default class Topology extends Command {
           header += ` (${color.info(formations.join(', '))})`
         }
 
-        hux.styledHeader(header || '')
-        hux.styledObject({
+        this.log(hux.styledHeader(header || ''))
+        this.log(hux.styledObject({
           Domains: domains, Dynos: dynos,
-        }, ['Domains', 'Dynos'])
+        }, ['Domains', 'Dynos']))
         ux.stdout()
       }
     }

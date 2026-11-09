@@ -30,12 +30,12 @@ export default class Index extends Command {
     }
 
     const {body: settings} = await this.heroku.get<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {hostname: utils.pg.host()})
-    hux.styledHeader(db.name)
+    this.log(hux.styledHeader(db.name))
     const remapped: Record<string, unknown> = {}
     for (const k of Object.keys(settings).sort()) {
       remapped[k.replaceAll('_', '-')] = settings[k as SettingKey].value
     }
 
-    hux.styledObject(remapped)
+    this.log(hux.styledObject(remapped))
   }
 }

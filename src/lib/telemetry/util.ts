@@ -16,7 +16,7 @@ interface TelemetryDisplayObject {
 }
 
 export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain, platform: Platform) {
-  hux.styledHeader(telemetryDrain.id)
+  ux.stdout(hux.styledHeader(telemetryDrain.id))
 
   // Start with an empty object
   const displayObject: Partial<TelemetryDisplayObject> = {}
@@ -39,7 +39,7 @@ export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain, plat
     displayObject.Headers = JSON.stringify(telemetryDrain.exporter.headers)
   }
 
-  hux.styledObject(displayObject, ['App', 'Space', 'Signals', 'Endpoint', 'Transport', 'Headers'])
+  ux.stdout(hux.styledObject(displayObject, ['App', 'Space', 'Signals', 'Endpoint', 'Transport', 'Headers']))
 }
 
 export function validateAndFormatSignals(signalInput: string | undefined): Array<'logs' | 'metrics' | 'traces'> {

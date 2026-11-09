@@ -37,7 +37,7 @@ export default class Url extends BaseCommand {
 
     const {credentialConnectionInfo: credentialInfo} = await data.databaseCredential.getUrl(database, name, {appIdentity: app})
 
-    hux.styledHeader(`Connection information for ${color.name(credentialInfo.credName)} credential:`)
+    this.log(hux.styledHeader(`Connection information for ${color.name(credentialInfo.credName)} credential:`))
 
     ux.stdout(heredoc`
       Connection info string:

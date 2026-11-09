@@ -16,18 +16,18 @@ export default class ClientsIndex extends Command {
 
     if (flags.json) {
       const sortedClients = clients.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
-      hux.styledJSON(sortedClients)
+      this.logJson(sortedClients)
     } else if (clients.length === 0) {
       ux.stdout('No OAuth clients.')
     } else {
       /* eslint-disable perfectionist/sort-objects */
-      hux.table(clients, {
+      this.log(hux.table(clients, {
         name: {get: (w: any) => color.name(w.name)},
         id: {},
         redirect_uri: {},
       }, {
         sort: 'name',
-      })
+      }))
       /* eslint-enable perfectionist/sort-objects */
     }
   }

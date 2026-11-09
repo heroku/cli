@@ -28,10 +28,8 @@ export default class EventsIndex extends BaseCommand {
     } else {
       events.sort((a: any, b: any) => Date.parse(a.created_at) - Date.parse(b.created_at))
 
-      const printLine: typeof this.log = (...args) => this.log(...args)
-
       /* eslint-disable perfectionist/sort-objects */
-      hux.table(events, {
+      this.log(hux.table(events, {
         id: {
           header: 'Event ID',
         },
@@ -47,9 +45,7 @@ export default class EventsIndex extends BaseCommand {
           header: 'Published At',
           get: (w: any) => w.payload.published_at,
         },
-      }, {
-        printLine,
-      })
+      }))
       /* eslint-enable perfectionist/sort-objects */
     }
   }

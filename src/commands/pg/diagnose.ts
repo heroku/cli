@@ -69,7 +69,7 @@ export default class Diagnose extends Command {
             get: (row: PGDiagnoseResult): string => String(row[key as keyof PGDiagnoseResult]),
           }
         })
-        hux.table(check.results, cols)
+        this.log(hux.table(check.results, cols))
       } else {
         const [key] = resultsKeys
         ux.stdout(`${key.split('_')
@@ -81,7 +81,7 @@ export default class Diagnose extends Command {
 
   private displayReport(report: PGDiagnoseResponse, json: boolean) {
     if (json) {
-      hux.styledJSON(report)
+      this.logJson(report)
       return
     }
 

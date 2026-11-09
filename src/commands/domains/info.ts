@@ -26,6 +26,6 @@ export default class DomainsInfo extends Command {
       ...res,
       app: res.app && res.app.name,
     }
-    hux.styledObject(domain)
+    this.log(hux.styledObject(domain))
   }
 }

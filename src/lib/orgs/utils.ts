@@ -6,7 +6,7 @@ export const printGroups = function (teams: Heroku.Team[], type: {label: string}
   const typeLabel = type.label ?? 'Team'
   teams = teams.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
 
-  hux.table(
+  ux.stdout(hux.table(
     teams,
     {
       name: {
@@ -18,7 +18,7 @@ export const printGroups = function (teams: Heroku.Team[], type: {label: string}
         header: 'Role',
       },
     },
-  )
+  ))
 }
 
 export const printGroupsJSON = function (teams: Heroku.Team[]) {

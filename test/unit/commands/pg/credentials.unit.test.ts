@@ -124,6 +124,12 @@ describe('pg:credentials', function () {
     expect(normalized).to.include('ransom')
     expect(normalized).to.include('heroku_postgresql_blue')
     expect(normalized).to.include('yet-another')
+    // The rotation table renders inside jeff's row: after the outer header, before the next credential.
+    const outerHeader = normalized.indexOf('credential state')
+    const rotation = normalized.indexOf('connections state user')
+    expect(outerHeader).to.be.within(0, rotation)
+    expect(rotation).to.be.above(normalized.indexOf('jeff'))
+    expect(rotation).to.be.below(normalized.indexOf('ransom'))
   })
 
   it('shows the correct rotation information if no connection information is available yet', async function () {
@@ -206,7 +212,7 @@ describe('pg:credentials', function () {
       .reply(200, simpleAttachments)
     sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves(simpleCredentials)}})
 
-    const tableStub = stub(hux, 'table')
+    const tableStub = stub(hux, 'table').returns('')
     await runCommand(Cmd, ['--app', 'myapp', '--no-wrap'])
 
     const callArgs = tableStub.firstCall.args

@@ -215,7 +215,7 @@ function displayApps(apps: AppsWithMoreInfo[], appsMetrics: FetchMetricsResponse
   for (const a of zipped) {
     const app = a[0]
     const metrics = a[1]
-    hux.styledHeader(color.app(app.app.name || ''))
+    ux.stdout(hux.styledHeader(color.app(app.app.name || '')))
     ux.stdout(`  ${label('Owner:')} ${color.user(getOwner(app.app.owner) || '')}`)
     if (app.pipeline) {
       ux.stdout(`  ${label('Pipeline:')} ${color.pipeline(app.pipeline.pipeline?.name || '')}`)

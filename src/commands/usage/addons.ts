@@ -47,8 +47,8 @@ export default class UsageAddons extends Command {
         quantity: data.quantity,
       })))
 
-    hux.styledHeader(`Usage for ${color.app(app)}`)
-    hux.table(metersArray, {
+    this.log(hux.styledHeader(`Usage for ${color.app(app)}`))
+    this.log(hux.table(metersArray, {
       'Add-on': {
         get(row) {
           const matchingAddon = appAddons.find(a => a.id === row.addonId)
@@ -61,7 +61,7 @@ export default class UsageAddons extends Command {
       Quantity: {
         get: row => row.quantity,
       },
-    })
+    }))
   }
 
   private async fetchAndDisplayAppUsageData(platform: PlatformClient, app: string, team?: string): Promise<void> {

@@ -141,7 +141,7 @@ function displayAll(addons: Heroku.AddOn[], noWrap = false) {
   }
 
   /* eslint-disable perfectionist/sort-objects */
-  hux.table(
+  ux.stdout(hux.table(
     addons,
     {
       'Owning App': {
@@ -196,7 +196,7 @@ function displayAll(addons: Heroku.AddOn[], noWrap = false) {
       },
     },
     huxTableNoWrapOptions(noWrap),
-  )
+  ))
   /* eslint-enable perfectionist/sort-objects */
 }
 
@@ -230,7 +230,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[], noWrap = false) {
 
   addons = _.sortBy(addons, isForeignApp, 'plan.name', 'name')
   ux.stdout()
-  hux.table(
+  ux.stdout(hux.table(
     addons,
     {
       'Add-on': {get: presentAddon},
@@ -263,7 +263,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[], noWrap = false) {
       },
     },
     huxTableNoWrapOptions(noWrap),
-  )
+  ))
   ux.stdout(`The table above shows add-ons and the attachments to the current app (${color.app(app)}) or other apps.\n  `)
 }
 

@@ -32,7 +32,7 @@ export default class Index extends Command {
         this.log()
       else
         once = true
-      hux.styledHeader(color.datastore(addon.name))
+      this.log(hux.styledHeader(color.datastore(addon.name)))
       if (links.length === 0) {
         this.log('No data sources are linked into this database')
         continue
@@ -43,10 +43,10 @@ export default class Index extends Command {
         const remoteAttachmentName = link.remote?.attachment_name || ''
         const remoteName = link.remote?.name || ''
         const remoteLinkText = `${color.name(remoteAttachmentName)} (${color.datastore(remoteName)})`
-        hux.styledObject({
+        this.log(hux.styledObject({
           created_at: link.created_at,
           remote: remoteLinkText,
-        })
+        }))
       }
     }
 

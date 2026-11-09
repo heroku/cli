@@ -29,12 +29,12 @@ export default class DataPgLogicalReplicationPublicationsInfo extends BaseComman
     const {body: publication} = await this.dataApi.get<LogicalReplicationPublication>(`/data/postgres/v1/${addon.id}/logical-replication/publications/${encodeURIComponent(flags.name)}`)
     const target = publication.target.type === 'schemas' ? publication.target.schemas.join(', ') : publication.current_tables.join(', ')
 
-    hux.styledObject({
+    this.log(hux.styledObject({
       'Current Tables': publication.current_tables.join(', '),
       Name: publication.name,
       'New Tables': publication.target.automatically_includes_new_tables ? 'Included' : 'Not Included',
       Owner: publication.owner,
       Target: `${publication.target.type}: ${target}`,
-    }, ['Name', 'Owner', 'Target', 'Current Tables', 'New Tables'])
+    }, ['Name', 'Owner', 'Target', 'Current Tables', 'New Tables']))
   }
 }

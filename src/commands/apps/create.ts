@@ -7,7 +7,7 @@ import {
   SpaceCompletion,
   StackCompletion,
 } from '@heroku-cli/command/lib/completions.js'
-import {color, hux} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {appExtensions} from '@heroku/sdk/extensions/platform'
 import {ConfigVarUpdateOpts} from '@heroku/types/3.sdk'
@@ -87,7 +87,7 @@ async function configureGitRemote(context: Interfaces.ParserOutput, app: App) {
 
 function printAppSummary(context: Interfaces.ParserOutput, app: App, remoteUrl: string) {
   if (context.flags.json) {
-    hux.styledJSON(app)
+    ux.stdout(ux.colorizeJson(app))
   } else {
     ux.stdout(`${color.info(app.web_url || '')} | ${color.info(remoteUrl)}`)
   }

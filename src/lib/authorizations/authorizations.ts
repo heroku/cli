@@ -1,5 +1,6 @@
 import {hux} from '@heroku/heroku-cli-util'
 import {OauthAuthorization} from '@heroku/types/3.sdk'
+import {ux} from '@oclif/core/ux'
 import {addSeconds, formatDistanceToNow} from 'date-fns'
 
 export function display(auth: OauthAuthorization) {
@@ -38,7 +39,7 @@ export function display(auth: OauthAuthorization) {
     }
   }
 
-  hux.styledObject(obj, [
+  ux.stdout(hux.styledObject(obj, [
     'Client',
     'Redirect URI',
     'ID',
@@ -47,5 +48,5 @@ export function display(auth: OauthAuthorization) {
     'Token',
     'Expires at',
     'Updated at',
-  ])
+  ]))
 }

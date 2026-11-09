@@ -30,7 +30,7 @@ export default class Info extends BaseCommand {
       payload: JSON.stringify(webhookEvent.payload, null, 2),
     }
 
-    hux.styledHeader(webhookEvent.id)
-    hux.styledObject(obj)
+    this.log(hux.styledHeader(webhookEvent.id))
+    this.log(hux.styledObject(obj))
   }
 }

@@ -55,25 +55,25 @@ export default class Info extends Command {
   }
 
   private displayVPNInfo(name: string, vpnConnection: VpnConnection) {
-    hux.styledHeader(`${name} VPN Info`)
+    this.log(hux.styledHeader(`${name} VPN Info`))
     /* eslint-disable perfectionist/sort-objects */
-    hux.styledObject({
+    this.log(hux.styledObject({
       Name: name,
       ID: vpnConnection.id,
       'Public IP': vpnConnection.public_ip,
       'Routable CIDRs': displayCIDR(vpnConnection.routable_cidrs),
       Status: `${displayVPNStatus(vpnConnection.status)}`,
       'Status Message': vpnConnection.status_message,
-    }, ['Name', 'ID', 'Public IP', 'Routable CIDRs', 'State', 'Status', 'Status Message'])
+    }, ['Name', 'ID', 'Public IP', 'Routable CIDRs', 'State', 'Status', 'Status Message']))
     /* eslint-enable perfectionist/sort-objects */
     const vpnConnectionTunnels = (vpnConnection.tunnels || []).map((tunnel, index) => ({
       ...tunnel,
       tunnel_id: `Tunnel ${index + 1}`,
     }))
 
-    hux.styledHeader(`${name} VPN Tunnel Info`)
+    this.log(hux.styledHeader(`${name} VPN Tunnel Info`))
     /* eslint-disable perfectionist/sort-objects */
-    hux.table(vpnConnectionTunnels, {
+    this.log(hux.table(vpnConnectionTunnels, {
       tunnel_id: {header: 'VPN Tunnel'},
       ip: {header: 'IP Address'},
       status: {
@@ -82,13 +82,13 @@ export default class Info extends Command {
       },
       last_status_change: {header: 'Status Last Changed'},
       status_message: {header: 'Details'},
-    })
+    }))
     /* eslint-enable perfectionist/sort-objects */
   }
 
   private render(name: string, vpnConnection: VpnConnection, json: boolean) {
     if (json) {
-      hux.styledJSON(vpnConnection)
+      this.logJson(vpnConnection)
     } else {
       this.displayVPNInfo(name, vpnConnection)
     }

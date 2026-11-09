@@ -23,13 +23,13 @@ export default class ClientsRotate extends Command {
     ux.action.stop()
 
     if (flags.json) {
-      hux.styledJSON(client)
+      this.logJson(client)
     } else if (flags.shell) {
       ux.stdout(`HEROKU_OAUTH_ID=${client.id}`)
       ux.stdout(`HEROKU_OAUTH_SECRET=${client.secret}`)
     } else {
-      hux.styledHeader(`${client.name}`)
-      hux.styledObject(client)
+      this.log(hux.styledHeader(`${client.name}`))
+      this.log(hux.styledObject(client))
     }
   }
 }

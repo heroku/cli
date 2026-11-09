@@ -29,9 +29,9 @@ export default class Info extends Command {
     const addon = await platform.addOn.describe(args.addon, {appIdentity: app})
     const plan = addon.plan as undefined | {name?: string; price?: Heroku.AddOn['price']}
 
-    hux.styledHeader(color.addon(addon.name ?? ''))
+    this.log(hux.styledHeader(color.addon(addon.name ?? '')))
     /* eslint-disable perfectionist/sort-objects */
-    hux.styledObject({
+    this.log(hux.styledObject({
       Plan: plan?.name,
       Price: formatPrice({hourly: true, price: plan?.price}),
       'Max Price': formatPrice({hourly: false, price: plan?.price}),
@@ -42,7 +42,7 @@ export default class Info extends Command {
       'Installed at': (new Date(addon.created_at ?? ''))
         .toString(),
       State: formatState(addon.state),
-    })
+    }))
     /* eslint-enable perfectionist/sort-objects */
   }
 }

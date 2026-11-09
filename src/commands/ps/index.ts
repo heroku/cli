@@ -84,7 +84,7 @@ export default class Index extends Command {
     selectedDynos = selectedDynos.sort(byProcessName)
 
     if (json)
-      hux.styledJSON(selectedDynos)
+      this.logJson(selectedDynos)
     else if (extended)
       printExtended(selectedDynos)
     else {
@@ -209,7 +209,7 @@ function printDynos(dynos: DynoExtended[]) : void {
 
   // Print one-off dynos
   if (oneOffs.length > 0) {
-    hux.styledHeader(`${color.label('run')}: one-off processes (${oneOffs.length})`)
+    ux.stdout(hux.styledHeader(`${color.label('run')}: one-off processes (${oneOffs.length})`))
     for (const dyno of oneOffs) ux.stdout(decorateOneOffDyno(dyno))
     ux.stdout()
   }
@@ -219,7 +219,7 @@ function printDynos(dynos: DynoExtended[]) : void {
     const commandDynos = dynos.filter(d => d.command === command).sort(byProcessNumber)
     const {size = '1X', type} = commandDynos[0]
 
-    hux.styledHeader(`${color.label(type)} (${color.info(size)}): ${command} (${commandDynos.length})`)
+    ux.stdout(hux.styledHeader(`${color.label(type)} (${color.info(size)}): ${command} (${commandDynos.length})`))
     for (const dyno of commandDynos)
       ux.stdout(decorateCommandDyno(dyno))
     ux.stdout()
@@ -232,9 +232,9 @@ function printExtended(dynos: DynoExtended[]) {
   for (const dyno of sortedDynos) {
     const ext: Partial<DynoExtendedFields> = dyno.extended ?? {}
 
-    hux.styledHeader(`${color.label(dyno.name)} (${color.info(dyno.size)})`)
+    ux.stdout(hux.styledHeader(`${color.label(dyno.name)} (${color.info(dyno.size)})`))
     /* eslint-disable perfectionist/sort-objects */
-    hux.styledObject({
+    ux.stdout(hux.styledObject({
       ID: dyno.id,
       State: `${dyno.state} ${ago(new Date(dyno.updated_at))}`,
       Release: dyno.release.version,
@@ -247,7 +247,7 @@ function printExtended(dynos: DynoExtended[]) {
       Port: ext.port,
       AZ: ext.az,
       Route: ext.route,
-    })
+    }))
     /* eslint-enable perfectionist/sort-objects */
     ux.stdout()
   }

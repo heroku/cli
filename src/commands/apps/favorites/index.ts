@@ -19,7 +19,7 @@ export default class Index extends Command {
     if (flags.json) {
       ux.stdout(JSON.stringify(favorites, null, 2))
     } else {
-      hux.styledHeader('Favorited Apps')
+      this.log(hux.styledHeader('Favorited Apps'))
       for (const f of favorites) {
         ux.stdout(color.app(f.resource_name))
       }

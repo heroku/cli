@@ -181,7 +181,7 @@ describe('domains', function () {
 
   it('passes no-wrap option through to table rendering', async function () {
     fakePlatform.domain.list.resolves(herokuAndCustomDomainsResponse)
-    const tableStub = stub(hux, 'table')
+    const tableStub = stub(hux, 'table').returns('')
 
     await runCommand(DomainsIndex, ['--app', 'myapp', '--no-wrap'])
 

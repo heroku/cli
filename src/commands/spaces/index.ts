@@ -18,7 +18,7 @@ export default class Index extends Command {
 
   protected display(spaces: SpaceArray) {
     /* eslint-disable perfectionist/sort-objects */
-    hux.table(
+    this.log(hux.table(
       spaces,
       {
         Name: {get: space => color.space(space.name)},
@@ -37,7 +37,7 @@ export default class Index extends Command {
           get: space => space.created_at,
         },
       },
-    )
+    ))
     /* eslint-enable perfectionist/sort-objects */
   }
 

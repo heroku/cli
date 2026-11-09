@@ -134,7 +134,7 @@ export default class Errors extends Command {
     }
 
     if (flags.json) {
-      hux.styledJSON(errors)
+      this.logJson(errors)
     } else {
       let t = buildErrorTable(errors.router, 'router')
       for (const type of Object.keys(errors.dyno)) {
@@ -145,13 +145,13 @@ export default class Errors extends Command {
         ux.stdout(`No errors on ${color.app(flags.app)} in the last ${hours} hours`)
       } else {
         /* eslint-disable perfectionist/sort-objects */
-        hux.table(t, {
+        this.log(hux.table(t, {
           Source: {get: ({source}) => source},
           Name: {get: ({name, level}) => colorize(level, name)},
           Level: {get: ({level}) => colorize(level, level)},
           title: {header: 'Desc'},
           Count: {get: ({count}) => count},
-        }, {title: `=== Errors on ${color.app(flags.app)} in the last ${hours} hours\n`, titleOptions: {bold: true}})
+        }, {title: `=== Errors on ${color.app(flags.app)} in the last ${hours} hours\n`, titleOptions: {bold: true}}))
         /* eslint-enable perfectionist/sort-objects */
       }
     }

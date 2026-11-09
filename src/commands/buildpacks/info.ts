@@ -36,10 +36,10 @@ export default class Info extends Command {
       },
       Ok(buildpack: unknown) {
         if (flags.json) {
-          hux.styledJSON(buildpack)
+          ux.stdout(ux.colorizeJson(buildpack))
         } else {
-          hux.styledHeader(args.buildpack)
-          hux.styledObject(buildpack, ['description', 'category', 'license', 'support', 'source', 'readme'])
+          ux.stdout(hux.styledHeader(args.buildpack))
+          ux.stdout(hux.styledObject(buildpack, ['description', 'category', 'license', 'support', 'source', 'readme']))
         }
       },
     }, result as any)

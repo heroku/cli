@@ -35,11 +35,11 @@ export default class AppsDiff extends Command {
 
     ux.stdout('\n')
     type TableRow = {app1: string; app2: string; prop: string;}
-    hux.table(truncated, {
+    this.log(hux.table(truncated, {
       firstApp: {get: (row: TableRow) => row.app1, header: app1},
       property: {get: (row: TableRow) => row.prop, header: 'property'},
       secondApp: {get: (row: TableRow) => row.app2, header: app2},
-    })
+    }))
     ux.stdout('\n')
 
     return list

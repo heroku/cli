@@ -32,7 +32,7 @@ export default class NotificationsIndex extends Command {
     }
 
     if (flags.json) {
-      hux.styledJSON(notifications)
+      this.logJson(notifications)
       return
     }
 
@@ -48,7 +48,7 @@ export default class NotificationsIndex extends Command {
 
 function displayNotifications(notifications: Notifications, app: Heroku.App | null, readNotification: boolean) {
   const read = readNotification ? 'Read' : 'Unread'
-  hux.styledHeader(app ? `${read} Notifications for ${color.app(app.name!)}` : `${read} Notifications`)
+  ux.stdout(hux.styledHeader(app ? `${read} Notifications for ${color.app(app.name!)}` : `${read} Notifications`))
   for (const n of notifications) {
     ux.stdout(color.info(`\n${n.title}\n`))
     ux.stdout(wrap(`\n${color.gray(time.ago(new Date(n.created_at)))}\n${n.body}`, {width: 80}))

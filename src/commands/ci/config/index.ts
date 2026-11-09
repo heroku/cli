@@ -31,15 +31,15 @@ export default class CiConfig extends Command {
         ux.stdout(`${key}=${quote(config[key])}`)
       }
     } else if (flags.json) {
-      hux.styledJSON(config)
+      this.logJson(config)
     } else {
-      hux.styledHeader(`${color.pipeline(pipeline.name)} test config vars`)
+      this.log(hux.styledHeader(`${color.pipeline(pipeline.name)} test config vars`))
       const formattedConfig: Heroku.Pipeline = {}
       for (const key of Object.keys(config)) {
         formattedConfig[color.green(key)] = config[key]
       }
 
-      hux.styledObject(formattedConfig)
+      this.log(hux.styledObject(formattedConfig))
     }
   }
 }

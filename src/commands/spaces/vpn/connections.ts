@@ -34,9 +34,9 @@ export default class Connections extends Command {
       return
     }
 
-    hux.styledHeader(`${space} VPN Connections`)
+    this.log(hux.styledHeader(`${space} VPN Connections`))
 
-    hux.table(
+    this.log(hux.table(
       connections,
       {
         Name: {
@@ -49,12 +49,12 @@ export default class Connections extends Command {
           get: (c: any) => this.tunnelFormat(c.tunnels),
         },
       },
-    )
+    ))
   }
 
   protected render(space: string, connections: VpnConnection[], json: boolean) {
     if (json) {
-      hux.styledJSON(connections)
+      this.logJson(connections)
     } else {
       this.displayVPNConnections(space, connections)
     }

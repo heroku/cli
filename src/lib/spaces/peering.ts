@@ -5,16 +5,16 @@ import {ux} from '@oclif/core/ux'
 import {displayCIDR, peeringStatus} from './format.js'
 
 export function displayPeeringInfo(space: string, info: PeeringInfo) {
-  hux.styledHeader(`${space} Peering Info`)
+  ux.stdout(hux.styledHeader(`${space} Peering Info`))
   /* eslint-disable perfectionist/sort-objects */
-  hux.styledObject({
+  ux.stdout(hux.styledObject({
     'AWS Account ID': info.aws_account_id,
     'AWS Region': info.aws_region,
     'AWS VPC ID': info.vpc_id,
     'AWS VPC CIDR': info.vpc_cidr,
     'Space CIDRs': displayCIDR(info.space_cidr_blocks),
     'Unavailable CIDRs': displayCIDR(info.unavailable_cidr_blocks),
-  }, ['AWS Account ID', 'AWS Region', 'AWS VPC ID', 'AWS VPC CIDR', 'Space CIDRs', 'Unavailable CIDRs'])
+  }, ['AWS Account ID', 'AWS Region', 'AWS VPC ID', 'AWS VPC CIDR', 'Space CIDRs', 'Unavailable CIDRs']))
   /* eslint-enable perfectionist/sort-objects */
 }
 
@@ -23,9 +23,9 @@ export function displayPeeringsAsJSON(peerings: Peering[]) {
 }
 
 export function displayPeerings(space: string, peerings: Peering[]) {
-  hux.styledHeader(`${space} Peerings`)
+  ux.stdout(hux.styledHeader(`${space} Peerings`))
   /* eslint-disable perfectionist/sort-objects */
-  hux.table(peerings, {
+  ux.stdout(hux.table(peerings, {
     pcx_id: {
       header: 'PCX ID',
     },
@@ -52,6 +52,6 @@ export function displayPeerings(space: string, peerings: Peering[]) {
     expires: {
       header: 'Expires',
     },
-  })
+  }))
   /* eslint-enable perfectionist/sort-objects */
 }

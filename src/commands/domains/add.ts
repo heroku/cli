@@ -1,7 +1,7 @@
 import type {SniEndpoint} from '@heroku/types/3.sdk'
 
 import {Command, flags} from '@heroku-cli/command'
-import {color, hux} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
 import {appExtensions, domainExtensions} from '@heroku/sdk/extensions/platform'
 import {App} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
@@ -115,7 +115,7 @@ export default class DomainsAdd extends Command {
     ux.action.stop()
 
     if (flags.json) {
-      hux.styledJSON(domain)
+      this.logJson(domain)
     } else {
       ux.stdout(`Configure your app's DNS provider to point to the DNS Target ${color.name(domain.cname || '')}.
     For help, see ${color.info('https://devcenter.heroku.com/articles/custom-domains')}`)

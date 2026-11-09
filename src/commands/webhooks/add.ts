@@ -40,7 +40,7 @@ export default class WebhooksAdd extends BaseCommand {
 
     const secret = response.headers && response.headers['heroku-webhook-secret'] as string
     if (secret) {
-      hux.styledHeader('Webhooks Signing Secret')
+      this.log(hux.styledHeader('Webhooks Signing Secret'))
       ux.stdout(secret)
     } else {
       ux.warn('no secret found')

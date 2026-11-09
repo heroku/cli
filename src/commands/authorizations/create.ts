@@ -1,6 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ScopeCompletion} from '@heroku-cli/command/lib/completions.js'
-import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
@@ -46,7 +45,7 @@ export default class AuthorizationsCreate extends Command {
     if (flags.short) {
       ux.stdout(auth.access_token?.token)
     } else if (flags.json) {
-      hux.styledJSON(auth)
+      this.logJson(auth)
     } else {
       display(auth)
     }

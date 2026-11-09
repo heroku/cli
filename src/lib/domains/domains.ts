@@ -1,5 +1,6 @@
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 import {parse} from 'tldts'
 
 export function printDomains(domains: Required<Heroku.Domain>[], message: string) {
@@ -7,11 +8,11 @@ export function printDomains(domains: Required<Heroku.Domain>[], message: string
   const domains_with_type: (Required<Heroku.Domain> & {type: string})[] = domains.map(domain => ({...domain, type: type(domain)}))
 
   if (domains_with_type.length === 0) {
-    hux.styledHeader(`${message}  Add a custom domain to your app by running ${color.code('heroku domains:add <yourdomain.com>')}`)
+    ux.stdout(hux.styledHeader(`${message}  Add a custom domain to your app by running ${color.code('heroku domains:add <yourdomain.com>')}`))
   } else {
-    hux.styledHeader(`${message}  Update your application's DNS settings as follows`)
+    ux.stdout(hux.styledHeader(`${message}  Update your application's DNS settings as follows`))
 
-    hux.table(
+    ux.stdout(hux.table(
       domains_with_type,
       {
         domain: {
@@ -28,7 +29,7 @@ export function printDomains(domains: Required<Heroku.Domain>[], message: string
           header: 'DNS Target',
         },
       },
-    )
+    ))
   }
 }
 

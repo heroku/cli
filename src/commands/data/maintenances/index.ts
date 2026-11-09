@@ -40,7 +40,7 @@ export default class DataMaintenancesIndex extends Command {
     const tableColumns = this.getTableColumns(flags.extended, flags.columns)
 
     if (flags.json) {
-      hux.styledJSON(maintenances)
+      this.logJson(maintenances)
     } else if (flags.csv) {
       outputCSV(maintenances, tableColumns)
     } else {
@@ -117,6 +117,6 @@ export default class DataMaintenancesIndex extends Command {
 
   private renderTable(maintenances: MaintenanceItem[], tableColumns: Record<string, any>, flags: Record<string, any>) {
     const tableOptions = constructSortFilterTableOptions(flags, tableColumns)
-    hux.table(maintenances, tableColumns, tableOptions)
+    this.log(hux.table(maintenances, tableColumns, tableOptions))
   }
 }

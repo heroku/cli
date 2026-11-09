@@ -112,23 +112,23 @@ const displayFormation = (app: string, formation: Formation[], shielded: boolean
     throw emptyFormationErr(app)
   }
 
-  hux.styledHeader('Process Types')
+  ux.stdout(hux.styledHeader('Process Types'))
   /* eslint-disable perfectionist/sort-objects */
-  hux.table(formationTableData, {
+  ux.stdout(hux.table(formationTableData, {
     type: {},
     size: {},
     qty: {},
     'cost/hour': {},
     'max cost/month': {},
-  })
+  }))
   /* eslint-enable perfectionist/sort-objects */
   ux.stdout()
-  hux.styledHeader('Dyno Totals')
-  hux.table(dynoTotalsTableData, {
+  ux.stdout(hux.styledHeader('Dyno Totals'))
+  ux.stdout(hux.table(dynoTotalsTableData, {
     type: {},
     // eslint-disable-next-line perfectionist/sort-objects
     total: {},
-  })
+  }))
 
   if (isShowingEcoCostMessage) {
     ux.stdout('\n$5 (flat monthly fee, shared across all Eco dynos)')

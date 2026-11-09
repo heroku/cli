@@ -175,7 +175,7 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
     const {body: githubDiff} = await HTTP.get<GitHubDiff>(`https://api.github.com/repos/${path}`, {headers})
 
     ux.stdout('')
-    hux.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
+    ux.stdout(hux.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`))
     /* eslint-disable perfectionist/sort-objects */
     const mapped = githubDiff.commits.map((commit: Commit) => ({
       sha: commit.sha.slice(0, 7),
@@ -183,14 +183,14 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
       author: commit.commit.author.name,
       message: commit.commit.message.split('\n')[0],
     })).reverse()
-    hux.table(mapped, {
+    ux.stdout(hux.table(mapped, {
       sha: {
         header: 'SHA',
       },
       date: {},
       author: {},
       message: {},
-    })
+    }))
     /* eslint-enable perfectionist/sort-objects */
     ux.stdout(`\n${color.info(`https://github.com/${path}`)}`)
   } catch {

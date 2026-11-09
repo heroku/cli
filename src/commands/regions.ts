@@ -41,11 +41,11 @@ export default class Regions extends Command {
       }))
 
       /* eslint-disable perfectionist/sort-objects */
-      hux.table(rows, {
+      this.log(hux.table(rows, {
         name: {header: 'ID'},
         description: {header: 'Location'},
         runtime: {header: 'Runtime'},
-      })
+      }))
       /* eslint-enable perfectionist/sort-objects */
     }
 

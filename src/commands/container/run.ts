@@ -64,9 +64,9 @@ export default class Run extends Command {
     const job = jobs[0]
 
     if (command.length === 0) {
-      hux.styledHeader(`Running ${job.resource}`)
+      this.log(hux.styledHeader(`Running ${job.resource}`))
     } else {
-      hux.styledHeader(`Running '${color.code(command)}' on ${job.resource}`)
+      this.log(hux.styledHeader(`Running '${color.code(command)}' on ${job.resource}`))
     }
 
     try {

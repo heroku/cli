@@ -186,9 +186,9 @@ www.example.com  CNAME            www.example.herokudns.com`]
     }
 
     if (flags.json) {
-      hux.styledJSON(domains)
+      this.logJson(domains)
     } else {
-      hux.styledHeader(`${color.app(flags.app)} Heroku Domain`)
+      this.log(hux.styledHeader(`${color.app(flags.app)} Heroku Domain`))
       ux.stdout(herokuDomain && color.info(herokuDomain.hostname!))
       if (customDomains && customDomains.length > 0) {
         ux.stdout()
@@ -203,7 +203,7 @@ www.example.com  CNAME            www.example.herokudns.com`]
         }
 
         ux.stdout()
-        hux.styledHeader(`${color.app(flags.app)} Custom Domains`)
+        this.log(hux.styledHeader(`${color.app(flags.app)} Custom Domains`))
 
         const tableConfig = this.tableConfig(true, flags.extended, flags.columns ? this.mapColumnHeadersToKeys(flags.columns.split(',')) : undefined)
         const sortProperty = flags.sort ? this.mapSortFieldToProperty(flags.sort) : undefined
@@ -211,10 +211,10 @@ www.example.com  CNAME            www.example.herokudns.com`]
         if (flags.csv) {
           this.outputCSV(customDomains, tableConfig, sortProperty)
         } else {
-          hux.table(customDomains, tableConfig, {
+          this.log(hux.table(customDomains, tableConfig, {
             ...huxTableNoWrapOptions(flags['no-wrap']),
             sort: flags.sort,
-          })
+          }))
         }
       }
     }

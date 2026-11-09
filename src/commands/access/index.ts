@@ -101,10 +101,10 @@ function printAccess(collaborators: any[], _: any) {
     .value()
 
   const tableColumns = buildTableColumns(showPermissions)
-  hux.table(
+  ux.stdout(hux.table(
     collaborators,
     tableColumns,
-  )
+  ))
 }
 
 function printJSON(collaborators: Heroku.TeamAppCollaborator[]) {

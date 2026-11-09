@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
-import {color, hux} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -53,7 +53,7 @@ export default class Config extends Command {
 
     const vpnConnection = await platform.vpnConnection.info(space, name)
     if (json) {
-      hux.styledJSON(vpnConnection)
+      this.logJson(vpnConnection)
     } else {
       displayVPNConfigInfo(name, vpnConnection)
     }

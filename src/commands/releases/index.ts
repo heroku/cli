@@ -188,7 +188,7 @@ export default class Index extends Command {
     optimizationWidth = getDescriptionTruncation(releases, columns, 'description')
 
     if (json) {
-      hux.styledJSON(releases)
+      this.logJson(releases)
     } else if (releases.length === 0) {
       ux.stdout(`${color.app(app)} has no releases.`)
     } else {
@@ -198,9 +198,9 @@ export default class Index extends Command {
         header += ' - ' + color.name(`Current: v${currentRelease.version}`)
       }
 
-      hux.styledHeader(header)
+      this.log(hux.styledHeader(header))
       const sortedReleases = releases.sort((a, b) => (b.version ?? 0) - (a.version ?? 0))
-      hux.table(sortedReleases as any, columns as any, {extended})
+      this.log(hux.table(sortedReleases as any, columns as any, {extended}))
     }
   }
 }

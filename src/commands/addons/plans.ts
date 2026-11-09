@@ -38,10 +38,10 @@ export default class Plans extends Command {
         return (a.price?.cents ?? 0) - (b.price?.cents ?? 0)
       })
     if (flags.json) {
-      hux.styledJSON(plans)
+      this.logJson(plans)
     } else {
       /* eslint-disable perfectionist/sort-objects */
-      hux.table(plans, {
+      this.log(hux.table(plans, {
         default: {
           header: ' ', // <- This space is necessary to prevent the table header from rendering as "default"
           get: (plan: any) => plan.default ? 'default' : '',
@@ -60,7 +60,7 @@ export default class Plans extends Command {
           header: 'Max Price',
           get: (plan: any) => plan.price.metered ? this.printMeteredPricingURL(service) : formatPrice({price: plan.price, hourly: false}),
         },
-      })
+      }))
       /* eslint-enable perfectionist/sort-objects */
     }
   }

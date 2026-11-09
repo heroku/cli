@@ -1,16 +1,16 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {Args} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 function print(feature: Record<string, string>) {
-  hux.styledHeader(feature.name)
+  ux.stdout(hux.styledHeader(feature.name))
   /* eslint-disable perfectionist/sort-objects */
-  hux.styledObject({
+  ux.stdout(hux.styledObject({
     Description: feature.description,
     Enabled: feature.enabled ? color.success('true') : color.failure('false'),
     Docs: feature.doc_url,
-  })
+  }))
   /* eslint-enable perfectionist/sort-objects */
 }
 
@@ -42,7 +42,7 @@ export default class LabsInfo extends Command {
     }
 
     if (flags.json) {
-      hux.styledJSON(feature)
+      this.logJson(feature)
     } else {
       print(feature)
     }

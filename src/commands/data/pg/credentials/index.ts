@@ -72,7 +72,7 @@ export default class DataPgCredentialsIndex extends BaseCommand {
     }
 
     // hux.table needs Record<string, unknown>; the SDK's interface-based PostgresCredentialInfoResult has no implicit index signature.
-    hux.table<AdvancedCredentialInfo & Record<string, unknown>>(credentials as (AdvancedCredentialInfo & Record<string, unknown>)[], {
+    this.log(hux.table<AdvancedCredentialInfo & Record<string, unknown>>(credentials as (AdvancedCredentialInfo & Record<string, unknown>)[], {
       Credential: {
         get: presentCredential,
       },
@@ -83,6 +83,6 @@ export default class DataPgCredentialsIndex extends BaseCommand {
       State: {
         get: cred => cred.state,
       },
-    }, huxTableNoWrapOptions(flags['no-wrap']))
+    }, huxTableNoWrapOptions(flags['no-wrap'])))
   }
 }

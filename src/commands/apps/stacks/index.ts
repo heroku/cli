@@ -24,7 +24,7 @@ export default class StacksIndex extends Command {
     const stacks = stackResponse.body
     const sortedStacks = stacks.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''))
 
-    hux.styledHeader(`${color.app(app.name!)} Available Stacks`)
+    this.log(hux.styledHeader(`${color.app(app.name!)} Available Stacks`))
     for (const stack of sortedStacks) {
       if (stack.name === app.stack!.name) {
         ux.stdout(color.name('* ' + updateCedarName(stack.name!)))
