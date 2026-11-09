@@ -10,7 +10,7 @@
     "@heroku-cli/notifications": "^1.2.9",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
-    "@heroku/heroku-cli-util": "11.0.0-beta.0",
+    "@heroku/heroku-cli-util": "github:heroku/heroku-cli-util#W-23478608-pure-formatters",
     "@heroku/heroku-credential-manager": "^0.2.1",
     "@heroku/heroku-fetch": "^0.2.3",
     "@heroku/http-call": "5.5.2",
