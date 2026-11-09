@@ -17,7 +17,7 @@ Learn more about [Conventional Commits](https://www.conventionalcommits.org/).
 ## Type of Change
 ### Breaking Changes (major semver update)
 - [ ] Add a `!` after your change type to denote a change that breaks current behavior
-- [ ] This PR changes an existing `--json` snapshot (`__snapshots__/*.json`). The `--json` output contract changed: describe the change in the Summary, and the reviewer must approve the snapshot diff (see `test/helpers/json-snapshot.md`)
+- [ ] This PR makes a breaking change to an existing `--json` snapshot (`__snapshots__/*.json`): a field is removed, renamed, or retyped, or the document's shape or record order changed. Describe the change in the Summary; the reviewer must approve the snapshot diff (see `test/helpers/json-snapshot.md`)
 
 ### Feature Additions (minor semver update)
 - [ ] **feat**: Introduces a new feature to the codebase

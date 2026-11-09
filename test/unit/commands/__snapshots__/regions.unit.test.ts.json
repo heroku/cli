@@ -1,39 +1,93 @@
 {
   "regions --json --common selects common runtime regions": [
     {
+      "country": "Ireland",
+      "created_at": "2012-11-21T21:44:16Z",
       "description": "Europe",
+      "id": "ed30241c-ed8c-4bb6-9714-61953675d0b4",
+      "locale": "Dublin",
       "name": "eu",
-      "private_capable": false
+      "private_capable": false,
+      "provider": {
+        "name": "amazon-web-services",
+        "region": "eu-west-1"
+      },
+      "updated_at": "2016-08-09T22:03:28Z"
     },
     {
+      "country": "United States",
+      "created_at": "2012-11-21T20:44:16Z",
       "description": "United States",
+      "id": "59accabd-516d-4f0e-83e6-6e3757701145",
+      "locale": "Virginia",
       "name": "us",
-      "private_capable": false
+      "private_capable": false,
+      "provider": {
+        "name": "amazon-web-services",
+        "region": "us-east-1"
+      },
+      "updated_at": "2016-08-09T22:03:28Z"
     }
   ],
   "regions --json --private selects private-capable regions": [
     {
+      "country": "United States",
+      "created_at": "2016-08-09T22:03:28Z",
       "description": "Oregon, United States",
+      "id": "dd5ff9d4-0a93-40ce-9d46-ac9047c8b6b8",
+      "locale": "Oregon",
       "name": "oregon",
-      "private_capable": true
+      "private_capable": true,
+      "provider": {
+        "name": "amazon-web-services",
+        "region": "us-west-2"
+      },
+      "updated_at": "2016-08-09T22:03:28Z"
     }
   ],
   "regions --json returns an empty list when there are no regions": [],
   "regions --json returns the SDK region list in API order": [
     {
+      "country": "United States",
+      "created_at": "2016-08-09T22:03:28Z",
       "description": "Oregon, United States",
+      "id": "dd5ff9d4-0a93-40ce-9d46-ac9047c8b6b8",
+      "locale": "Oregon",
       "name": "oregon",
-      "private_capable": true
+      "private_capable": true,
+      "provider": {
+        "name": "amazon-web-services",
+        "region": "us-west-2"
+      },
+      "updated_at": "2016-08-09T22:03:28Z"
     },
     {
+      "country": "United States",
+      "created_at": "2012-11-21T20:44:16Z",
       "description": "United States",
+      "id": "59accabd-516d-4f0e-83e6-6e3757701145",
+      "locale": "Virginia",
       "name": "us",
-      "private_capable": false
+      "private_capable": false,
+      "provider": {
+        "name": "amazon-web-services",
+        "region": "us-east-1"
+      },
+      "updated_at": "2016-08-09T22:03:28Z"
     },
     {
+      "country": "Ireland",
+      "created_at": "2012-11-21T21:44:16Z",
       "description": "Europe",
+      "id": "ed30241c-ed8c-4bb6-9714-61953675d0b4",
+      "locale": "Dublin",
       "name": "eu",
-      "private_capable": false
+      "private_capable": false,
+      "provider": {
+        "name": "amazon-web-services",
+        "region": "eu-west-1"
+      },
+      "updated_at": "2016-08-09T22:03:28Z"
     }
   ]
 }

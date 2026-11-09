@@ -46,7 +46,7 @@ Many commands now resolve add-ons, add-on attachments, and Postgres databases th
 ## Regions commands
 
 - `regions` now uses the CLI's standard `--json` flag, so `HEROKU_CONTENT_TYPE=json` also switches it to JSON output and errors are rendered as a JSON error document.
-- **`regions --json` output order changes (breaking)**: regions are returned in the order the API returns them. Previously the JSON list was sorted (common runtime regions first, then by name). The table output is still sorted. `--common` and `--private` still select regions, and each region's fields are unchanged.
+- **`regions --json` output order changes (breaking)**: `--json` returns the SDK result unchanged, so regions are listed in the order the API returns them. Previously the JSON list was sorted (common runtime regions first, then by name). The table output is still sorted. `--common` and `--private` still select regions, and each region's fields are unchanged.
 
 ## Run commands
 

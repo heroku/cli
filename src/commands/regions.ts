@@ -1,3 +1,5 @@
+import type {Region} from '@heroku/types/3.sdk'
+
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 
@@ -12,7 +14,7 @@ export default class Regions extends Command {
   }
   static topic = 'regions'
 
-  async run() {
+  async run(): Promise<Region[]> {
     const {platform} = createSDK(this.heroku)
     const {flags} = await this.parse(Regions)
     let regions = await platform.region.list()
@@ -23,18 +25,18 @@ export default class Regions extends Command {
     }
 
     if (!this.jsonEnabled()) {
-      // Display-only ordering: sort a copy so the returned (--json) list keeps the API order.
+      // Display-only ordering: sort a copy so --json returns the SDK result unchanged (API order).
       const sorted = [...regions].sort((a, b) => {
         if (a.private_capable !== b.private_capable) {
           return a.private_capable ? 1 : -1
         }
 
-        return (a.name ?? '').localeCompare(b.name ?? '')
+        return a.name.localeCompare(b.name)
       })
 
       const rows = sorted.map(({description, name, private_capable}) => ({
         description,
-        name: color.name(name ?? ''),
+        name: color.name(name),
         runtime: private_capable ? 'Private Spaces' : 'Common Runtime',
       }))
 
