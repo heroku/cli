@@ -389,7 +389,8 @@ tls.connect = function (options, ...args) {
 const originalFetch = globalThis.fetch
 globalThis.fetch = (input, ...args) => {
   const url = new URL(typeof input === 'string' ? input : input.url)
-  assertLocalHost(url.hostname)
+  // yoga-layout (via @oclif/table and ink) loads its wasm with fetch('data:...'), which never leaves the process.
+  if (url.protocol !== 'data:') assertLocalHost(url.hostname)
   return originalFetch(input, ...args)
 }
 
