@@ -1,4 +1,5 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
 import sinon from 'sinon'
@@ -10,7 +11,7 @@ describe('heroku org:open', function () {
   let urlOpenerStub: sinon.SinonStub
 
   beforeEach(function () {
-    urlOpenerStub = sinon.stub(Cmd, 'openUrl')
+    urlOpenerStub = sinon.stub(hux, 'openUrl').resolves()
     getWithDelinquencyStub = sinon.stub()
     sinon.stub(HerokuSDK.prototype, 'platform').get(() => ({team: {getWithDelinquency: getWithDelinquencyStub}}))
   })
@@ -30,6 +31,6 @@ describe('heroku org:open', function () {
     await runCommand(Cmd, ['--team', 'myteam'])
 
     expect(getWithDelinquencyStub.calledOnceWithExactly('myteam')).to.equal(true)
-    expect(urlOpenerStub.calledOnceWithExactly('https://dashboard.heroku.com/teams/myteam')).to.equal(true)
+    expect(urlOpenerStub.calledOnceWithExactly('https://dashboard.heroku.com/teams/myteam', {prompt: false})).to.equal(true)
   })
 })

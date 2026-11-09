@@ -61,6 +61,10 @@ export default [
           selector: ':matches(ExpressionStatement > CallExpression, ExpressionStatement > AwaitExpression > CallExpression)'
             + "[callee.object.name='hux'][callee.property.name=/^(styledHeader|styledObject|table)$/]",
         },
+        {
+          message: "Open URLs with hux.openUrl(url, {prompt: false}) instead of the 'open' package.",
+          selector: "ImportDeclaration[source.value='open'], ImportExpression[source.value='open']",
+        },
       ],
     },
   },

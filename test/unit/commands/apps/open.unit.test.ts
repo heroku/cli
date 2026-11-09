@@ -1,6 +1,7 @@
 import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import childProcess from 'node:child_process'
@@ -46,8 +47,11 @@ describe('apps:open', function () {
   it('opens the url', async function () {
     fakePlatform.app.info.resolves(app)
 
-    await runCommand(OpenCommand, ['-a', 'myapp'])
+    const {stderr, stdout} = await runCommand(OpenCommand, ['-a', 'myapp'])
 
+    // Opens without the "Press any key" prompt; the status line goes to stderr.
+    expect(stdout).to.equal('')
+    expect(ansis.strip(stderr)).to.contain('Opening https://myapp.herokuapp.com/ in your default browser…')
     const urlArgArray = spawnStub.getCall(0).args[1]
     // For darwin-based platforms this arg is an array that contains the site url.
     // For windows-based platforms this arg is an array that contains an encoded command that includes the url

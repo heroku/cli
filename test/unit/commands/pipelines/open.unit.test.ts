@@ -1,4 +1,5 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import childProcess from 'node:child_process'
@@ -35,7 +36,10 @@ describe('pipelines:open', function () {
       .query({eq: {name: pipeline.name}})
       .reply(200, [pipeline])
 
-    await runCommand(OpenCommand, [pipeline.name])
+    const {stderr, stdout} = await runCommand(OpenCommand, [pipeline.name])
+
+    expect(stdout).to.equal('')
+    expect(ansis.strip(stderr)).to.contain('Opening https://dashboard.heroku.com/pipelines/0123 in your default browser…')
 
     const urlArgArray = spawnStub.getCall(0).args[1]
     // For darwin-based platforms this arg is an array that contains the site url.

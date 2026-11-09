@@ -1,4 +1,5 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import {SinonStub, stub} from 'sinon'
 
@@ -12,7 +13,7 @@ describe('addons:docs', function () {
   let resolveStub: SinonStub
 
   beforeEach(function () {
-    urlOpenerStub = stub(Cmd, 'urlOpener').callsFake(async () => {})
+    urlOpenerStub = stub(hux, 'openUrl').resolves()
     infoStub = stub()
     resolveStub = stub()
     sdkMock = mockSDKPlatform({
@@ -33,14 +34,15 @@ describe('addons:docs', function () {
     const {stderr, stdout} = await runCommand(Cmd, ['--show-url', 'slowdb'])
     expect(stdout).to.equal('https://devcenter.heroku.com/articles/slowdb\n')
     expect(stderr).to.equal('')
+    expect(urlOpenerStub.called).to.be.false
   })
 
   it('opens an addon by name with no url flag passed', async function () {
     infoStub.resolves({name: 'slowdb'})
 
     const {stdout} = await runCommand(Cmd, ['slowdb'])
-    expect(stdout).to.equal('Opening https://devcenter.heroku.com/articles/slowdb...\n')
-    expect(urlOpenerStub.calledWith('https://devcenter.heroku.com/articles/slowdb')).to.be.true
+    expect(stdout).to.equal('')
+    expect(urlOpenerStub.calledOnceWithExactly('https://devcenter.heroku.com/articles/slowdb', {prompt: false})).to.be.true
   })
 
   it('opens an addon by attachment name', async function () {

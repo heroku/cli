@@ -1,8 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as color from '@heroku/heroku-cli-util/color'
+import {hux} from '@heroku/heroku-cli-util'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
-import open from 'open'
 
 import {createSDK} from '../../lib/sdk.js'
 
@@ -17,7 +16,6 @@ export default class Docs extends Command {
     'show-url': flags.boolean({description: 'show URL, do not open browser'}),
   }
   static topic = 'addons'
-  public static urlOpener: (url: string) => Promise<unknown> = open
 
   public async run(): Promise<string> {
     const {args, flags} = await this.parse(Docs)
@@ -32,8 +30,7 @@ export default class Docs extends Command {
     if (flags['show-url']) {
       ux.stdout(url)
     } else {
-      ux.stdout(`Opening ${color.info(url)}...`)
-      await Docs.urlOpener(url)
+      await hux.openUrl(url, {prompt: false})
     }
 
     return url

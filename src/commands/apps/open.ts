@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
+import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
-import {Args, ux} from '@oclif/core'
-import open from 'open'
+import {Args} from '@oclif/core'
 
 import {createSDK} from '../../lib/sdk.js'
 
@@ -27,8 +27,7 @@ export default class AppsOpen extends Command {
     const app = await platform.app.info(flags.app)
     const path = args.path || ''
     const url = new URL(path, app.web_url as string)
-    ux.stdout(`Opening ${color.info(url.toString())}...`)
-    await open(url.toString())
+    await hux.openUrl(url.toString(), {prompt: false})
     return app
   }
 }
