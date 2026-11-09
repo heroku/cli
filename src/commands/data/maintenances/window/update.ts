@@ -1,5 +1,6 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {maintenanceExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 
 import {createSDK} from '../../../../lib/sdk.js'
@@ -33,16 +34,18 @@ export default class DataMaintenancesWindowUpdate extends Command {
 
   async run() {
     const {args, flags} = await this.parse(DataMaintenancesWindowUpdate)
-    const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(args.addon, flags.app)
+    const {data} = createSDK(this.heroku, {extensions: [maintenanceExtensions]})
 
     const combinedWindowLabel = `${args.day_of_week} ${args.time_of_day}`
-    ux.action.start(`Setting maintenance window for ${color.addon(addon.name!)} to ${combinedWindowLabel}`)
 
-    const {data} = createSDK(this.heroku)
-    const result = await data.maintenance.updateWindow(addon.id!, {
+    const {window: result} = await data.maintenance.updateWindow(args.addon, {
       day_of_week: args.day_of_week,
       time_of_day: args.time_of_day,
+    }, {
+      appIdentity: flags.app,
+      beforeUpdateWindow({addon}) {
+        ux.action.start(`Setting maintenance window for ${color.addon(addon.name)} to ${combinedWindowLabel}`)
+      },
     })
     ux.action.stop()
 

@@ -1,11 +1,13 @@
 import {flags as Flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import {maintenanceExtensions} from '@heroku/sdk/extensions/data'
+import {type ResolvedAddOn} from '@heroku/sdk/resources/platform/add-on'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/base-command.js'
-import {waitUntilMaintenanceComplete} from '../../../lib/data/utils.js'
 import {createSDK} from '../../../lib/sdk.js'
+
+type Platform = ReturnType<typeof createSDK>['platform']
 
 export default class DataMaintenancesRun extends BaseCommand {
   static args = {
@@ -39,8 +41,8 @@ export default class DataMaintenancesRun extends BaseCommand {
     }),
   }
 
-  async confirmMaintenanceMode(addon: Heroku.AddOn, confirm: string | undefined, force: boolean) {
-    const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${addon!.app!.id}`)
+  async confirmMaintenanceMode(platform: Platform, addon: ResolvedAddOn, confirm: string | undefined, force: boolean) {
+    const app = await platform.app.info(addon.app.id)
     const appName = app.name || ''
     if (Boolean(app.maintenance) || Boolean(force)) {
       // app is in maintenance mode, or it was forced
@@ -52,26 +54,22 @@ export default class DataMaintenancesRun extends BaseCommand {
 
   async run() {
     const {args, flags} = await this.parse(DataMaintenancesRun)
-    const addonResolver = new utils.AddonResolver(this.heroku)
     const {app, confirm, force, wait} = flags
-    const addon = await addonResolver.resolve(args.addon, app)
+    const {data, platform} = createSDK(this.heroku, {extensions: [maintenanceExtensions]})
 
-    const isEssentialTier = utils.pg.isEssentialDatabase(addon) || utils.pg.isLegacyEssentialDatabase(addon)
-    if (isEssentialTier) {
-      this.error('You can\'t trigger maintenance on an Essential tier database.')
-    }
+    const {addon} = await data.maintenance.run(args.addon, {
+      appIdentity: app,
+      beforeRun: async ({addon}) => {
+        await this.confirmMaintenanceMode(platform, addon, confirm, force || false)
 
-    await this.confirmMaintenanceMode(addon, confirm, force || false)
-
-    ux.action.start('Triggering maintenance')
-    const {data} = createSDK(this.heroku)
-    await data.maintenance.run(addon.id!)
+        ux.action.start('Triggering maintenance')
+      },
+    })
     ux.action.stop('maintenance triggered')
 
     if (wait) {
       ux.action.start('Waiting for maintenance to complete')
-      // waitUntilMaintenanceComplete still uses legacy dataApi (polling loop not yet migrated to SDK)
-      await waitUntilMaintenanceComplete(addon.id!, this.dataApi)
+      await data.maintenance.wait(addon.id)
       ux.action.stop('maintenance completed')
     }
   }

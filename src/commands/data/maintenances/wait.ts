@@ -1,10 +1,9 @@
 import {flags as Flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import {maintenanceExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/base-command.js'
-import {MaintenanceStatus} from '../../../lib/data/types.js'
-import {waitUntilMaintenanceComplete} from '../../../lib/data/utils.js'
 import {createSDK} from '../../../lib/sdk.js'
 
 export default class DataMaintenancesWait extends BaseCommand {
@@ -23,24 +22,14 @@ export default class DataMaintenancesWait extends BaseCommand {
 
   async run() {
     const {args, flags} = await this.parse(DataMaintenancesWait)
-    const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(args.addon, flags.app)
+    const {data} = createSDK(this.heroku, {extensions: [maintenanceExtensions]})
 
-    const isEssentialTier = utils.pg.isEssentialDatabase(addon) || utils.pg.isLegacyEssentialDatabase(addon)
-    if (isEssentialTier) {
-      this.error('You can\'t await maintenance on an Essential tier database.')
-    }
-
-    const {data} = createSDK(this.heroku)
-    const maintenance = await data.maintenance.info(addon.id!)
-
-    if (maintenance.status !== MaintenanceStatus.running) {
-      this.error(`There currently isn't any maintenance in progress for ${color.addon(addon.name!)}`)
-    }
-
-    ux.action.start(`Waiting for maintenance on ${color.addon(addon.name!)} to complete`)
-    // waitUntilMaintenanceComplete still uses legacy dataApi (polling loop not yet migrated to SDK)
-    await waitUntilMaintenanceComplete(addon.id!, this.dataApi)
+    await data.maintenance.wait(args.addon, {
+      appIdentity: flags.app,
+      beforeWait({addon}) {
+        ux.action.start(`Waiting for maintenance on ${color.addon(addon.name)} to complete`)
+      },
+    })
     ux.action.stop('maintenance completed')
   }
 }

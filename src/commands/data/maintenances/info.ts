@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {maintenanceExtensions} from '@heroku/sdk/extensions/data'
 import {MaintenanceInfoResult} from '@heroku/types/data'
 import {Args, ux} from '@oclif/core'
 
@@ -70,23 +71,15 @@ export default class DataMaintenancesInfo extends Command {
     const {addSeconds, formatDistance} = await lazyModuleLoader.loadDateFns()
 
     const {args, flags} = await this.parse(DataMaintenancesInfo)
-    const addonResolver = new utils.AddonResolver(this.heroku)
     const {app, json} = flags
-    const addon = await addonResolver.resolve(args.addon, app)
+    const {data} = createSDK(this.heroku, {extensions: [maintenanceExtensions]})
 
-    ux.action.start(`Fetching maintenance for ${color.addon(addon.name!)}`)
-    const {data} = createSDK(this.heroku)
-    let maintenance: MaintenanceInfoResult
-    try {
-      maintenance = await data.maintenance.info(addon.id!)
-    } catch (error: any) {
-      ux.action.stop()
-      if (error.statusCode === 404) {
-        this.error('no maintenance found for this add-on')
-      }
-
-      throw error
-    }
+    const {maintenance} = await data.maintenance.info(args.addon, {
+      appIdentity: app,
+      beforeInfo({addon}) {
+        ux.action.start(`Fetching maintenance for ${color.addon(addon.name)}`)
+      },
+    })
 
     ux.action.stop()
 

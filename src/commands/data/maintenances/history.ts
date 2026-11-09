@@ -1,10 +1,14 @@
 import {flags as Flags} from '@heroku-cli/command'
-import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {maintenanceExtensions} from '@heroku/sdk/extensions/data'
+import {type MaintenanceHistoryResult} from '@heroku/types/data'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/base-command.js'
-import {Maintenance} from '../../../lib/data/types.js'
+import {createSDK} from '../../../lib/sdk.js'
 import {constructSortFilterTableOptions, constructTableColumns, outputCSV} from '../../../lib/utils/table-utils.js'
+
+type MaintenanceHistoryItem = MaintenanceHistoryResult['maintenances'][number]
 
 export default class DataMaintenancesHistory extends BaseCommand {
   static args = {
@@ -37,39 +41,39 @@ export default class DataMaintenancesHistory extends BaseCommand {
 
   async run() {
     const {args, flags} = await this.parse(DataMaintenancesHistory)
-    const queryParams = new URLSearchParams({limit: flags.num})
+    const {data} = createSDK(this.heroku, {extensions: [maintenanceExtensions]})
 
-    const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(args.addon, flags.app)
-
-    ux.action.start(`Fetching maintenance history for ${color.addon(addon.name!)}`)
-    const {body: {maintenances}} = await this.dataApi.get<{maintenances: Maintenance[]}>(
-      `/data/maintenances/v1/${addon.id}/history/?${queryParams.toString()}`,
-      this.dataApi.defaults,
-    )
+    const {addon, history} = await data.maintenance.history(args.addon, {limit: Number(flags.num)}, {
+      appIdentity: flags.app,
+      beforeHistory({addon}) {
+        ux.action.start(`Fetching maintenance history for ${color.addon(addon.name)}`)
+      },
+    })
     ux.action.stop()
 
+    const {maintenances} = history
+
     if (maintenances.length === 0) {
-      this.log(`${color.addon(addon.name!)} does not have any maintenance history`)
+      this.log(`${color.addon(addon.name)} does not have any maintenance history`)
       return
     }
 
     /* eslint-disable perfectionist/sort-objects */
     const allTableColumns = {
       scheduled_for: {
-        get: (row: Maintenance) => row && row.scheduled_for ? row.scheduled_for : '-',
+        get: (row: MaintenanceHistoryItem) => row && row.scheduled_for ? row.scheduled_for : '-',
         header: 'Scheduled for',
       },
       started_at: {
-        get: (row: Maintenance) => row && row.started_at ? row.started_at : '-',
+        get: (row: MaintenanceHistoryItem) => row && row.started_at ? row.started_at : '-',
         header: 'Started at',
       },
       completed_at: {
-        get: (row: Maintenance) => row && row.completed_at ? row.completed_at : '-',
+        get: (row: MaintenanceHistoryItem) => row && row.completed_at ? row.completed_at : '-',
         header: 'Completed at',
       },
       duration_seconds: {
-        get: (row: Maintenance) => row && row.duration_seconds ? row.duration_seconds : '-',
+        get: (row: MaintenanceHistoryItem) => row && row.duration_seconds ? row.duration_seconds : '-',
         header: 'Duration (seconds)',
       },
       reason: {
@@ -79,7 +83,7 @@ export default class DataMaintenancesHistory extends BaseCommand {
         header: 'Status',
       },
       window: {
-        get: (row: Maintenance) => row && row.window ? row.window : '-',
+        get: (row: MaintenanceHistoryItem) => row && row.window ? row.window : '-',
         header: 'Window',
       },
     }

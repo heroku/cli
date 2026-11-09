@@ -6,15 +6,6 @@ export enum DatabaseStatus {
   UNAVAILABLE = 'unavailable',
 }
 
-export enum MaintenanceStatus {
-  completed = 'completed',
-  none = 'none',
-  pending = 'pending',
-  preparing = 'preparing',
-  ready = 'ready',
-  running = 'running',
-}
-
 export enum MigrationStatus {
   CANCELLED = 'cancelled',
   COMPLETED = 'completed',
@@ -105,32 +96,6 @@ export type InfoResponse = {
   status: DatabaseStatus
   tier: 'advanced'
   version: string
-}
-
-export type Maintenance = {
-  addon: {
-    attachments: string[];
-    kind: string;
-    name: string;
-    plan: string;
-    uuid?: string;
-    window: null | string;
-  };
-  app: {
-    name: string;
-    uuid?: string;
-  };
-  completed_at: null | string;
-  duration_seconds: null | string;
-  method: string;
-  previously_scheduled_for: null | string;
-  reason: string;
-  required_by: null | string;
-  scheduled_for: null | string;
-  server_created_at: string;
-  started_at: null | string;
-  status: MaintenanceStatus;
-  window: null | string;
 }
 
 export type UpgradeResponse = {
@@ -242,13 +207,6 @@ export type TierPricingInfo = Record<string, PricingInfo>
 export type WaitStatus = {
   message: null | string
   waiting: boolean
-}
-
-export type Window = {
-  previous_window: null | string;
-  previously_scheduled_at: null | string;
-  scheduled_at: null | string;
-  window: null | string;
 }
 
 type AddonReference = ResourceReference

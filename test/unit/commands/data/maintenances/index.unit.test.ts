@@ -1,13 +1,11 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {MaintenanceInfoResult as Maintenance} from '@heroku/types/data'
 import {expect} from 'chai'
-import nock from 'nock'
-import {stub} from 'sinon'
+import {SinonStub, stub} from 'sinon'
 
 import DataMaintenancesIndex from '../../../../../src/commands/data/maintenances/index.js'
-import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.js'
-import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
+import {type MockSDK, mockSDK} from '../../../../helpers/mock-sdk.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
-
 const appId = '30f93b8f-c592-4004-8d8a-3efb20395484'
 
 const app = {
@@ -21,10 +19,12 @@ const postgresAddonMaintenance: Maintenance = {
     kind: 'heroku-postgresql',
     name: 'postgresql-sinuous-83720',
     plan: 'standard-0',
+    uuid: 'addon-123',
     window: 'Thursdays 22:00 to Fridays 02:00 UTC',
   },
   app: {
     name: 'test-app',
+    uuid: 'app-456',
   },
   completed_at: null,
   duration_seconds: null,
@@ -35,7 +35,7 @@ const postgresAddonMaintenance: Maintenance = {
   scheduled_for: '2019-11-07 22:00:00 +0000',
   server_created_at: '2019-10-24 23:24:47 +0000',
   started_at: null,
-  status: MaintenanceStatus.none,
+  status: 'none',
   window: 'Thursdays 22:00 to Fridays 02:00 UTC',
 }
 
@@ -45,10 +45,12 @@ const redisAddonMaintenance: Maintenance = {
     kind: 'heroku-redis',
     name: 'redis-contoured-23719',
     plan: 'premium-0',
+    uuid: 'addon-456',
     window: 'Thursdays 22:00 to Fridays 02:00 UTC',
   },
   app: {
     name: 'test-app',
+    uuid: 'app-789',
   },
   completed_at: null,
   duration_seconds: null,
@@ -59,49 +61,58 @@ const redisAddonMaintenance: Maintenance = {
   scheduled_for: null,
   server_created_at: '2019-10-24 23:24:47 +0000',
   started_at: null,
-  status: MaintenanceStatus.pending,
+  status: 'preparing',
   window: 'Thursdays 22:00 to Fridays 02:00 UTC',
 }
 
 const maintenances = [redisAddonMaintenance, postgresAddonMaintenance]
 
+type FakeData = {
+  maintenance: {infoByApp: SinonStub}
+}
+
+type FakePlatform = {
+  app: {info: SinonStub}
+}
+
+function buildFakeData(): FakeData {
+  return {maintenance: {infoByApp: stub()}}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {app: {info: stub()}}
+}
+
 describe('data:maintenances', function () {
-  let herokuApi: nock.Scope
+  let fakeData: FakeData
+  let fakePlatform: FakePlatform
   let sdkMock: MockSDK
 
+  beforeEach(function () {
+    fakeData = buildFakeData()
+    fakePlatform = buildFakePlatform()
+    sdkMock = mockSDK(fakeData, fakePlatform)
+    fakePlatform.app.info.resolves(app)
+    fakeData.maintenance.infoByApp.resolves({maintenances})
+  })
+
   afterEach(function () {
-    herokuApi.done()
-    nock.cleanAll()
-    sdkMock?.restore()
+    sdkMock.restore()
   })
 
   it('shows a list of maintenances for a given app', async function () {
-    herokuApi = nock('https://api.heroku.com')
-    herokuApi
-      .get('/apps/test-app')
-      .reply(200, app)
-
-    const infoByAppStub = stub().resolves({maintenances})
-    sdkMock = mockSDKData({maintenance: {infoByApp: infoByAppStub}})
-
     const {stderr, stdout} = await runCommand(DataMaintenancesIndex, ['--app=test-app'])
     const actualStdout = removeAllWhitespace(stdout)
 
     expect(stderr).to.contain('Fetching maintenances... done')
     expect(actualStdout).to.contain(removeAllWhitespace('Addon                      Attachments    Scheduling Window                      Status    Required by                 Scheduled for'))
-    expect(actualStdout).to.contain(removeAllWhitespace('redis-contoured-23719      REDIS_URL      Thursdays 22:00 to Fridays 02:00 UTC   pending   -                           -'))
+    expect(actualStdout).to.contain(removeAllWhitespace('redis-contoured-23719      REDIS_URL      Thursdays 22:00 to Fridays 02:00 UTC   preparing   -                           -'))
     expect(actualStdout).to.contain(removeAllWhitespace('postgresql-sinuous-83720   DATABASE_URL   Thursdays 22:00 to Fridays 02:00 UTC   none      2019-11-12 17:57:01 +0000   2019-11-07 22:00:00 +0000'))
+    expect(fakePlatform.app.info.calledOnceWithExactly(app.name)).to.equal(true)
+    expect(fakeData.maintenance.infoByApp.calledOnceWithExactly(appId)).to.equal(true)
   })
 
   it('includes extended columns', async function () {
-    herokuApi = nock('https://api.heroku.com')
-    herokuApi
-      .get('/apps/test-app')
-      .reply(200, app)
-
-    const infoByAppStub = stub().resolves({maintenances})
-    sdkMock = mockSDKData({maintenance: {infoByApp: infoByAppStub}})
-
     const {stdout} = await runCommand(DataMaintenancesIndex, ['--app=test-app', '--extended', '--sort=Addon'])
     const actualStdout = removeAllWhitespace(stdout)
 
@@ -110,14 +121,6 @@ describe('data:maintenances', function () {
   })
 
   it('only includes specified columns', async function () {
-    herokuApi = nock('https://api.heroku.com')
-    herokuApi
-      .get('/apps/test-app')
-      .reply(200, app)
-
-    const infoByAppStub = stub().resolves({maintenances})
-    sdkMock = mockSDKData({maintenance: {infoByApp: infoByAppStub}})
-
     const {stdout} = await runCommand(DataMaintenancesIndex, ['--app=test-app', '--extended', '--columns=addon,attachments'])
     const actualStdout = removeAllWhitespace(stdout)
 
@@ -126,14 +129,6 @@ describe('data:maintenances', function () {
   })
 
   it('shows a list of maintenances for a given app with the json flag', async function () {
-    herokuApi = nock('https://api.heroku.com')
-    herokuApi
-      .get('/apps/test-app')
-      .reply(200, app)
-
-    const infoByAppStub = stub().resolves({maintenances})
-    sdkMock = mockSDKData({maintenance: {infoByApp: infoByAppStub}})
-
     const {stderr, stdout} = await runCommand(DataMaintenancesIndex, ['--app=test-app', '--json'])
 
     expect(stderr).to.contain('Fetching maintenances... done')
@@ -141,30 +136,17 @@ describe('data:maintenances', function () {
   })
 
   it('shows an error if the app is not found', async function () {
-    herokuApi = nock('https://api.heroku.com')
-    herokuApi
-      .get('/apps/test-app')
-      .reply(404, {
-        id: 'not_found',
-        message: "Couldn't find that app.",
-      })
-
-    const infoByAppStub = stub().resolves({maintenances: []})
-    sdkMock = mockSDKData({maintenance: {infoByApp: infoByAppStub}})
+    const requestError = new Error('Couldn\'t find that app.')
+    fakePlatform.app.info.rejects(requestError)
 
     const {error} = await runCommand(DataMaintenancesIndex, ['--app=test-app'])
-    const {message} = error as {message: string}
-    expect(message).to.contain("Couldn't find that app.\n\nError ID: not_found")
+
+    expect(error).to.equal(requestError)
+    expect(fakeData.maintenance.infoByApp.called).to.equal(false)
   })
 
   it('shows an error message if there are no maintenances', async function () {
-    herokuApi = nock('https://api.heroku.com')
-    herokuApi
-      .get('/apps/test-app')
-      .reply(200, app)
-
-    const infoByAppStub = stub().resolves({maintenances: []})
-    sdkMock = mockSDKData({maintenance: {infoByApp: infoByAppStub}})
+    fakeData.maintenance.infoByApp.resolves({maintenances: []})
 
     const {error} = await runCommand(DataMaintenancesIndex, ['--app=test-app'])
     const {message} = error as {message: string}
