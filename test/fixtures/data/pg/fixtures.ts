@@ -1426,7 +1426,7 @@ export const existentMigrationResponse: MigrationResponse = {
   migration_strategy: 'dms_migrate_cdc',
   preassessment_results: [],
   source_id: 'ae4bac9d-99b5-4496-97dc-7b71a9d20999', // Standard DB
-  start_disabled_reason: 'the migration is being prepared',
+  start_disabled_reason: 'migration is preparing',
   status: MigrationStatus.PREPARING,
   status_description: 'Preparing databases',
   stop_reason: null,
@@ -1449,7 +1449,7 @@ export const createdMigrationResponse: MigrationResponse = {
   migration_strategy: 'pgcopydb_migrate',
   preassessment_results: [],
   source_id: 'b02c94bd-bc1b-4f6c-9169-1d9b7d97d054', // Premium DB
-  start_disabled_reason: 'the migration is being prepared',
+  start_disabled_reason: 'migration is preparing',
   status: MigrationStatus.PREPARING,
   status_description: 'Preparing databases',
   stop_reason: null,

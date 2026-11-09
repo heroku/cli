@@ -31,7 +31,7 @@ const {prompt, Separator} = inquirer
 
 // Labels for the transfer strategies a migration can use
 const migrationMethodLabels: Partial<Record<string, string>> = {
-  dms_assess_only: 'Assessment only',
+  dms_assess_only: 'Assessment',
   dms_migrate: 'Snapshot',
   dms_migrate_cdc: 'Streaming',
   dump_restore: 'Snapshot',
@@ -155,7 +155,7 @@ export default class DataPgMigrate extends BaseCommand {
     const selectMethod = async (): Promise<string> => {
       ux.stdout(color.info(heredoc`
 
-        Migration methods:
+        Migration Methods:
         · Snapshot: Copies the data from the source database to the destination database. Requires downtime on the source database depending on the size. Best for smaller databases or when a maintenance window is acceptable.
 
       `))
@@ -570,7 +570,7 @@ export default class DataPgMigrate extends BaseCommand {
       choices.push({
         disabled: this.classicDatabases.length === 0
           ? `no classic Postgres databases on ${color.app(app)}`
-          : `all classic Postgres databases on ${color.app(app)} already have an active migration`,
+          : `all classic Postgres databases on ${color.app(app)} have an active migration`,
         name: color.gray('Configure a new database migration'),
         value: '__configure_migration',
       })
@@ -580,7 +580,7 @@ export default class DataPgMigrate extends BaseCommand {
 
     const {action} = await this.prompt<{action: string}>({
       choices,
-      message: 'What do you want to do?:',
+      message: 'What do you want to do?',
       name: 'action',
       type: 'list',
     })
@@ -597,7 +597,7 @@ export default class DataPgMigrate extends BaseCommand {
     do {
       const migration = this.migrationTargets.find(migration => migration.id === migrationId)
       if (!migration) {
-        ux.stdout(color.warning('\nThe migration is no longer available. Either a newer migration replaced it or its destination database was removed.\n'))
+        ux.stdout(color.warning('\nThe migration is no longer available. Either a newer migration replaced it or its destination database no longer exists.\n'))
         return
       }
 
@@ -616,7 +616,7 @@ export default class DataPgMigrate extends BaseCommand {
           new Separator(),
           {name: 'Go back', value: '__go_back'},
         ],
-        message: 'What do you want to do?:',
+        message: 'What do you want to do?',
         name: 'action',
         type: 'list',
       })).action
@@ -657,20 +657,21 @@ export default class DataPgMigrate extends BaseCommand {
     /* eslint-enable perfectionist/sort-objects */
 
     ux.stdout()
-    hux.styledHeader('Migration details')
+    hux.styledHeader('Migration Details')
     hux.styledObject(details)
     ux.stdout()
   }
 
   private printVersionChangeWarning(sourceVersion?: string, targetVersion?: string): void {
-    const sourceMajorVersion = this.majorVersion(sourceVersion)
-    const targetMajorVersion = this.majorVersion(targetVersion)
-    if (!sourceMajorVersion || !targetMajorVersion || sourceMajorVersion === targetMajorVersion) {
+    const sourceMajorVersion = Number(this.majorVersion(sourceVersion))
+    const targetMajorVersion = Number(this.majorVersion(targetVersion))
+    // Only upgrades: the API rejects migrations to an older major version
+    if (!sourceMajorVersion || !targetMajorVersion || targetMajorVersion <= sourceMajorVersion) {
       return
     }
 
     ux.stdout(color.warning(heredoc`
-      Warning: The destination database runs Postgres ${targetVersion}, but the source database runs Postgres ${sourceVersion}.
+      Warning: The destination database runs Postgres ${targetVersion}, but the source database runs Postgres ${sourceVersion}. Migrating the database also upgrades the Postgres version.
 
     `))
   }

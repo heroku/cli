@@ -371,7 +371,7 @@ describe('data:pg:migrate', function () {
       dataApi.done()
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Configure a new database migration (all classic Postgres databases on ⬢ myapp already have an active migration)')
+      expect(stdout).to.contain('- Configure a new database migration (all classic Postgres databases on ⬢ myapp have an active migration)')
     })
 
     it('keeps the databases of a migration that is being canceled from new migrations', async function () {
@@ -392,7 +392,7 @@ describe('data:pg:migrate', function () {
       dataApi.done()
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Configure a new database migration (all classic Postgres databases on ⬢ myapp already have an active migration)')
+      expect(stdout).to.contain('- Configure a new database migration (all classic Postgres databases on ⬢ myapp have an active migration)')
     })
 
     it('enables configuring a new migration option when there are additional classic databases pending migration', async function () {
@@ -461,7 +461,7 @@ describe('data:pg:migrate', function () {
 
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('=== Migration details')
+      expect(stdout).to.contain('=== Migration Details')
       expect(stdout).to.match(/Source:\s+⛁ postgresql-cubic-12345 \(STANDARD_DB\) - Postgres 16\.4 - Available/)
       expect(stdout).to.match(/Destination:\s+⛁ postgresql-lively-12345 \(ADVANCED_DB\) - Postgres 17\.5 - Migrating/)
       expect(stdout).to.match(/Method:\s+Streaming/)
@@ -491,7 +491,7 @@ describe('data:pg:migrate', function () {
     it('shows why the API doesn\'t allow starting a migration', async function () {
       replyWithTargetMigration(dataApi, {
         can_start: false,
-        start_disabled_reason: 'the migration is running',
+        start_disabled_reason: 'migration is running',
         status: MigrationStatus.MIGRATING,
       }, 2)
       mockedStdinInput = [
@@ -504,7 +504,7 @@ describe('data:pg:migrate', function () {
 
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Start (the migration is running)')
+      expect(stdout).to.contain('- Start (migration is running)')
     })
 
     it('disables starting a migration when the API doesn\'t allow it or explain why', async function () {
@@ -525,7 +525,7 @@ describe('data:pg:migrate', function () {
     it('shows why the API doesn\'t allow canceling a migration', async function () {
       replyWithTargetMigration(dataApi, {
         can_cancel: false,
-        cancel_disabled_reason: 'the migration is promoting',
+        cancel_disabled_reason: 'migration is promoting',
         status: MigrationStatus.PROMOTING,
       }, 2)
       mockedStdinInput = [
@@ -538,7 +538,7 @@ describe('data:pg:migrate', function () {
 
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Cancel (the migration is promoting)')
+      expect(stdout).to.contain('- Cancel (migration is promoting)')
     })
 
     it('disables canceling a migration when the API doesn\'t allow it or explain why', async function () {
@@ -571,7 +571,7 @@ describe('data:pg:migrate', function () {
 
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout.match(/=== Migration details/g)?.length).to.equal(2)
+      expect(stdout.match(/=== Migration Details/g)?.length).to.equal(2)
       expect(stdout).to.match(/Status:\s+Preparing databases/)
       expect(stdout).to.match(/Status:\s+Ready to promote/)
     })
@@ -590,8 +590,8 @@ describe('data:pg:migrate', function () {
 
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout.match(/=== Migration details/g)?.length).to.equal(1)
-      expect(stdout).to.contain('The migration is no longer available. Either a newer migration replaced it or its destination database was removed.')
+      expect(stdout.match(/=== Migration Details/g)?.length).to.equal(1)
+      expect(stdout).to.contain('The migration is no longer available. Either a newer migration replaced it or its destination database no longer exists.')
     })
 
     it('goes back to the main menu when the destination database of the migration is removed', async function () {
@@ -614,8 +614,8 @@ describe('data:pg:migrate', function () {
 
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout.match(/=== Migration details/g)?.length).to.equal(1)
-      expect(stdout).to.contain('The migration is no longer available. Either a newer migration replaced it or its destination database was removed.')
+      expect(stdout.match(/=== Migration Details/g)?.length).to.equal(1)
+      expect(stdout).to.contain('The migration is no longer available. Either a newer migration replaced it or its destination database no longer exists.')
     })
 
     it('omits the migration details that aren\'t available', async function () {
@@ -697,7 +697,7 @@ describe('data:pg:migrate', function () {
       expect(unmatchedRequests).to.be.empty
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout.match(/=== Migration details/g)?.length).to.equal(2)
+      expect(stdout.match(/=== Migration Details/g)?.length).to.equal(2)
     })
   })
 
@@ -1206,7 +1206,7 @@ describe('data:pg:migrate', function () {
         .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/run`)
         .reply(202, {})
       replyWithTargetMigration(dataApi, {
-        start_disabled_reason: 'the migration is running',
+        start_disabled_reason: 'migration is running',
         status: MigrationStatus.MIGRATING,
         status_description: 'Migrating data',
       }, 2)
@@ -1227,7 +1227,7 @@ describe('data:pg:migrate', function () {
       expect(stderr).to.equal('Starting migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
       // Verify the migration details are refreshed after starting the migration
       expect(stdout).to.match(/Status:\s+Migrating data/)
-      expect(stdout).to.contain('- Start (the migration is running)')
+      expect(stdout).to.contain('- Start (migration is running)')
     })
 
     it('goes back to the migration details without starting the migration', async function () {
@@ -1248,7 +1248,7 @@ describe('data:pg:migrate', function () {
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout.match(/Confirm to start migration: \(Use arrow keys\)/g)?.length).to.equal(1)
-      expect(stdout.match(/=== Migration details/g)?.length).to.equal(2)
+      expect(stdout.match(/=== Migration Details/g)?.length).to.equal(2)
     })
   })
 
@@ -1280,10 +1280,10 @@ describe('data:pg:migrate', function () {
         .reply(202, {})
       replyWithTargetMigration(dataApi, {
         can_cancel: false,
-        cancel_disabled_reason: 'the migration is already being canceled',
-        start_disabled_reason: 'the migration is being canceled',
+        cancel_disabled_reason: 'migration is canceling',
+        start_disabled_reason: 'migration is canceling',
         status: MigrationStatus.CANCELLING,
-        status_description: 'Canceling migration. You can start a new migration once this finishes.',
+        status_description: 'Canceling migration. Wait for the cancellation to finish before starting a new migration.',
       }, 2)
 
       // Simulate the user selections
@@ -1302,9 +1302,9 @@ describe('data:pg:migrate', function () {
       expect(stdout).not.to.contain('Canceling stops the running migration')
       expect(stderr).to.equal('Canceling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
       // Verify the migration details are refreshed after canceling the migration
-      expect(stdout).to.match(/Status:\s+Canceling migration\. You can start a new migration once this finishes\./)
-      expect(stdout).to.contain('- Start (the migration is being canceled)')
-      expect(stdout).to.contain('- Cancel (the migration is already being canceled)')
+      expect(stdout).to.match(/Status:\s+Canceling migration\. Wait for the cancellation to finish before starting a new migration\./)
+      expect(stdout).to.contain('- Start (migration is canceling)')
+      expect(stdout).to.contain('- Cancel (migration is canceling)')
     })
 
     it('cancels a running migration', async function () {
@@ -1314,10 +1314,10 @@ describe('data:pg:migrate', function () {
         .reply(202, {})
       replyWithTargetMigration(dataApi, {
         can_cancel: false,
-        cancel_disabled_reason: 'the migration is already being canceled',
-        start_disabled_reason: 'the migration is being canceled',
+        cancel_disabled_reason: 'migration is canceling',
+        start_disabled_reason: 'migration is canceling',
         status: MigrationStatus.CANCELLING,
-        status_description: 'Canceling migration. You can start a new migration once this finishes.',
+        status_description: 'Canceling migration. Wait for the cancellation to finish before starting a new migration.',
       }, 2)
 
       // Simulate the user selections
@@ -1336,7 +1336,7 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.contain('You\'ll receive an email when ⛁ postgresql-cubic-12345 is available.')
       expect(stdout).to.contain('After canceling, you must create a new migration configuration')
       expect(stderr).to.equal('Canceling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
-      expect(stdout).to.match(/Status:\s+Canceling migration\. You can start a new migration once this finishes\./)
+      expect(stdout).to.match(/Status:\s+Canceling migration\. Wait for the cancellation to finish before starting a new migration\./)
     })
 
     it('cancels a migration that is being prepared', async function () {
@@ -1346,10 +1346,10 @@ describe('data:pg:migrate', function () {
         .reply(202, {})
       replyWithTargetMigration(dataApi, {
         can_cancel: false,
-        cancel_disabled_reason: 'the migration is already being canceled',
-        start_disabled_reason: 'the migration is being canceled',
+        cancel_disabled_reason: 'migration is canceling',
+        start_disabled_reason: 'migration is canceling',
         status: MigrationStatus.CANCELLING,
-        status_description: 'Canceling migration. You can start a new migration once this finishes.',
+        status_description: 'Canceling migration. Wait for the cancellation to finish before starting a new migration.',
       }, 2)
 
       // Simulate the user selections
@@ -1402,7 +1402,7 @@ describe('data:pg:migrate', function () {
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout.match(/Confirm to cancel migration: \(Use arrow keys\)/g)?.length).to.equal(1)
-      expect(stdout.match(/=== Migration details/g)?.length).to.equal(2)
+      expect(stdout.match(/=== Migration Details/g)?.length).to.equal(2)
     })
   })
 
@@ -1634,56 +1634,62 @@ describe('data:pg:migrate', function () {
       expect(stderr).to.equal('Configuring migration... done\n')
       expect(stdout).to.contain(`⛁ ${premiumDbAttachment.addon.name} v16.4 as PREMIUM_DB`)
       expect(stdout).to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} v17.5 as OTHER_ADVANCED_DB`)
-      expect(stdout).to.contain('Warning: The destination database runs Postgres 17.5, but the source database runs Postgres 16.4.')
+      expect(stdout).to.contain('Warning: The destination database runs Postgres 17.5, but the source database runs Postgres 16.4. Migrating the database also upgrades the Postgres version.')
       expect(stdout).to.match(/Source:\s+⛁ postgresql-convex-12345 \(PREMIUM_DB\) - Postgres 16\.4$/m)
       expect(stdout).to.match(/Destination:\s+⛁ postgresql-obscured-12345 \(OTHER_ADVANCED_DB\) - Postgres 17\.5 - Available/)
     })
 
-    it('does not warn about a version change when the major versions match', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .persist(true)
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          nonTargetAdvancedDbAttachment,
-          premiumDbAttachment,
-        ])
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/client/v11/databases/${premiumDbAttachment.addon.id}`)
-        .times(3)
-        .reply(200, {postgres_version: '17.2'})
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(404, {id: 'not_found', message: 'Add-on not found'})
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, nonTargetAdvancedDbInfo)
-        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
-          method: 'full-load',
-          source_id: premiumDbAttachment.addon.id,
-        })
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .times(2)
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .times(2)
-        .reply(200, nonTargetAdvancedDbInfo)
+    // The destination runs Postgres 17.5. The API rejects migrations to an older major version, so there's nothing to warn about.
+    for (const {description, sourceVersion} of [
+      {description: 'the major versions match', sourceVersion: '17.2'},
+      {description: 'the destination runs an older major version', sourceVersion: '18.1'},
+    ]) {
+      it(`does not warn about a version change when ${description}`, async function () {
+        const herokuApi = nock('https://api.heroku.com')
+          .persist(true)
+          .get('/apps/myapp/addon-attachments')
+          .reply(200, [
+            nonTargetAdvancedDbAttachment,
+            premiumDbAttachment,
+          ])
+        const dataApi = nock('https://api.data.heroku.com')
+          .get(`/client/v11/databases/${premiumDbAttachment.addon.id}`)
+          .times(3)
+          .reply(200, {postgres_version: sourceVersion})
+          .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+          .reply(404, {id: 'not_found', message: 'Add-on not found'})
+          .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+          .reply(200, nonTargetAdvancedDbInfo)
+          .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+            method: 'full-load',
+            source_id: premiumDbAttachment.addon.id,
+          })
+          .reply(200, createdMigrationResponse)
+          .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+          .times(2)
+          .reply(200, createdMigrationResponse)
+          .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+          .times(2)
+          .reply(200, nonTargetAdvancedDbInfo)
 
-      mockedStdinInput = [
-        '\n',         // Main menu: > Configure a new database migration
-        '\n',         // Select source database: > Premium database
-        '\n',         // Select target database: > Non-target Advanced database
-        '\n',         // Confirm migration configuration: > Confirm
-        '\u001B[A\n', // Manage migration: > Go back
-        '\u001B[A\n', // Main menu: > Exit
-      ]
+        mockedStdinInput = [
+          '\n',         // Main menu: > Configure a new database migration
+          '\n',         // Select source database: > Premium database
+          '\n',         // Select target database: > Non-target Advanced database
+          '\n',         // Confirm migration configuration: > Confirm
+          '\u001B[A\n', // Manage migration: > Go back
+          '\u001B[A\n', // Main menu: > Exit
+        ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
+        const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
 
-      herokuApi.done()
-      dataApi.done()
-      expect(stderr).to.equal('Configuring migration... done\n')
-      expect(stdout).to.contain(`⛁ ${premiumDbAttachment.addon.name} v17.2 as PREMIUM_DB`)
-      expect(stdout).not.to.contain('The destination database runs Postgres')
-    })
+        herokuApi.done()
+        dataApi.done()
+        expect(stderr).to.equal('Configuring migration... done\n')
+        expect(stdout).to.contain(`⛁ ${premiumDbAttachment.addon.name} v${sourceVersion} as PREMIUM_DB`)
+        expect(stdout).not.to.contain('The destination database runs Postgres')
+      })
+    }
 
     it('provisions a new destination database on the source database major version', async function () {
       poolConfigLeaderInteractiveConfigStub.resolves({
@@ -1780,7 +1786,7 @@ describe('data:pg:migrate', function () {
       dataApi.done()
       expect(stderr).to.equal('Starting migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
       expect(stdout).to.match(/Source:\s+⛁ postgresql-cubic-12345 \(STANDARD_DB\) - Postgres 16\.4$/m)
-      expect(stdout).to.contain('Warning: The destination database runs Postgres 17.5, but the source database runs Postgres 16.4.')
+      expect(stdout).to.contain('Warning: The destination database runs Postgres 17.5, but the source database runs Postgres 16.4. Migrating the database also upgrades the Postgres version.')
     })
   })
 })
