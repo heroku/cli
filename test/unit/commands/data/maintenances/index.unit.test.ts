@@ -1,12 +1,11 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {MaintenanceInfoResult as Maintenance} from '@heroku/types/data'
 import {expect} from 'chai'
 import {SinonStub, stub} from 'sinon'
 
 import DataMaintenancesIndex from '../../../../../src/commands/data/maintenances/index.js'
 import {type MockSDK, mockSDK} from '../../../../helpers/mock-sdk.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
-
-import {MaintenanceInfoResult as Maintenance} from '@heroku/types/data'
 const appId = '30f93b8f-c592-4004-8d8a-3efb20395484'
 
 const app = {
@@ -16,11 +15,11 @@ const app = {
 
 const postgresAddonMaintenance: Maintenance = {
   addon: {
-    uuid: 'addon-123',
     attachments: ['DATABASE_URL'],
     kind: 'heroku-postgresql',
     name: 'postgresql-sinuous-83720',
     plan: 'standard-0',
+    uuid: 'addon-123',
     window: 'Thursdays 22:00 to Fridays 02:00 UTC',
   },
   app: {
@@ -42,11 +41,11 @@ const postgresAddonMaintenance: Maintenance = {
 
 const redisAddonMaintenance: Maintenance = {
   addon: {
-    uuid: 'addon-456',
     attachments: ['REDIS_URL'],
     kind: 'heroku-redis',
     name: 'redis-contoured-23719',
     plan: 'premium-0',
+    uuid: 'addon-456',
     window: 'Thursdays 22:00 to Fridays 02:00 UTC',
   },
   app: {

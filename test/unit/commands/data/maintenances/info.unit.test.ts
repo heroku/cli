@@ -144,25 +144,6 @@ addon_window:             Thursdays 22:00 to Fridays 02:00 UTC
     expect(JSON.parse(stdout)).to.deep.equal(maintenance)
   })
 
-  it('shows 404 error when maintenance is not found', async function () {
-    fakeData.maintenance.info.callsFake(async (_addonIdentity, options) => {
-      await options?.beforeInfo?.({addon: advancedAddon})
-      throw Object.assign(new Error('not found'), {statusCode: 404})
-    })
-
-    const {error} = await runCommand(DataMaintenancesInfo, [advancedAddon.name, `--app=${app.name}`])
-    const {message} = error as {message: string}
-    expect(message).to.equal('no maintenance found for this add-on')
-  })
-
-  it('propagates the raw error when the addon itself cannot be resolved', async function () {
-    fakeData.maintenance.info.rejects({message: 'Couldn\'t find that addon.', statusCode: 404})
-
-    const {error} = await runCommand(DataMaintenancesInfo, [advancedAddon.name])
-    const {message} = error as {message: string}
-    expect(message).to.equal('Couldn\'t find that addon.')
-  })
-
   it('shows maintenance for non-postgres add-ons', async function () {
     stubInfo(fakeData.maintenance.info, maintenance, nonPostgresAddon)
 

@@ -74,25 +74,12 @@ export default class DataMaintenancesInfo extends Command {
     const {app, json} = flags
     const {data} = createSDK(this.heroku, {extensions: [maintenanceExtensions]})
 
-    let maintenance: MaintenanceInfoResult
-    let addonResolved = false
-    try {
-      const result = await data.maintenance.info(args.addon, {
-        appIdentity: app,
-        beforeInfo({addon}) {
-          addonResolved = true
-          ux.action.start(`Fetching maintenance for ${color.addon(addon.name)}`)
-        },
-      })
-      maintenance = result.maintenance
-    } catch (error: any) {
-      ux.action.stop()
-      if (addonResolved && error.statusCode === 404) {
-        this.error('no maintenance found for this add-on')
-      }
-
-      throw error
-    }
+    const {maintenance} = await data.maintenance.info(args.addon, {
+      appIdentity: app,
+      beforeInfo({addon}) {
+        ux.action.start(`Fetching maintenance for ${color.addon(addon.name)}`)
+      },
+    })
 
     ux.action.stop()
 

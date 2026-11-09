@@ -30,8 +30,8 @@ export default class DataMaintenancesSchedule extends Command {
       description: 'desired week to run maintenance in',
       exclusive: ['weeks'],
     }),
-    weeks: flags.string({
-      default: '2',
+    weeks: flags.integer({
+      default: 2,
       description: 'the number of weeks to delay maintenance for',
       exclusive: ['week'],
     }),
@@ -44,12 +44,10 @@ export default class DataMaintenancesSchedule extends Command {
       ? Date.now()
       : Date.parse(maintenance.scheduled_for)
 
-    const weeks = differenceInCalendarWeeks(
+    return differenceInCalendarWeeks(
       Date.parse(week),
       scheduled,
     )
-
-    return weeks.toString()
   }
 
   async run() {
@@ -67,8 +65,8 @@ export default class DataMaintenancesSchedule extends Command {
     await this.scheduleMaintenance(data, args.addon, app, delayWeeks)
   }
 
-  protected async scheduleMaintenance(data: Data, addon: string, app: string | undefined, delayWeeks: string) {
-    const {addon: resolvedAddon, schedule} = await data.maintenance.schedule(addon, {delay_weeks: Number(delayWeeks)}, {
+  protected async scheduleMaintenance(data: Data, addon: string, app: string | undefined, delayWeeks: number) {
+    const {addon: resolvedAddon, schedule} = await data.maintenance.schedule(addon, {delay_weeks: delayWeeks}, {
       appIdentity: app,
       beforeSchedule({addon}) {
         ux.action.start(`Scheduling maintenance for ${color.addon(addon.name)}`)

@@ -1,4 +1,5 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {MaintenanceHistoryResult} from '@heroku/types/data'
 import {expect} from 'chai'
 import {match, SinonStub, stub} from 'sinon'
 
@@ -6,8 +7,6 @@ import DataMaintenancesHistory from '../../../../../src/commands/data/maintenanc
 import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 import {unwrap} from '../../../../helpers/utils/unwrap.js'
-
-import {MaintenanceHistoryResult} from '@heroku/types/data'
 
 const addonFixture = {
   id: 'b8966596-d1af-4f39-8c72-a8b4d6a5d3e1',
@@ -139,7 +138,6 @@ describe('data:maintenances:history', function () {
   })
 
   it('shows maintenances for addon formatted in json', async function () {
-
     const {stderr, stdout} = await runCommand(DataMaintenancesHistory, [addonFixture.name, '--json'])
 
     expect(unwrap(stderr)).to.contain('Fetching maintenance history for postgresql-sinuous-83720... done')

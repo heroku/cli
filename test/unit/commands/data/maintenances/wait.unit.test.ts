@@ -1,4 +1,5 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {MaintenanceInfoResult as Maintenance} from '@heroku/types/data'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import {match, SinonStub, stub} from 'sinon'
@@ -7,8 +8,6 @@ import DataMaintenancesWait from '../../../../../src/commands/data/maintenances/
 import {maintenance} from '../../../../fixtures/data/maintenances/fixtures.js'
 import {advancedAddon, nonPostgresAddon} from '../../../../fixtures/data/pg/fixtures.js'
 import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
-
-import {MaintenanceInfoResult as Maintenance} from '@heroku/types/data'
 
 const completedMaintenance: Maintenance = {
   ...maintenance,

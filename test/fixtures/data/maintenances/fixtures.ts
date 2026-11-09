@@ -1,13 +1,14 @@
 import type {MaintenanceInfoResult, MaintenanceWindowResult} from '@heroku/types/data'
+
 import {addon} from '../pg/fixtures.js'
 
 export const maintenance: MaintenanceInfoResult = {
   addon: {
     attachments: ['DATABASE_URL'],
-    uuid: 'addon-123',
     kind: 'heroku-postgresql',
     name: addon.name,
     plan: addon.plan?.name || 'heroku-postgresql:standard-0',
+    uuid: 'addon-123',
     window: 'Thursdays 22:00 to Fridays 02:00 UTC',
   },
   app: {
