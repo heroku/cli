@@ -14,6 +14,14 @@ Many commands now resolve add-ons, add-on attachments, and Postgres databases th
 - **Internal error class name in the message prefix.** The SDK's resolver error classes (e.g. `PgDatabaseNotFoundError`, `AddonAttachmentAmbiguousError`) set `name` to their class name, so an uncaught resolver error prints as `<ClassName>: <message>` (e.g. `PgDatabaseNotFoundError: Unknown database: ...`). `heroku-cli-util`'s equivalent errors didn't override `name`, so those showed a plain `Error: <message>`.
 - **Extra "Caused by:" line for not-found errors.** The SDK's `PgDatabaseNotFoundError` is constructed with the original resolution error as its `cause`. oclif prints that as an additional `Caused by: <InternalClassName>: <message>` line below the main message.
 
+## Output changes
+
+Commands now render tables, headers, and objects with `@heroku/heroku-cli-util` v11, whose helpers return the rendered text instead of printing it. Output is otherwise byte-for-byte unchanged, except:
+
+- **`--json` output honors a JSON color theme.** Commands with a `--json` flag now print it through oclif's `logJson`, which applies the `json` colors from a user's `theme.json` in the CLI config directory (e.g. `~/.config/heroku/theme.json`) if one is set (set `HEROKU_DISABLE_THEME=true` to ignore it). Without a theme file the output is unchanged.
+- **`data:pg:docs` prints its `Opening <url> in <browser> browser…` message to stderr** instead of stdout, like the prompts and warnings around it.
+- **`pg:credentials` shows the rotating-usernames table inside the credential's row.** For a credential that is rotating, the "Usernames currently active for this credential" table was printed above the whole credentials table, separated from the credential it described. It now appears under that heading in the credential's row, as intended.
+
 ## Apps commands
 
 - `apps:create` now provisions add-ons, config vars, and buildpacks through `@heroku/sdk` (`platform.app.createAndSetup`). Setup runs as a single step, so the previous per-item progress lines (`Adding <addon>... done`, `Setting config vars... done`, `Setting buildpack to <url>... done`) are consolidated into the one `Creating app... done` spinner. The final status line (app name, region, and stack) is unchanged.

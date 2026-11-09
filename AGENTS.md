@@ -97,8 +97,13 @@ Here is a list of commonly used ux components and when they are typically used:
 - **hux.table**
   - The display of multiple instances of a resource (i.e., tabular data)
 
-- **hux.styledObject and hux.styledJson**
+- **hux.styledHeader and hux.styledObject**
   - The display of a singular instance of a resource
+
+- **this.logJson**
+  - JSON output for a hand-rolled `--json` flag (with `enableJsonFlag`, return the object from `run()` instead)
+
+`hux.table`, `hux.styledHeader`, and `hux.styledObject` return the rendered string and print nothing. In a command, wrap them in `this.log(...)`, e.g. `this.log(hux.table(apps, columns))`. Lint rejects a bare call.
 
 - **ux.error**
   - When an error condition occurs and we want to inform the user that the command failed with exit code 1

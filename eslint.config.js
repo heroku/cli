@@ -55,6 +55,12 @@ export default [
           message: 'Do not construct HerokuApiClient directly. Use createApiClient(this.heroku, …) from src/lib/sdk.ts.',
           selector: "NewExpression[callee.property.name='HerokuApiClient']",
         },
+        // hux formatters return the rendered string (heroku-cli-util v11); a bare call prints nothing.
+        {
+          message: 'hux.styledHeader/styledObject/table return strings; wrap the call in this.log().',
+          selector: ':matches(ExpressionStatement > CallExpression, ExpressionStatement > AwaitExpression > CallExpression)'
+            + "[callee.object.name='hux'][callee.property.name=/^(styledHeader|styledObject|table)$/]",
+        },
       ],
     },
   },
