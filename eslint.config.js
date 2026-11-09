@@ -58,8 +58,16 @@ export default [
         // hux formatters return the rendered string (heroku-cli-util v11); a bare call prints nothing.
         {
           message: 'hux.styledHeader/styledObject/table return strings; wrap the call in this.log().',
-          selector: ':matches(ExpressionStatement > CallExpression, ExpressionStatement > AwaitExpression > CallExpression)'
+          selector: ':matches(ExpressionStatement > CallExpression, ExpressionStatement > AwaitExpression > CallExpression, '
+            // forEach discards its callback's return value, so `rows.forEach(r => hux.table(...))` prints nothing.
+            + "CallExpression[callee.property.name='forEach'] > ArrowFunctionExpression > CallExpression.body)"
             + "[callee.object.name='hux'][callee.property.name=/^(styledHeader|styledObject|table)$/]",
+        },
+        {
+          // Keeps every formatter call spelled hux.X(...), which the selector above relies on.
+          // (esquery regexes can't contain '/', hence the '.' in the package name.)
+          message: 'Import hux and call hux.styledHeader/styledObject/table, so the lint rule above can check the call.',
+          selector: 'ImportDeclaration[source.value=/^@heroku.heroku-cli-util/] ImportSpecifier[imported.name=/^(styledHeader|styledObject|table)$/]',
         },
         {
           message: "Open URLs with hux.openUrl(url, {prompt: false}) instead of the 'open' package.",
