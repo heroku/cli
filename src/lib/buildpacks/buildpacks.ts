@@ -148,8 +148,8 @@ export class BuildpackCommand {
     }
 
     const validationResult = BuildpackRegistry.isValidBuildpackSlug(buildpack)
-    if (!validationResult.isOk) {
-      ux.error(`Could not find the buildpack: ${buildpack}. ${(validationResult as any).error}`, {exit: 1})
+    if (validationResult.isErr) {
+      ux.error(`Could not find the buildpack '${buildpack}'.\n${validationResult.error}`, {exit: 1})
     }
 
     try {

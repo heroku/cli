@@ -20,12 +20,15 @@ export default class Search extends Command {
     const {args, flags} = await this.parse(Search)
     let searchResults: BuildpackBody[]
     const registry = new BuildpackRegistry()
+    const noResults: BuildpackBody[] = []
 
     if (args.term) {
       const uniqueBuildpacks = new Map<string, BuildpackBody>()
-      const array = ((await registry.search(args.term)).unwrapOr([]))
-        .concat((await registry.search(undefined, args.term)).unwrapOr([]))
-        .concat((await registry.search(undefined, undefined, args.term)).unwrapOr([]))
+      const array = [
+        ...(await registry.search(args.term)).unwrapOr(noResults),
+        ...(await registry.search(undefined, args.term)).unwrapOr(noResults),
+        ...(await registry.search(undefined, undefined, args.term)).unwrapOr(noResults),
+      ]
       array
         .forEach((element: BuildpackBody) => {
           uniqueBuildpacks.set(`${element.namespace}/${element.name}`, element)
@@ -33,7 +36,7 @@ export default class Search extends Command {
 
       searchResults = [...uniqueBuildpacks.values()]
     } else {
-      searchResults = (await registry.search(flags.namespace, flags.name, flags.description)).unwrapOr([])
+      searchResults = (await registry.search(flags.namespace, flags.name, flags.description)).unwrapOr(noResults)
     }
 
     type TableRow = {

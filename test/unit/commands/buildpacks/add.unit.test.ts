@@ -1,10 +1,10 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {Fixture} from '@heroku/buildpack-registry'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import BuildpacksAdd from '../../../../src/commands/buildpacks/add.js'
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
+import {Fixture} from '../../../helpers/buildpacks/fixture.js'
 
 describe('buildpacks:add', function () {
   let api: nock.Scope
@@ -46,6 +46,15 @@ describe('buildpacks:add', function () {
       expect(stdout).to.equal(`Buildpack added. Next release on ⬢ example will use hone/test.
 Run git push heroku main to create a new release using this buildpack.
 `)
+    })
+
+    it('# errors on an invalid buildpack name without calling the registry', async function () {
+      Stubber.get(api)
+
+      const {error} = await runCommand(BuildpacksAdd, ['not-a-slug', '-a', 'example'])
+
+      expect(error?.message).to.include("Could not find the buildpack 'not-a-slug'.")
+      expect(error?.message).to.include('namespace/name')
     })
 
     it('# with no buildpacks adds the buildpack URL', async function () {
