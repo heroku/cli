@@ -17,11 +17,16 @@ describe('heroku redis:keyspace-notifications', function () {
   it('# sets the keyspace notify events', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons').reply(200, [
-        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'},
+        {
+          addon_service: {name: 'heroku-redis'},
+          config_vars: ['REDIS_FOO', 'REDIS_BAR'],
+          id: 'b5e0b6ce-1a1d-4f3c-9d1a-6f0e3a2c7d11',
+          name: 'redis-haiku',
+        },
       ])
 
     const redis = nock('https://api.data.heroku.com')
-      .patch('/redis/v0/databases/redis-haiku/config', {notify_keyspace_events: 'AKE'}).reply(200, {
+      .patch('/redis/v0/databases/b5e0b6ce-1a1d-4f3c-9d1a-6f0e3a2c7d11/config', {notify_keyspace_events: 'AKE'}).reply(200, {
         notify_keyspace_events: {default: '', desc: 'Enables keyspace notifications.', value: 'AKE'},
       })
 

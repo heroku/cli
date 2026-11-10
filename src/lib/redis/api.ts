@@ -96,7 +96,7 @@ const makeRedisAPI = (app: string, database: string | undefined, json: boolean, 
       // get info for each db
       const databases = addons.map(addon => ({
         addon,
-        redis: this.request<RedisFormationResponse>(`/redis/v0/databases/${addon.name}`).catch(error => {
+        redis: this.request<RedisFormationResponse>(`/redis/v0/databases/${addon.id}`).catch(error => {
           if (error.statusCode !== 404) {
             throw error
           }

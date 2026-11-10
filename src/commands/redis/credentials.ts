@@ -24,9 +24,9 @@ export default class Credentials extends Command {
 
     if (reset) {
       this.log(`Resetting credentials for ${addon.name}`)
-      await redisApi(app, database, false, this.heroku).request(`/redis/v0/databases/${addon.name}/credentials_rotation`, 'POST', {})
+      await redisApi(app, database, false, this.heroku).request(`/redis/v0/databases/${addon.id}/credentials_rotation`, 'POST', {})
     } else {
-      const {body: redis} = await redisApi(app, database, false, this.heroku).request<RedisFormationResponse>(`/redis/v0/databases/${addon.name}`)
+      const {body: redis} = await redisApi(app, database, false, this.heroku).request<RedisFormationResponse>(`/redis/v0/databases/${addon.id}`)
       this.log(redis.resource_url)
     }
   }
