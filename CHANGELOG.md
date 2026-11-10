@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.13.0-beta.0](https://github.com/heroku/cli/compare/v11.12.1...v11.13.0-beta.0) (2026-11-10)
+
+### Features
+
+* add migration details view ([#4034](https://github.com/heroku/cli/issues/4034)) ([d9ae0c1](https://github.com/heroku/cli/commit/d9ae0c15fdc251eb46263d029ff520d78063cbd5))
+
+### Bug Fixes
+
+* **config:** clean up editor temp files on signals ([#4018](https://github.com/heroku/cli/issues/4018)) ([dfdf9f1](https://github.com/heroku/cli/commit/dfdf9f17e782191e7a1d71d479855f74a1807d3c))
+* **ps:** avoid shell when adding exec buildpack ([#4039](https://github.com/heroku/cli/issues/4039)) ([e30613f](https://github.com/heroku/cli/commit/e30613fd12b2de993fdf42d4b052ac29e80a8877))
+* **security:** eliminate shell injection in database and SSH commands ([#4038](https://github.com/heroku/cli/issues/4038)) ([5ba1e69](https://github.com/heroku/cli/commit/5ba1e69cdc2c7977ab349594cd315bb175cc6484)), references [#4040](https://github.com/heroku/cli/issues/4040)
+
 ## [11.12.1](https://github.com/heroku/cli/compare/v11.12.0...v11.12.1) (2026-10-22)
 
 ### Bug Fixes
