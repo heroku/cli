@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {BuildpackRegistry} from '@heroku/buildpack-registry'
+import {BuildpackBody, BuildpackRegistry} from '@heroku/buildpack-registry'
 import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
@@ -109,7 +109,7 @@ export class BuildpackCommand {
   }
 
   async findUrl(buildpacks: BuildpackResponse[], buildpack: string): Promise<number> {
-    const mappedUrl = await this.registryNameToUrl(buildpack)
+    const mappedUrl = await this.lookupRegistryUrl(buildpack)
     return _.findIndex(buildpacks, (b: BuildpackResponse) => b.buildpack.url === buildpack || b.buildpack.url === mappedUrl)
   }
 
@@ -143,30 +143,12 @@ export class BuildpackCommand {
   }
 
   async registryNameToUrl(buildpack: string): Promise<string> {
-    if (isValidURL(buildpack)) {
-      return buildpack
+    const url = await this.lookupRegistryUrl(buildpack)
+    if (url === undefined) {
+      ux.error(`${buildpack} is not in the buildpack registry.`, {exit: 1})
     }
 
-    const validationResult = BuildpackRegistry.isValidBuildpackSlug(buildpack)
-    if (!validationResult.isOk) {
-      ux.error(`Could not find the buildpack: ${buildpack}. ${(validationResult as any).error}`, {exit: 1})
-    }
-
-    try {
-      const response = await this.registry.buildpackExists(buildpack)
-      const body = await response.json()
-      return body.blob_url
-    } catch (error: any) {
-      if (error.statusCode === 404) {
-        ux.error(`${buildpack} is not in the buildpack registry.`, {exit: 1})
-      } else if (error.statusCode) {
-        ux.error(`${error.statusCode}: ${error.message}`, {exit: 1})
-      } else {
-        ux.error(error.message, {exit: 1})
-      }
-    }
-
-    return ''
+    return url
   }
 
   registryUrlToName(buildpack: string, registryOnly = false): string {
@@ -207,6 +189,38 @@ export class BuildpackCommand {
     if (await this.findUrl(buildpacks, buildpack) !== -1) {
       ux.error(`The buildpack ${buildpack} is already set on your app.`, {exit: 1})
     }
+  }
+
+  // Resolves a URL or registry name to the URL to install. Returns undefined
+  // when the name is well-formed but not in the registry, so callers that only
+  // match against installed buildpacks (remove) can fall back to the raw name.
+  private async lookupRegistryUrl(buildpack: string): Promise<string | undefined> {
+    if (isValidURL(buildpack)) {
+      return buildpack
+    }
+
+    const validationResult = BuildpackRegistry.isValidBuildpackSlug(buildpack)
+    if (validationResult.isErr) {
+      ux.error(`Could not find the buildpack '${buildpack}'.\n${validationResult.error}`, {exit: 1})
+    }
+
+    let response: Awaited<ReturnType<BuildpackRegistry['buildpackExists']>>
+    try {
+      response = await this.registry.buildpackExists(buildpack)
+    } catch (error: unknown) {
+      ux.error(error instanceof Error ? error.message : String(error), {exit: 1})
+    }
+
+    if (response.status === 404) {
+      return undefined
+    }
+
+    if (!response.ok) {
+      ux.error(`${response.status}: ${response.statusText}`, {exit: 1})
+    }
+
+    const body: Pick<BuildpackBody, 'blob_url'> = await response.json()
+    return body.blob_url
   }
 }
 

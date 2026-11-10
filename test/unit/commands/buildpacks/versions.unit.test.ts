@@ -1,11 +1,11 @@
 import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
-import {Fixture} from '@heroku/buildpack-registry'
 import {expect} from 'chai'
 import nock from 'nock'
 import {restore, stub} from 'sinon'
 
 import BuildpacksVersions from '../../../../src/commands/buildpacks/versions.js'
+import {Fixture} from '../../../helpers/buildpacks/fixture.js'
 
 describe('buildpacks:versions', function () {
   let registryApi: nock.Scope
@@ -19,6 +19,13 @@ describe('buildpacks:versions', function () {
     registryApi.done()
     nock.cleanAll()
     restore()
+  })
+
+  it('errors on an invalid buildpack slug without calling the registry', async function () {
+    const {error} = await runCommand(BuildpacksVersions, ['not-a-slug'])
+
+    expect(error?.message).to.include("Could not find 'not-a-slug'.")
+    expect(error?.message).to.include('namespace/name')
   })
 
   it('shows info about the buildpack', async function () {
