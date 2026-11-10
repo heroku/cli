@@ -6,7 +6,7 @@ on:
 
 jobs:
   pack_deb:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # pinned: the ubuntu-26.04 image lacks the apt archive tool that oclif pack:deb needs
     env:
       HEROKU_AUTHOR: 'Heroku'
     steps:
@@ -49,7 +49,7 @@ jobs:
 
   sign_deb:
     needs: [pack_deb]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: SignDebian
     env:
       HEROKU_DEB_SECRET_KEY: ${{ secrets.HEROKU_DEB_SECRET_KEY }}
@@ -74,7 +74,7 @@ jobs:
 
   upload-deb-and-tarballs:
     needs: [sign_deb, pack_tarballs]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
