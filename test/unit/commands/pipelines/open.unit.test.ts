@@ -6,7 +6,7 @@ import childProcess from 'node:child_process'
 import {restore, stub} from 'sinon'
 
 import OpenCommand from '../../../../src/commands/pipelines/open.js'
-import {spawnArgsInclude} from '../../../helpers/spawned-url.js'
+import {fakeLauncher, spawnArgsInclude} from '../../../helpers/spawned-url.js'
 
 describe('pipelines:open', function () {
   const pipeline = {id: '0123', name: 'Rigel'}
@@ -23,15 +23,7 @@ describe('pipelines:open', function () {
   })
 
   it('opens the url', async function () {
-    const spawnStub = stub(childProcess, 'spawn').returns({
-      off() {},
-      on() {},
-      // `open` resolves once the launcher emits 'spawn'.
-      once(event: string, cb: CallableFunction) {
-        if (event === 'spawn') cb()
-      },
-      unref() {},
-    } as any)
+    const spawnStub = stub(childProcess, 'spawn').returns(fakeLauncher())
 
     api
       .get('/pipelines')

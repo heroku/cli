@@ -8,7 +8,7 @@ import childProcess from 'node:child_process'
 import * as sinon from 'sinon'
 
 import OpenCommand from '../../../../src/commands/apps/open.js'
-import {spawnArgsInclude} from '../../../helpers/spawned-url.js'
+import {fakeLauncher, spawnArgsInclude} from '../../../helpers/spawned-url.js'
 
 type FakePlatform = {
   app: {info: sinon.SinonStub}
@@ -32,15 +32,7 @@ describe('apps:open', function () {
   beforeEach(function () {
     fakePlatform = buildFakePlatform()
     sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
-    spawnStub = sinon.stub(childProcess, 'spawn').returns({
-      off() {},
-      on() {},
-      // `open` resolves once the launcher emits 'spawn'.
-      once(event: string, cb: CallableFunction) {
-        if (event === 'spawn') cb()
-      },
-      unref() {},
-    } as any)
+    spawnStub = sinon.stub(childProcess, 'spawn').returns(fakeLauncher())
   })
 
   afterEach(function () {
@@ -70,15 +62,7 @@ describe('apps:open', function () {
     // command stops routing SDK construction through createSDK (the token would
     // fall back to the env value, flipping the header).
     sinon.restore()
-    sinon.stub(childProcess, 'spawn').returns({
-      off() {},
-      on() {},
-      // `open` resolves once the launcher emits 'spawn'.
-      once(event: string, cb: CallableFunction) {
-        if (event === 'spawn') cb()
-      },
-      unref() {},
-    } as any)
+    sinon.stub(childProcess, 'spawn').returns(fakeLauncher())
     sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
     let authHeader: string | undefined
@@ -107,15 +91,7 @@ describe('apps:open', function () {
     const originalHerokuHost = process.env.HEROKU_HOST
     process.env.HEROKU_HOST = 'staging.herokudev.com'
     sinon.restore()
-    sinon.stub(childProcess, 'spawn').returns({
-      off() {},
-      on() {},
-      // `open` resolves once the launcher emits 'spawn'.
-      once(event: string, cb: CallableFunction) {
-        if (event === 'spawn') cb()
-      },
-      unref() {},
-    } as any)
+    sinon.stub(childProcess, 'spawn').returns(fakeLauncher())
     sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
     const stagingAPI = nock('https://api.staging.herokudev.com:443')
@@ -161,6 +137,6 @@ describe('apps:open', function () {
     expect(error?.oclif?.exit).to.equal(1)
     expect(stdout).to.equal('')
     // oclif wraps warnings at the terminal width.
-    expect(ansis.strip(stderr).replaceAll(/\s*\n ›\s+/g, ' ')).to.contain('We can\'t open your default browser. Use a different browser or visit https://myapp.herokuapp.com/.')
+    expect(ansis.strip(stderr).replaceAll(/\s*\n [›»]\s+/g, ' ')).to.contain('We can\'t open your default browser. Use a different browser or visit https://myapp.herokuapp.com/.')
   })
 })
