@@ -37,6 +37,16 @@ export function renderPricingInfo(pricingInfo?: null | PricingInfo, count: numbe
 }
 
 /**
+ * @description Formats a timestamp in UTC to the minute, e.g. 2026-10-21 16:00 UTC
+ * @param timestamp - An ISO 8601 timestamp
+ * @returns The formatted timestamp
+ */
+export function renderTimestamp(timestamp: string): string {
+  const date = new Date(timestamp)
+  return Number.isNaN(date.getTime()) ? timestamp : `${date.toISOString().slice(0, 16).replace('T', ' ')} UTC`
+}
+
+/**
  * @description Cache for Postgres levels and pricing data to avoid redundant API calls.
  * Maps cache keys (format: `levels-pricing-${tier}`) to promises that resolve with
  * extended level information and optional optimized storage pricing.
