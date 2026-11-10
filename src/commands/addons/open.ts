@@ -129,9 +129,10 @@ export default class Open extends Command {
 
     if (flags['show-url']) {
       ux.stdout(webUrl)
-    } else {
-      await hux.openUrl(webUrl, {prompt: false})
+      return
     }
+
+    if (!await hux.openUrl(webUrl, {prompt: false})) this.exit(1)
   }
 
   private async sudo(app: string, addon: string): Promise<void> {
@@ -143,10 +144,10 @@ export default class Open extends Command {
     })
     const {action, method} = sso.body
     if (method === 'get') {
-      await hux.openUrl(action, {prompt: false})
+      if (!await hux.openUrl(action, {prompt: false})) this.exit(1)
     } else {
       const ssoPath = await this.writeSudoTemplate(app, addon, sso.body)
-      await hux.openUrl(`file://${ssoPath}`, {prompt: false})
+      if (!await hux.openUrl(`file://${ssoPath}`, {prompt: false})) this.exit(1)
     }
   }
 

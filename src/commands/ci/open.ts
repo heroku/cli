@@ -19,6 +19,6 @@ export default class CiOpen extends Command {
   async run() {
     const {flags} = await this.parse(CiOpen)
     const pipeline = await getPipeline(flags, this.heroku)
-    await hux.openUrl(`https://dashboard.heroku.com/pipelines/${pipeline.id}/tests`, {prompt: false})
+    if (!await hux.openUrl(`https://dashboard.heroku.com/pipelines/${pipeline.id}/tests`, {prompt: false})) this.exit(1)
   }
 }

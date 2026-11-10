@@ -9,7 +9,7 @@ describe('data:pg:docs', function () {
   let urlOpenerStub: SinonStub
 
   beforeEach(function () {
-    urlOpenerStub = stub(hux, 'openUrl').resolves()
+    urlOpenerStub = stub(hux, 'openUrl').resolves(true)
   })
 
   afterEach(function () {
@@ -32,5 +32,13 @@ describe('data:pg:docs', function () {
       'https://devcenter.heroku.com/categories/heroku-postgres',
       {action: 'view the documentation', browser: 'firefox'},
     )).to.be.true
+  })
+
+  it('exits 1 when the browser launcher can\'t be started', async function () {
+    urlOpenerStub.resolves(false)
+
+    const {error} = await runCommand(DataPgDocs, [])
+
+    expect(error?.oclif?.exit).to.equal(1)
   })
 })

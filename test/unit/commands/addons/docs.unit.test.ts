@@ -13,7 +13,7 @@ describe('addons:docs', function () {
   let resolveStub: SinonStub
 
   beforeEach(function () {
-    urlOpenerStub = stub(hux, 'openUrl').resolves()
+    urlOpenerStub = stub(hux, 'openUrl').resolves(true)
     infoStub = stub()
     resolveStub = stub()
     sdkMock = mockSDKPlatform({
@@ -68,5 +68,14 @@ describe('addons:docs', function () {
     expect(stdout).to.equal('https://devcenter.heroku.com/articles/slowdb\n')
     expect(stderr).to.equal('')
     expect(resolveStub.calledWith('my-attachment-1111', {appIdentity: 'myapp'})).to.be.true
+  })
+
+  it('exits 1 when the browser launcher can\'t be started', async function () {
+    infoStub.resolves({name: 'slowdb'})
+    urlOpenerStub.resolves(false)
+
+    const {error} = await runCommand(Cmd, ['slowdb'])
+
+    expect(error?.oclif?.exit).to.equal(1)
   })
 })

@@ -143,4 +143,24 @@ describe('apps:open', function () {
     const urlArgArray = spawnStub.getCall(0).args[1]
     expect(spawnArgsInclude(urlArgArray, 'https://myapp.herokuapp.com/mypath')).to.be.true
   })
+
+  it('warns with the url and exits 1 when the browser launcher can\'t be started', async function () {
+    fakePlatform.app.info.resolves(app)
+    spawnStub.returns({
+      off() {},
+      on() {},
+      // `open` rejects when the launcher emits 'error' instead of 'spawn' (e.g. no xdg-open).
+      once(event: string, cb: CallableFunction) {
+        if (event === 'error') cb(new Error('spawn xdg-open ENOENT'))
+      },
+      unref() {},
+    } as any)
+
+    const {error, stderr, stdout} = await runCommand(OpenCommand, ['-a', 'myapp'])
+
+    expect(error?.oclif?.exit).to.equal(1)
+    expect(stdout).to.equal('')
+    // oclif wraps warnings at the terminal width.
+    expect(ansis.strip(stderr).replaceAll(/\s*\n ›\s+/g, ' ')).to.contain('We can\'t open your default browser. Use a different browser or visit https://myapp.herokuapp.com/.')
+  })
 })

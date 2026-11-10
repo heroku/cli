@@ -18,6 +18,6 @@ export default class OrgsOpen extends Command {
     const {platform} = createSDK(this.heroku, {extensions: [teamExtensions]})
     const {delinquency, team: org} = await platform.team.getWithDelinquency(team)
     warnDelinquency(this, 'team', delinquency)
-    await hux.openUrl(`https://dashboard.heroku.com/teams/${org.name}`, {prompt: false})
+    if (!await hux.openUrl(`https://dashboard.heroku.com/teams/${org.name}`, {prompt: false})) this.exit(1)
   }
 }

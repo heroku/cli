@@ -12,6 +12,6 @@ export default class DataPgDocs extends BaseCommand {
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(DataPgDocs)
-    await hux.openUrl(DataPgDocs.defaultUrl, {action: 'view the documentation', browser: flags.browser})
+    if (!await hux.openUrl(DataPgDocs.defaultUrl, {action: 'view the documentation', browser: flags.browser})) this.exit(1)
   }
 }

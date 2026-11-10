@@ -18,6 +18,6 @@ export default class Open extends Command {
 
     const pipeline: Heroku.Pipeline = await disambiguate(this.heroku, args.pipeline)
     const url = `https://dashboard.heroku.com/pipelines/${pipeline.id}`
-    await hux.openUrl(url, {prompt: false})
+    if (!await hux.openUrl(url, {prompt: false})) this.exit(1)
   }
 }

@@ -29,9 +29,10 @@ export default class Docs extends Command {
     const url = `https://devcenter.heroku.com/articles/${addon.name}`
     if (flags['show-url']) {
       ux.stdout(url)
-    } else {
-      await hux.openUrl(url, {prompt: false})
+      return url
     }
+
+    if (!await hux.openUrl(url, {prompt: false})) this.exit(1)
 
     return url
   }

@@ -18,7 +18,7 @@ describe('The addons:open command', function () {
   let resolveStub: SinonStub
 
   beforeEach(function () {
-    urlOpenerStub = stub(hux, 'openUrl').resolves()
+    urlOpenerStub = stub(hux, 'openUrl').resolves(true)
     attachmentResolveStub = stub()
     resolveStub = stub()
     sdkMock = mockSDKPlatform({
@@ -214,5 +214,14 @@ describe('The addons:open command', function () {
       expect(html).to.contain('form.submit()')
       return api.done()
     })
+  })
+
+  it('exits 1 when the browser launcher can\'t be started', async function () {
+    attachmentResolveStub.resolves({addon: {app: {id: 'x'}, id: 'db2'}, web_url: 'http://db2'})
+    urlOpenerStub.resolves(false)
+
+    const {error} = await runCommand(Cmd, ['--app', 'myApp', 'db2'])
+
+    expect(error?.oclif?.exit).to.equal(1)
   })
 })

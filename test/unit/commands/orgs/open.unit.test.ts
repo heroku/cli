@@ -11,7 +11,7 @@ describe('heroku org:open', function () {
   let urlOpenerStub: sinon.SinonStub
 
   beforeEach(function () {
-    urlOpenerStub = sinon.stub(hux, 'openUrl').resolves()
+    urlOpenerStub = sinon.stub(hux, 'openUrl').resolves(true)
     getWithDelinquencyStub = sinon.stub()
     sinon.stub(HerokuSDK.prototype, 'platform').get(() => ({team: {getWithDelinquency: getWithDelinquencyStub}}))
   })
@@ -32,5 +32,14 @@ describe('heroku org:open', function () {
 
     expect(getWithDelinquencyStub.calledOnceWithExactly('myteam')).to.equal(true)
     expect(urlOpenerStub.calledOnceWithExactly('https://dashboard.heroku.com/teams/myteam', {prompt: false})).to.equal(true)
+  })
+
+  it('exits 1 when the browser launcher can\'t be started', async function () {
+    getWithDelinquencyStub.resolves({delinquency: null, team: {name: 'myteam'}})
+    urlOpenerStub.resolves(false)
+
+    const {error} = await runCommand(Cmd, ['--team', 'myteam'])
+
+    expect(error?.oclif?.exit).to.equal(1)
   })
 })

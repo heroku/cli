@@ -13,7 +13,7 @@ describe('ci:open', function () {
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-    openUrlStub = stub(hux, 'openUrl').resolves()
+    openUrlStub = stub(hux, 'openUrl').resolves(true)
   })
 
   afterEach(function () {
@@ -31,5 +31,16 @@ describe('ci:open', function () {
 
     expect(openUrlStub.calledOnceWithExactly(`https://dashboard.heroku.com/pipelines/${pipeline.id}/tests`, {prompt: false})).to.be.true
     expect(stdout).to.equal('')
+  })
+
+  it('exits 1 when the browser launcher can\'t be started', async function () {
+    api
+      .get(`/pipelines?eq[name]=${pipeline.name}`)
+      .reply(200, [pipeline])
+    openUrlStub.resolves(false)
+
+    const {error} = await runCommand(CiOpen, ['--pipeline', pipeline.name])
+
+    expect(error?.oclif?.exit).to.equal(1)
   })
 })

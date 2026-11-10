@@ -27,7 +27,7 @@ export default class AppsOpen extends Command {
     const app = await platform.app.info(flags.app)
     const path = args.path || ''
     const url = new URL(path, app.web_url as string)
-    await hux.openUrl(url.toString(), {prompt: false})
+    if (!await hux.openUrl(url.toString(), {prompt: false})) this.exit(1)
     return app
   }
 }
