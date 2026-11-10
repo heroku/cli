@@ -1,44 +1,33 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/settings/index.js'
+import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
 
 describe('pg:settings', function () {
-  let api: nock.Scope
-  let pg: nock.Scope
+  const addon = {id: 'addon-1', name: 'postgres-1'}
+  let fakeData: {databaseSettings: {getAll: SinonStub}}
+  let sdkMock: MockSDK
 
   beforeEach(function () {
-    const addon = {
-      app: {id: 'app-1', name: 'myapp'},
-      id: 1,
-      name: 'postgres-1',
-      plan: {name: 'heroku-postgresql:standard-0'},
-    }
-
-    api = nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'postgres-1',
-        app: 'myapp',
-      }).reply(200, [{addon}])
-
-    pg = nock('https://postgres-api.heroku.com')
+    fakeData = {databaseSettings: {getAll: stub()}}
+    sdkMock = mockSDKData(fakeData)
   })
 
   afterEach(function () {
-    api.done()
-    pg.done()
-    nock.cleanAll()
+    sdkMock.restore()
   })
 
   it('shows settings', async function () {
-    pg.get('/postgres/v0/databases/1/config').reply(200, {log_statement: {value: 'none'}})
+    fakeData.databaseSettings.getAll.resolves({addon, settings: {log_statement: {value: 'none'}}})
 
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'postgres-1'])
 
+    expect(fakeData.databaseSettings.getAll.calledOnceWithExactly('myapp', 'postgres-1')).to.equal(true)
     expect(stdout).to.eq(heredoc`
       === postgres-1
 
@@ -68,7 +57,7 @@ describe('pg:settings', function () {
       track_functions: {value: 'none'},
     }
 
-    pg.get('/postgres/v0/databases/1/config').reply(200, unorderedSettings)
+    fakeData.databaseSettings.getAll.resolves({addon, settings: unorderedSettings})
 
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'postgres-1'])
 

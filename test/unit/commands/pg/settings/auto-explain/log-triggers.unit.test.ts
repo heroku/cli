@@ -1,37 +1,31 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-triggers.js'
-import * as fixtures from '../../../../../fixtures/addons/fixtures.js'
+import {type MockSDK, mockSDKData} from '../../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
 
 describe('pg:settings:auto-explain:log-triggers', function () {
-  const addon = fixtures.addons['dwh-db']
-  let api: nock.Scope
+  const addon = {id: 'addon-1', name: 'postgresql-shiny-12345'}
+  let fakeData: {databaseSettings: {get: SinonStub; update: SinonStub}}
+  let sdkMock: MockSDK
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'test-database',
-        app: 'myapp',
-      }).reply(200, [{addon}])
+    fakeData = {databaseSettings: {get: stub(), update: stub()}}
+    sdkMock = mockSDKData(fakeData)
   })
 
   afterEach(function () {
-    nock.cleanAll()
+    sdkMock.restore()
   })
 
   it('updates settings for auto_explain.log_triggers with value', async function () {
-    const pg = nock('https://postgres-api.heroku.com')
-      .patch(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_triggers': {value: true}})
+    fakeData.databaseSettings.update.resolves({addon, setting: {value: true}})
 
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database', 'true'])
-
-    api.done()
-    pg.done()
 
     expect(stdout).to.equal(heredoc(`
       auto-explain.log-triggers has been set to true for ${addon.name}.
@@ -40,13 +34,9 @@ describe('pg:settings:auto-explain:log-triggers', function () {
   })
 
   it('shows settings for auto_explain.log_triggers with no value', async function () {
-    const pg = nock('https://postgres-api.heroku.com')
-      .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_triggers': {value: false}})
+    fakeData.databaseSettings.get.resolves({addon, setting: {value: false}})
 
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
-
-    api.done()
-    pg.done()
 
     expect(stdout).to.equal(heredoc(`
       auto-explain.log-triggers is set to false for ${addon.name}.
