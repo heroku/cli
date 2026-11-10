@@ -117,7 +117,7 @@ export class HerokuExec {
       } else if (!(this._hasExecBuildpack(buildpacks, buildpackUrls))) {
         await this._enableFeature(context, heroku)
         ux.stdout(`Adding the Heroku Exec buildpack to ${context.app}`)
-        child.execSync(`heroku buildpacks:add -i 1 heroku/exec -a ${context.app}`)
+        child.execFileSync('heroku', ['buildpacks:add', '-i', '1', 'heroku/exec', '-a', context.app], {stdio: 'inherit'})
         ux.stdout(heredoc`
 
         Run the following commands to redeploy your app, then Heroku Exec will be ready to use:

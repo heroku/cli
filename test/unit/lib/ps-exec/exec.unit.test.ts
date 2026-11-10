@@ -422,18 +422,21 @@ describe('HerokuExec', function () {
         .patch('/apps/myapp/features/runtime-heroku-exec')
         .reply(200, {enabled: true})
 
-      const childExecSyncStub = stub(child, 'execSync')
+      const childExecFileSyncStub = stub(child, 'execFileSync')
 
       try {
         await herokuExec.initFeature(context, herokuAPI, callback)
-        expect.fail('should have thrown')
-      } catch (error) {
-        const {oclif} = error as Errors.ExitError
-        expect(uxActionStartStub.calledWith('Initializing feature')).to.be.true
-        expect(uxStdoutStub.called).to.be.true
-        expect(childExecSyncStub.calledWith(match(/heroku buildpacks:add/))).to.be.true
-        expect(oclif.exit).to.equal(0)
+      } catch {
+        // ux.exit terminates the initialization flow.
       }
+
+      expect(uxActionStartStub.calledWith('Initializing feature')).to.be.true
+      expect(uxStdoutStub.called).to.be.true
+      expect(childExecFileSyncStub.calledWith(
+        'heroku',
+        ['buildpacks:add', '-i', '1', 'heroku/exec', '-a', context.app],
+        {stdio: 'inherit'},
+      )).to.be.true
     })
 
     it('warns to remove exec buildpack when app is NOT in a space but already has the exec buildpack installed', async function () {

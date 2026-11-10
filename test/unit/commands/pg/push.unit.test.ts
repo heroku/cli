@@ -242,6 +242,20 @@ describe('pg:push', function () {
       const restoreArgs = getSpawnArgs('pg_restore')
       expect(restoreArgs.at(-1)).to.eq('mydb')
     })
+
+    it('passes each exclusion as an argument without a shell', async () => {
+      await runCommand(Cmd, [
+        'localdb',
+        'postgres-1',
+        '-a',
+        'myapp',
+        '--exclude-table-data=logs;events',
+      ])
+
+      const dumpCall = spawnStub.getCalls().find(call => call.args[0] === 'pg_dump')
+      expect(dumpCall!.args[1]).to.include.members(['--exclude-table-data=logs', '--exclude-table-data=events'])
+      expect(dumpCall!.args[2]).not.to.have.property('shell')
+    })
   })
 
   skipOnWindows('exits non-zero when there is an error', async () => {

@@ -1,17 +1,17 @@
 import {ux} from '@oclif/core/ux'
-import {exec, spawn} from 'node:child_process'
+import {execFile, spawn} from 'node:child_process'
 import {promisify} from 'node:util'
 import tsheredoc from 'tsheredoc'
 
-const execAsync = promisify(exec)
+const execFileAsync = promisify(execFile)
 
 // eslint-disable-next-line unicorn/no-static-only-class
 export class NpmAuth {
   /**
-   * Execute a command - extracted for testability
+   * Execute npm with literal arguments - extracted for testability
    */
-  static async exec(command: string, options?: any): Promise<{stderr: Buffer | string; stdout: Buffer | string;}> {
-    return execAsync(command, options)
+  static async exec(args: string[], options?: any): Promise<{stderr: Buffer | string; stdout: Buffer | string;}> {
+    return execFileAsync('npm', args, options)
   }
 
   /**
@@ -19,7 +19,7 @@ export class NpmAuth {
    */
   static async isAuthenticated(): Promise<boolean> {
     try {
-      await this.exec('npm whoami', {timeout: 5000})
+      await this.exec(['whoami'], {timeout: 5000})
       return true
     } catch {
       return false
@@ -31,7 +31,7 @@ export class NpmAuth {
    */
   static async isNpmAvailable(): Promise<boolean> {
     try {
-      await this.exec('npm --version', {timeout: 5000})
+      await this.exec(['--version'], {timeout: 5000})
       return true
     } catch {
       return false
@@ -45,7 +45,7 @@ export class NpmAuth {
   static async isPrivatePackage(packageName: string): Promise<boolean> {
     try {
       // Try to get package info without authentication
-      await this.exec(`npm view ${packageName} name --json`, {
+      await this.exec(['view', packageName, 'name', '--json'], {
         env: {
           ...process.env,
           // Temporarily unset npm auth to test if package is public

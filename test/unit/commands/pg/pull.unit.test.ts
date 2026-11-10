@@ -47,7 +47,7 @@ describe('pg:pull', function () {
     stub(utils.pg.psql, 'sshTunnel').resolves()
 
     stub(Math, 'random').callsFake(() => 0)
-    createDbStub = stub(childProcess, 'execSync')
+    createDbStub = stub(childProcess, 'execFileSync')
     spawnStub = stub(childProcess, 'spawn')
 
     spawnStub.withArgs('pg_dump', dumpFlags, match.any).returns({
@@ -79,7 +79,7 @@ describe('pg:pull', function () {
     ])
 
     expect(createDbStub.called).to.eq(true)
-    expect(createDbStub.calledWithExactly('createdb localdb', {stdio: 'inherit'})).to.eq(true)
+    expect(createDbStub.calledWithExactly('createdb', ['localdb'], {stdio: 'inherit'})).to.eq(true)
     expect(spawnStub.callCount).to.eq(2)
     expect(stdout).to.eq(heredoc`
       Pulling postgres-1 to localdb
@@ -138,6 +138,20 @@ describe('pg:pull', function () {
       expect(args.some(arg => arg.includes('--exclude-table-data=events'))).to.eq(true)
       expect(args.at(-1)).to.eq('mydb')
     })
+
+    it('passes each exclusion as an argument without a shell', async () => {
+      await runCommand(Cmd, [
+        'postgres-1',
+        'localdb',
+        '-a',
+        'myapp',
+        '--exclude-table-data=logs;events',
+      ])
+
+      const dumpCall = spawnStub.getCalls().find(call => call.args[0] === 'pg_dump')
+      expect(dumpCall!.args[1]).to.include.members(['--exclude-table-data=logs', '--exclude-table-data=events'])
+      expect(dumpCall!.args[2]).not.to.have.property('shell')
+    })
   })
 
   skipOnWindows('opens an SSH tunnel and runs pg_dump for bastion databases', async () => {
@@ -152,7 +166,7 @@ describe('pg:pull', function () {
     ])
 
     expect(createDbStub.called).to.eq(true)
-    expect(createDbStub.calledWithExactly('createdb localdb', {stdio: 'inherit'})).to.eq(true)
+    expect(createDbStub.calledWithExactly('createdb', ['localdb'], {stdio: 'inherit'})).to.eq(true)
     expect(spawnStub.callCount).to.eq(2)
     expect(stdout).to.eq(heredoc`
       Pulling postgres-1 to localdb
