@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
-## [11.13.0-beta.0](https://github.com/heroku/cli/compare/v11.12.1...v11.13.0-beta.0) (2026-11-10)
+## [11.13.0-beta.1](https://github.com/heroku/cli/compare/v11.12.1...v11.13.0-beta.1) (2026-11-10)
 
 ### Features
 
