@@ -24,7 +24,7 @@ describe('pg:settings:log-lock-waits', function () {
   })
 
   it('shows settings for log-lock-waits with value', async function () {
-    nock('https://api.data.heroku.com')
+    nock('https://postgres-api.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {log_lock_waits: {value: 'test_value'}})
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
@@ -34,7 +34,7 @@ describe('pg:settings:log-lock-waits', function () {
   })
 
   it('shows settings for log-lock-waits with no value', async function () {
-    nock('https://api.data.heroku.com')
+    nock('https://postgres-api.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {log_lock_waits: {value: ''}})
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`

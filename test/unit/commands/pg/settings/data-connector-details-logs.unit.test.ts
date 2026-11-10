@@ -24,7 +24,7 @@ describe('pg:data-connector-details-logs', function () {
   })
 
   it('turns on data-connector-details-logs option', async function () {
-    nock('https://api.data.heroku.com')
+    nock('https://postgres-api.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {data_connector_details_logs: {value: 'on'}})
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
@@ -34,7 +34,7 @@ describe('pg:data-connector-details-logs', function () {
   })
 
   it('turns off data-connector-details-logs option', async function () {
-    nock('https://api.data.heroku.com')
+    nock('https://postgres-api.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {data_connector_details_logs: {value: ''}})
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`

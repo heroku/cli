@@ -105,7 +105,7 @@ describe('pg:settings setter commands', function () {
     describe(name, function () {
       it('shows the setting for the given database', async function () {
         const api = resolve('HEROKU_POSTGRESQL_RED')
-        const pg = nock('https://api.data.heroku.com')
+        const pg = nock('https://postgres-api.heroku.com')
           .get(`/postgres/v0/databases/${addon.id}/config`)
           .reply(200, {[key]: setting})
 
@@ -118,7 +118,7 @@ describe('pg:settings setter commands', function () {
 
       it('shows the setting for DATABASE_URL when no database is given', async function () {
         const api = resolve('DATABASE_URL')
-        const pg = nock('https://api.data.heroku.com')
+        const pg = nock('https://postgres-api.heroku.com')
           .get(`/postgres/v0/databases/${addon.id}/config`)
           .reply(200, {[key]: setting})
 
@@ -131,7 +131,7 @@ describe('pg:settings setter commands', function () {
 
       it(`sets the setting from '${arg}'`, async function () {
         const api = resolve('HEROKU_POSTGRESQL_RED')
-        const pg = nock('https://api.data.heroku.com')
+        const pg = nock('https://postgres-api.heroku.com')
           .patch(`/postgres/v0/databases/${addon.id}/config`, {[key]: sent})
           .reply(200, {[key]: setting})
 
@@ -180,7 +180,7 @@ describe('pg:settings', function () {
 
   it('shows every setting for DATABASE_URL when no database is given', async function () {
     const api = resolve('DATABASE_URL')
-    const pg = nock('https://api.data.heroku.com')
+    const pg = nock('https://postgres-api.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`)
       .reply(200, {log_lock_waits: {value: true}, log_statement: {value: 'ddl'}})
 

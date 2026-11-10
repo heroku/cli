@@ -24,7 +24,7 @@ describe('pg:settings:auto-explain:log-buffers', function () {
   })
 
   it('shows settings for auto_explain with value', async function () {
-    nock('https://api.data.heroku.com')
+    nock('https://postgres-api.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_buffers': {value: 'test_value'}})
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
@@ -34,7 +34,7 @@ describe('pg:settings:auto-explain:log-buffers', function () {
   })
 
   it('shows settings for auto_explain with no value', async function () {
-    nock('https://api.data.heroku.com')
+    nock('https://postgres-api.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_buffers': {value: ''}})
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`

@@ -29,7 +29,7 @@ describe('pg:settings:log-min-error-statement', function () {
   })
 
   it('shows settings for log_min_error_statement', async function () {
-    pg = nock('https://api.data.heroku.com')
+    pg = nock('https://postgres-api.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`)
       .reply(200, {
         log_min_error_statement: {

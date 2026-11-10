@@ -24,7 +24,7 @@ describe('pg:settings:auto-explain:log-min-duration', function () {
   })
 
   it('shows settings for auto_explain with value', async function () {
-    nock('https://api.data.heroku.com')
+    nock('https://postgres-api.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_min_duration': {value: 'test_value'}})
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
@@ -34,7 +34,7 @@ describe('pg:settings:auto-explain:log-min-duration', function () {
   })
 
   it('shows settings for auto_explain with value of -1', async function () {
-    nock('https://api.data.heroku.com')
+    nock('https://postgres-api.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_min_duration': {value: -1}})
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
@@ -44,7 +44,7 @@ describe('pg:settings:auto-explain:log-min-duration', function () {
   })
 
   it('shows settings for auto_explain with value of 0', async function () {
-    nock('https://api.data.heroku.com')
+    nock('https://postgres-api.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_min_duration': {value: 0}})
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`

@@ -25,7 +25,7 @@ describe('pg:settings:auto-explain:log-triggers', function () {
   })
 
   it('updates settings for auto_explain.log_triggers with value', async function () {
-    const pg = nock('https://api.data.heroku.com')
+    const pg = nock('https://postgres-api.heroku.com')
       .patch(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_triggers': {value: true}})
 
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database', 'true'])
@@ -40,7 +40,7 @@ describe('pg:settings:auto-explain:log-triggers', function () {
   })
 
   it('shows settings for auto_explain.log_triggers with no value', async function () {
-    const pg = nock('https://api.data.heroku.com')
+    const pg = nock('https://postgres-api.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_triggers': {value: false}})
 
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])

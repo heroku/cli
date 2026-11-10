@@ -20,7 +20,7 @@ describe('pg:settings:auto-explain:log-verbose', function () {
       app: 'myapp',
     }).reply(200, [{addon}])
 
-    pg = nock('https://api.data.heroku.com')
+    pg = nock('https://postgres-api.heroku.com')
   })
 
   afterEach(function () {

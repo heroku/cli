@@ -29,7 +29,7 @@ describe('pg:settings:track-functions', function () {
   })
 
   it('shows settings for track_functions with value', async function () {
-    pg = nock('https://api.data.heroku.com')
+    pg = nock('https://postgres-api.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {
         track_functions: {
           value: 'test_value',

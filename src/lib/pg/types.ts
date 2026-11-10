@@ -1,3 +1,5 @@
+import type {DatabaseSettingKey} from '@heroku/sdk/extensions/data'
+
 import * as Heroku from '@heroku-cli/schema'
 
 type TransferTargetType = 'gof3r' | 'htcat' | 'pg_dump' | 'pg_restore'
@@ -172,32 +174,13 @@ export type PgDatabaseConfig = {
     value: boolean,
   },
 }
-export type SettingKey
-  = 'auto_explain'
-  | 'auto_explain.log_analyze'
-  | 'auto_explain.log_buffers'
-  | 'auto_explain.log_format'
-  | 'auto_explain.log_min_duration'
-  | 'auto_explain.log_nested_statements'
-  | 'auto_explain.log_triggers'
-  | 'auto_explain.log_verbose'
-  | 'data_connector_details_logs'
-  | 'log_connections'
-  | 'log_lock_waits'
-  | 'log_min_duration_statement'
-  | 'log_min_error_statement'
-  | 'log_statement'
-  | 'pg_bouncer_default_pool_size'
-  | 'pg_bouncer_max_db_conns'
-  | 'pgbouncer_max_client_conn'
-  | 'track_functions'
+export type SettingKey = DatabaseSettingKey
 export type Setting<T> = {
   default: T
   desc: string
   value: T
   values: Record<string, string>
 }
-export type SettingsResponse = Record<SettingKey, Setting<unknown>>
 
 export type PGDiagnoseResponse = {
   app: string,

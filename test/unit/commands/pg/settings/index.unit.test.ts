@@ -13,7 +13,7 @@ describe('pg:settings', function () {
 
   beforeEach(function () {
     const addon = {
-      app: {name: 'myapp'},
+      app: {id: 'app-1', name: 'myapp'},
       id: 1,
       name: 'postgres-1',
       plan: {name: 'heroku-postgresql:standard-0'},
@@ -25,7 +25,7 @@ describe('pg:settings', function () {
         app: 'myapp',
       }).reply(200, [{addon}])
 
-    pg = nock('https://api.data.heroku.com')
+    pg = nock('https://postgres-api.heroku.com')
   })
 
   afterEach(function () {

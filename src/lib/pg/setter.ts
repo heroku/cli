@@ -1,10 +1,24 @@
 import {Command, flags} from '@heroku-cli/command'
-import {utils} from '@heroku/heroku-cli-util'
-import {ux} from '@oclif/core/ux'
+import {databaseSettingsExtensions, EssentialDatabaseNotSupportedError} from '@heroku/sdk/extensions/data'
 
-import type {Setting, SettingKey, SettingsResponse} from './types.js'
+import type {Setting, SettingKey} from './types.js'
 
-import {essentialPlan} from './util.js'
+import {createSDK} from '../sdk.js'
+
+const ESSENTIAL_TIER_MESSAGE = 'You can\'t perform this operation on Essential-tier databases.'
+
+/**
+ * Runs a `data.databaseSettings` call, replacing the SDK's Essential-tier error
+ * with the message `pg:settings` commands have always shown.
+ */
+export async function withEssentialTierMessage<T>(command: Command, call: () => Promise<T>): Promise<T> {
+  try {
+    return await call()
+  } catch (error) {
+    if (error instanceof EssentialDatabaseNotSupportedError) command.error(ESSENTIAL_TIER_MESSAGE)
+    throw error
+  }
+}
 
 export abstract class PGSettingsCommand extends Command {
   static flags = {
@@ -22,27 +36,18 @@ export abstract class PGSettingsCommand extends Command {
     const {args, flags} = await this.parse()
     const {app} = flags
     const {database, value} = args as {database: string | undefined; value: string | undefined,}
-
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const {addon: db} = await dbResolver.getAttachment(app, database)
-
-    if (essentialPlan(db)) {
-      ux.error('You can\'t perform this operation on Essential-tier databases.')
-    }
+    const {data} = createSDK(this.heroku, {extensions: [databaseSettingsExtensions]})
+    const name = this.settingKey.replaceAll('_', '-')
 
     if (value) {
-      const {body: settings} = await this.heroku.patch<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {
-        body: {[this.settingKey]: this.convertValue(value)},
-        hostname: utils.pg.host(),
-      })
-      const setting = settings[this.settingKey]
-      ux.stdout(`${this.settingKey.replaceAll('_', '-')} has been set to ${setting.value} for ${db.name}.`)
-      ux.stdout(this.explain(setting))
+      const converted = this.convertValue(value) as never
+      const {addon, setting} = await withEssentialTierMessage(this, () => data.databaseSettings.update(app, this.settingKey, converted, database))
+      this.log(`${name} has been set to ${setting.value} for ${addon.name}.`)
+      this.log(this.explain(setting as Setting<unknown>))
     } else {
-      const {body: settings} = await this.heroku.get<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {hostname: utils.pg.host()})
-      const setting = settings[this.settingKey]
-      ux.stdout(`${this.settingKey.replaceAll('_', '-')} is set to ${setting.value} for ${db.name}.`)
-      ux.stdout(this.explain(setting))
+      const {addon, setting} = await withEssentialTierMessage(this, () => data.databaseSettings.get(app, this.settingKey, database))
+      this.log(`${name} is set to ${setting.value} for ${addon.name}.`)
+      this.log(this.explain(setting as Setting<unknown>))
     }
   }
 }

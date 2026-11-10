@@ -13,7 +13,7 @@ describe('pg:settings:auto-explain', function () {
 
   beforeEach(function () {
     const addon = {
-      app: {name: 'myapp'},
+      app: {id: 'app-1', name: 'myapp'},
       config_vars: ['READONLY_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_RED_URL'],
       id: 1,
       name: 'postgres-1',
@@ -26,7 +26,7 @@ describe('pg:settings:auto-explain', function () {
       app: 'myapp',
     }).reply(200, [{addon}])
 
-    pg = nock('https://api.data.heroku.com')
+    pg = nock('https://postgres-api.heroku.com')
   })
 
   afterEach(function () {
