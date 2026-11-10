@@ -1,5 +1,5 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {EssentialDatabaseNotSupportedError, UnknownSettingError} from '@heroku/sdk/extensions/data'
+import {EssentialDatabaseNotSupportedError, UnknownDatabaseSettingError} from '@heroku/sdk/extensions/data'
 import {expect} from 'chai'
 import {SinonStub, stub} from 'sinon'
 
@@ -221,7 +221,7 @@ describe('pg:settings commands', function () {
   })
 
   it('passes other SDK errors through unchanged', async function () {
-    fakeData.databaseSettings.get.rejects(new UnknownSettingError(addon, 'log_lock_waits'))
+    fakeData.databaseSettings.get.rejects(new UnknownDatabaseSettingError(addon, 'log_lock_waits'))
 
     const {error} = await runCommand(LogLockWaits, ['--app', 'myapp'])
 
