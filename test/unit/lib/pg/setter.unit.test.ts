@@ -1,6 +1,12 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {EssentialDatabaseNotSupportedError, UnknownDatabaseSettingError} from '@heroku/sdk/extensions/data'
+import {
+  AdvancedDatabaseNotSupportedError,
+  EssentialDatabaseNotSupportedError,
+  UnknownDatabaseSettingError,
+} from '@heroku/sdk/extensions/data'
+import ansis from 'ansis'
 import {expect} from 'chai'
+import nock from 'nock'
 import {SinonStub, stub} from 'sinon'
 
 import AutoExplain from '../../../../src/commands/pg/settings/auto-explain.js'
@@ -32,6 +38,11 @@ const essentialError = new EssentialDatabaseNotSupportedError(
   {...addon, plan: {name: 'heroku-postgresql:essential-0'}},
   'Database settings aren\'t supported on Essential-tier databases.',
 )
+
+const advancedAddon = {...addon, name: 'postgresql-advanced-12345', plan: {name: 'heroku-postgresql:advanced-beta'}}
+const advancedError = new AdvancedDatabaseNotSupportedError(advancedAddon)
+const advancedMessage = 'You can\'t perform this operation on Advanced-tier databases.\n'
+  + 'Use heroku data:pg:settings postgresql-advanced-12345 --app myapp to view or change its settings.'
 
 type Case = {
   arg: string
@@ -208,8 +219,66 @@ describe('pg:settings commands', function () {
         expect(stdout).to.equal('')
         expect(error?.message).to.equal('You can\'t perform this operation on Essential-tier databases.')
       })
+
+      it('points Advanced-tier databases to data:pg:settings', async function () {
+        fakeData.databaseSettings.update.rejects(advancedError)
+
+        const {error, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'HEROKU_POSTGRESQL_RED', arg])
+
+        expect(stdout).to.equal('')
+        expect(ansis.strip(error?.message ?? '')).to.equal(advancedMessage)
+      })
     })
   }
+
+  it('points Advanced-tier databases to data:pg:settings when showing a setting', async function () {
+    fakeData.databaseSettings.get.rejects(advancedError)
+
+    const {error, stdout} = await runCommand(LogLockWaits, ['--app', 'myapp'])
+
+    expect(stdout).to.equal('')
+    expect(ansis.strip(error?.message ?? '')).to.equal(advancedMessage)
+  })
+
+  it('reports the value the database returns, not the value sent', async function () {
+    fakeData.databaseSettings.update.resolves({addon, setting: {default: -1, desc: 'description', value: 1000}})
+
+    const {stdout} = await runCommand(LogMinDurationStatement, ['--app', 'myapp', 'HEROKU_POSTGRESQL_RED', '500'])
+
+    expect(fakeData.databaseSettings.update.calledOnceWithExactly('myapp', 'log_min_duration_statement', 500, 'HEROKU_POSTGRESQL_RED')).to.equal(true)
+    expect(stdout).to.equal('log-min-duration-statement has been set to 1000 for postgresql-shiny-12345.\n'
+      + 'The duration of each completed statement will be logged if the statement ran for at least 1000 milliseconds.\n')
+  })
+
+  for (const arg of ['0', '-1']) {
+    it(`accepts ${arg} for log-min-duration-statement`, async function () {
+      fakeData.databaseSettings.update.resolves({addon, setting: {default: -1, desc: 'description', value: Number(arg)}})
+
+      await runCommand(LogMinDurationStatement, ['--app', 'myapp', 'HEROKU_POSTGRESQL_RED', arg])
+
+      expect(fakeData.databaseSettings.update.args).to.deep.equal([['myapp', 'log_min_duration_statement', Number(arg), 'HEROKU_POSTGRESQL_RED']])
+    })
+  }
+
+  for (const arg of ['abc', '1.5', '10ms']) {
+    it(`rejects '${arg}' for log-min-duration-statement without calling the SDK`, async function () {
+      const {error, stdout} = await runCommand(LogMinDurationStatement, ['--app', 'myapp', 'HEROKU_POSTGRESQL_RED', arg])
+
+      expect(stdout).to.equal('')
+      expect(error?.message).to.equal('Invalid value. Valid options are: a whole number')
+      expect(fakeData.databaseSettings.update.called).to.equal(false)
+      expect(fakeData.databaseSettings.get.called).to.equal(false)
+    })
+  }
+
+  it('passes the SDK error through when an update can\'t be confirmed', async function () {
+    const message = 'The update to log_lock_waits was sent to postgresql-shiny-12345, but the response didn\'t include log_lock_waits, so the change couldn\'t be confirmed.'
+    fakeData.databaseSettings.update.rejects(new UnknownDatabaseSettingError(addon, 'log_lock_waits', message))
+
+    const {error} = await runCommand(LogLockWaits, ['--app', 'myapp', 'HEROKU_POSTGRESQL_RED', 'on'])
+
+    expect(error?.message).to.equal(message)
+  })
 
   it('rejects Essential-tier databases when showing a setting', async function () {
     fakeData.databaseSettings.get.rejects(essentialError)
@@ -234,6 +303,7 @@ describe('pg:settings commands', function () {
     expect(stdout).to.equal('')
     expect(error?.message).to.equal('Invalid value. Valid options are: a boolean value')
     expect(fakeData.databaseSettings.update.called).to.equal(false)
+    expect(fakeData.databaseSettings.get.called).to.equal(false)
   })
 
   it('rejects an invalid numeric value without updating the setting', async function () {
@@ -242,6 +312,7 @@ describe('pg:settings commands', function () {
     expect(stdout).to.equal('')
     expect(error?.message).to.equal('Invalid value. Valid options are: a numeric value')
     expect(fakeData.databaseSettings.update.called).to.equal(false)
+    expect(fakeData.databaseSettings.get.called).to.equal(false)
   })
 
   describe('pg:settings', function () {
@@ -262,5 +333,79 @@ describe('pg:settings commands', function () {
       expect(stdout).to.equal('')
       expect(error?.message).to.equal('You can\'t perform this operation on Essential-tier databases.')
     })
+
+    it('points Advanced-tier databases to data:pg:settings', async function () {
+      fakeData.databaseSettings.getAll.rejects(advancedError)
+
+      const {error, stdout} = await runCommand(Index, ['--app', 'myapp', 'postgresql-advanced-12345'])
+
+      expect(stdout).to.equal('')
+      expect(ansis.strip(error?.message ?? '')).to.equal(advancedMessage)
+    })
+  })
+})
+
+// These tests don't stub `data`: they run the real SDK so they fail if a
+// command stops registering `databaseSettingsExtensions` with `createSDK`.
+describe('pg:settings commands with the real SDK', function () {
+  const attachment = {
+    addon: {...addon, app: {id: 'app-1', name: 'myapp'}},
+    app: {id: 'app-1', name: 'myapp'},
+    config_vars: ['DATABASE_URL'],
+    id: 'attachment-1',
+    name: 'DATABASE',
+  }
+
+  afterEach(function () {
+    nock.cleanAll()
+  })
+
+  it('reads a setting through data.databaseSettings', async function () {
+    const platform = nock('https://api.heroku.com')
+      .post('/actions/addon-attachments/resolve')
+      .reply(200, [attachment])
+    const data = nock('https://postgres-api.heroku.com')
+      .get('/postgres/v0/databases/addon-1/config')
+      .reply(200, {log_lock_waits: {default: false, desc: 'description', value: true}})
+
+    const {error, stdout} = await runCommand(LogLockWaits, ['--app', 'myapp'])
+
+    expect(error).to.equal(undefined)
+    expect(stdout).to.equal('log-lock-waits is set to true for postgresql-shiny-12345.\n'
+      + 'When a deadlock is detected, a log message will be emitted in your application\'s logs.\n')
+    platform.done()
+    data.done()
+  })
+
+  it('updates a setting through data.databaseSettings', async function () {
+    const platform = nock('https://api.heroku.com')
+      .post('/actions/addon-attachments/resolve')
+      .reply(200, [attachment])
+    const data = nock('https://postgres-api.heroku.com')
+      .patch('/postgres/v0/databases/addon-1/config', {log_lock_waits: false})
+      .reply(200, {log_lock_waits: {default: false, desc: 'description', value: false}})
+
+    const {error, stdout} = await runCommand(LogLockWaits, ['--app', 'myapp', 'HEROKU_POSTGRESQL_RED', 'off'])
+
+    expect(error).to.equal(undefined)
+    expect(stdout).to.contain('log-lock-waits has been set to false for postgresql-shiny-12345.')
+    platform.done()
+    data.done()
+  })
+
+  it('lists settings through data.databaseSettings', async function () {
+    const platform = nock('https://api.heroku.com')
+      .post('/actions/addon-attachments/resolve')
+      .reply(200, [attachment])
+    const data = nock('https://postgres-api.heroku.com')
+      .get('/postgres/v0/databases/addon-1/config')
+      .reply(200, {log_lock_waits: {default: false, desc: 'description', value: true}})
+
+    const {error, stdout} = await runCommand(Index, ['--app', 'myapp'])
+
+    expect(error).to.equal(undefined)
+    expect(stdout).to.equal('=== postgresql-shiny-12345\n\nlog-lock-waits: true\n')
+    platform.done()
+    data.done()
   })
 })

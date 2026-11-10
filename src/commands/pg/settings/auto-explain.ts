@@ -1,8 +1,8 @@
+import type {DatabaseSetting} from '@heroku/sdk/extensions/data'
+
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-
-import type {Setting, SettingKey} from '../../../lib/pg/types.js'
 
 import {BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../lib/pg/setter.js'
 import {nls} from '../../../nls.js'
@@ -10,7 +10,7 @@ import {nls} from '../../../nls.js'
 const heredoc = tsheredoc
 
 // ref: https://www.postgresql.org/docs/current/auto-explain.html
-export default class AutoExplain extends PGSettingsCommand {
+export default class AutoExplain extends PGSettingsCommand<'auto_explain'> {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({description: 'boolean indicating if execution plans of queries will be logged for future connections'}),
@@ -26,13 +26,13 @@ export default class AutoExplain extends PGSettingsCommand {
   }
   static strict = false
   static topic = 'pg'
-  protected settingKey: SettingKey = 'auto_explain'
+  protected settingKey = 'auto_explain' as const
 
   protected convertValue(val: BooleanAsString): boolean {
     return booleanConverter(val)
   }
 
-  protected explain(setting: Setting<boolean>): string {
+  protected explain(setting: DatabaseSetting<'auto_explain'>): string {
     if (setting.value) {
       return 'Execution plans of queries will be logged for future connections.'
     }

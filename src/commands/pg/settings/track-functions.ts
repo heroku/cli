@@ -1,7 +1,7 @@
+import type {DatabaseSetting} from '@heroku/sdk/extensions/data'
+
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-
-import type {Setting, SettingKey} from '../../../lib/pg/types.js'
 
 import {PGSettingsCommand} from '../../../lib/pg/setter.js'
 import {nls} from '../../../nls.js'
@@ -9,7 +9,7 @@ import {nls} from '../../../nls.js'
 const heredoc = tsheredoc
 
 // ref: https://www.postgresql.org/docs/current/runtime-config-statistics.html#GUC-TRACK-FUNCTIONS
-export default class TrackFunctions extends PGSettingsCommand {
+export default class TrackFunctions extends PGSettingsCommand<'track_functions'> {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({description: 'function type to track\n<options: none|pl|all>', options: ['none', 'pl', 'all']}),
@@ -20,13 +20,13 @@ export default class TrackFunctions extends PGSettingsCommand {
     none - No functions are tracked (default)
     pl   - Only procedural language functions are tracked
     all  - All functions, including SQL and C language functions, are tracked. Simple SQL-language that are inlined are not tracked`)
-  protected settingKey: SettingKey = 'track_functions'
+  protected settingKey = 'track_functions' as const
 
-  protected convertValue(val: unknown): unknown {
+  protected convertValue(val: string): string {
     return val
   }
 
-  protected explain(setting: Setting<keyof Setting<unknown>['value']>): string {
+  protected explain(setting: DatabaseSetting<'track_functions'>): string {
     return setting.values[setting.value]
   }
 }

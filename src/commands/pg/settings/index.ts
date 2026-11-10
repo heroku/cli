@@ -3,7 +3,7 @@ import {hux} from '@heroku/heroku-cli-util'
 import {type DatabaseSettingKey, databaseSettingsExtensions} from '@heroku/sdk/extensions/data'
 import {Args} from '@oclif/core'
 
-import {withEssentialTierMessage} from '../../../lib/pg/setter.js'
+import {withSettingsTierMessages} from '../../../lib/pg/setter.js'
 import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
 
@@ -23,7 +23,7 @@ export default class Index extends Command {
     const {app} = flags
     const {database} = args
     const {data} = createSDK(this.heroku, {extensions: [databaseSettingsExtensions]})
-    const {addon, settings} = await withEssentialTierMessage(this, () => data.databaseSettings.getAll(app, database))
+    const {addon, settings} = await withSettingsTierMessages(this, app, () => data.databaseSettings.getAll(app, database))
 
     this.log(hux.styledHeader(addon.name))
     const remapped: Record<string, unknown> = {}

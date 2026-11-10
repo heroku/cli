@@ -175,12 +175,6 @@ export type PgDatabaseConfig = {
   },
 }
 export type SettingKey = DatabaseSettingKey
-export type Setting<T> = {
-  default: T
-  desc: string
-  value: T
-  values: Record<string, string>
-}
 
 export type PGDiagnoseResponse = {
   app: string,

@@ -1,13 +1,14 @@
+import type {DatabaseSetting} from '@heroku/sdk/extensions/data'
+
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../lib/pg/setter.js'
-import {Setting, SettingKey} from '../../../../lib/pg/types.js'
 import {nls} from '../../../../nls.js'
 
 const heredoc = tsheredoc
 
-export default class LogTriggers extends PGSettingsCommand {
+export default class LogTriggers extends PGSettingsCommand<'auto_explain.log_triggers'> {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({description: 'boolean indicating if the database has trigger execution statistics enabled'}),
@@ -17,13 +18,13 @@ export default class LogTriggers extends PGSettingsCommand {
     This parameter can only be used in conjunction with pg:settings:auto-explain:log-analyze turned on.
   `)
   static topic = 'pg'
-  protected settingKey = 'auto_explain.log_triggers' as SettingKey
+  protected settingKey = 'auto_explain.log_triggers' as const
 
   protected convertValue(val: BooleanAsString): boolean {
     return booleanConverter(val)
   }
 
-  protected explain(setting: Setting<boolean>) {
+  protected explain(setting: DatabaseSetting<'auto_explain.log_triggers'>) {
     if (setting.value) {
       return 'Trigger execution statistics have been enabled for auto-explain.'
     }

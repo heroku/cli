@@ -1,13 +1,14 @@
+import type {DatabaseSetting} from '@heroku/sdk/extensions/data'
+
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {numericConverter, PGSettingsCommand} from '../../../../lib/pg/setter.js'
-import {Setting, SettingKey} from '../../../../lib/pg/types.js'
 import {nls} from '../../../../nls.js'
 
 const heredoc = tsheredoc
 
-export default class LogMinDuration extends PGSettingsCommand {
+export default class LogMinDuration extends PGSettingsCommand<'auto_explain.log_min_duration'> {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({description: 'minimum duration in milliseconds for queries before logging execution plans. A value of -1 disables it. A value of 0 logs all query execution plans.'}),
@@ -17,13 +18,13 @@ export default class LogMinDuration extends PGSettingsCommand {
     Setting this value to 0 will log all queries. Setting this value to -1 will disable logging entirely.
   `)
   static topic = 'pg'
-  protected settingKey: SettingKey = 'auto_explain.log_min_duration'
+  protected settingKey = 'auto_explain.log_min_duration' as const
 
   protected convertValue(val: string): number {
     return numericConverter(val)
   }
 
-  protected explain(setting: Setting<number>) {
+  protected explain(setting: DatabaseSetting<'auto_explain.log_min_duration'>) {
     if (setting.value === -1) {
       return 'Execution plan logging has been disabled.'
     }

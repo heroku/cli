@@ -1,14 +1,14 @@
+import type {DatabaseSetting} from '@heroku/sdk/extensions/data'
+
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import type {Setting, SettingKey} from '../../../lib/pg/types.js'
-
-import {PGSettingsCommand} from '../../../lib/pg/setter.js'
+import {integerConverter, PGSettingsCommand} from '../../../lib/pg/setter.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc
 
-export default class LogMinDurationStatement extends PGSettingsCommand {
+export default class LogMinDurationStatement extends PGSettingsCommand<'log_min_duration_statement'> {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({description: 'milliseconds to wait for a statement to complete before logging it'}),
@@ -18,13 +18,13 @@ export default class LogMinDurationStatement extends PGSettingsCommand {
     VALUE needs to specified as a whole number, in milliseconds.
     Setting log_min_duration_statement to zero prints all statement durations and -1 will disable logging statement durations.
   `)
-  protected settingKey: SettingKey = 'log_min_duration_statement'
+  protected settingKey = 'log_min_duration_statement' as const
 
-  protected convertValue(val: unknown): number {
-    return Number.parseInt(val as string, 10)
+  protected convertValue(val: string): number {
+    return integerConverter(val)
   }
 
-  protected explain(setting: Setting<unknown>) {
+  protected explain(setting: DatabaseSetting<'log_min_duration_statement'>) {
     if (setting.value === -1) {
       return 'The duration of each completed statement will not be logged.'
     }

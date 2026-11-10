@@ -1,13 +1,14 @@
+import type {DatabaseSetting} from '@heroku/sdk/extensions/data'
+
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {PGSettingsCommand} from '../../../../lib/pg/setter.js'
-import {Setting, SettingKey} from '../../../../lib/pg/types.js'
 import {nls} from '../../../../nls.js'
 
 const heredoc = tsheredoc
 
-export default class LogFormat extends PGSettingsCommand {
+export default class LogFormat extends PGSettingsCommand<'auto_explain.log_format'> {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({description: 'format of the log output\n<options: text|json|yaml|xml>', options: ['text', 'json', 'yaml', 'xml']}),
@@ -16,13 +17,13 @@ export default class LogFormat extends PGSettingsCommand {
     selects the EXPLAIN output format to be used
     The allowed values are text, xml, json, and yaml. The default is text.
   `)
-  protected settingKey: SettingKey = 'auto_explain.log_format'
+  protected settingKey = 'auto_explain.log_format' as const
 
   protected convertValue(val: string): string {
     return val
   }
 
-  protected explain(setting: Setting<string>) {
+  protected explain(setting: DatabaseSetting<'auto_explain.log_format'>) {
     return `Auto explain log output will log in ${setting.value} format.`
   }
 }

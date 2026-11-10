@@ -1,15 +1,15 @@
+import type {DatabaseSetting} from '@heroku/sdk/extensions/data'
+
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-
-import type {Setting, SettingKey} from '../../../lib/pg/types.js'
 
 import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../lib/pg/setter.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc
 
-export default class DataConnectorDetailsLogs extends PGSettingsCommand {
+export default class DataConnectorDetailsLogs extends PGSettingsCommand<'data_connector_details_logs'> {
   static aliases = ['pg:settings:explain-data-connector-details']
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
@@ -22,13 +22,13 @@ export default class DataConnectorDetailsLogs extends PGSettingsCommand {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-  protected settingKey: SettingKey = 'data_connector_details_logs'
+  protected settingKey = 'data_connector_details_logs' as const
 
   protected convertValue(val: BooleanAsString): boolean {
     return booleanConverter(val)
   }
 
-  protected explain(setting: Setting<boolean>): string {
+  protected explain(setting: DatabaseSetting<'data_connector_details_logs'>): string {
     if (setting?.value) {
       return 'Data replication slot details will be logged.'
     }
