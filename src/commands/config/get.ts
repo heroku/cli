@@ -1,5 +1,4 @@
 import {Command, flags} from '@heroku-cli/command'
-import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args} from '@oclif/core'
 
@@ -37,9 +36,9 @@ production`)}`
       })
 
       if (results.length === 1) {
-        hux.styledJSON(results[0])
+        this.logJson(results[0])
       } else {
-        hux.styledJSON(results)
+        this.logJson(results)
       }
     } else if (flags.shell) {
       for (const key of (argv as string[])) {

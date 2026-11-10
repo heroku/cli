@@ -131,7 +131,7 @@ describe('data:pg:credentials:index', function () {
     })
     fakePlatform.addOnAttachment.listByAddOn.resolves(advancedCredentialsAttachmentsResponse)
 
-    const tableStub = stub(hux, 'table')
+    const tableStub = stub(hux, 'table').returns('')
     await runCommand(DataPgCredentialsIndex, ['DATABASE', '--app=myapp', '--no-wrap'])
 
     const callArgs = tableStub.firstCall.args

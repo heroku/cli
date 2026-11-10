@@ -39,7 +39,7 @@ export default class Versions extends Command {
       },
       Ok(versions: RevisionBody[]) {
         /* eslint-disable perfectionist/sort-objects */
-        hux.table(versions.sort((a: RevisionBody, b: RevisionBody) => a.release > b.release ? -1 : 1), {
+        ux.stdout(hux.table(versions.sort((a: RevisionBody, b: RevisionBody) => a.release > b.release ? -1 : 1), {
           release: {
             header: 'Version',
           },
@@ -49,7 +49,7 @@ export default class Versions extends Command {
           status: {
             header: 'Status',
           },
-        })
+        }))
         /* eslint-enable perfectionist/sort-objects */
       },
     }, result as any)

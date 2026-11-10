@@ -90,10 +90,10 @@ export default class MembersIndex extends Command {
       ux.stdout(msg)
     } else {
       const tableColumns = buildTableColumns(teamInvites)
-      hux.table(
+      this.log(hux.table(
         members,
         tableColumns,
-      )
+      ))
     }
   }
 }

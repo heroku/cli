@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
+import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
-import open from 'open'
 
 import {getPipeline} from '../../lib/ci/pipelines.js'
 
@@ -19,6 +19,6 @@ export default class CiOpen extends Command {
   async run() {
     const {flags} = await this.parse(CiOpen)
     const pipeline = await getPipeline(flags, this.heroku)
-    await open(`https://dashboard.heroku.com/pipelines/${pipeline.id}/tests`)
+    if (!await hux.openUrl(`https://dashboard.heroku.com/pipelines/${pipeline.id}/tests`, {prompt: false})) this.exit(1)
   }
 }

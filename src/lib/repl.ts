@@ -1,6 +1,6 @@
 /* eslint-disable n/no-process-exit */
 import {hux} from '@heroku/heroku-cli-util'
-import {Config, run} from '@oclif/core'
+import {Config, run, ux} from '@oclif/core'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -706,10 +706,10 @@ export class HerokuRepl {
           return console.info('no flags set')
         }
 
-        hux.table(values, {
+        ux.stdout(hux.table(values, {
           flag: {header: 'Flag'},
           value: {header: 'Value'},
-        })
+        }))
       }
     }
 

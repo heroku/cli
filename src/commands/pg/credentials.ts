@@ -46,14 +46,14 @@ export default class Credentials extends Command {
       return presentCredentialAttachments(app, credAttachments, sortedCredentials as any, cred.name)
     }
 
-    hux.table(credentials, {
+    this.log(hux.table(credentials, {
       Credential: {
         get: presentCredential,
       },
       State: {
         get: cred => cred.state,
       },
-    }, huxTableNoWrapOptions(flags['no-wrap']))
+    }, huxTableNoWrapOptions(flags['no-wrap'])))
   }
 
   protected sortByDefaultAndName(credentials: CredentialInfo[]) {
@@ -101,9 +101,7 @@ function presentCredentialAttachments(app: string, credAttachments: Required<Her
     const connectionInformationAvailable = formatted.some(c => c.connections != null)
     if (connectionInformationAvailable) {
       const prefix = '       '
-      rotationLines.push(`${prefix}Usernames currently active for this credential:`)
-
-      hux.table(formatted, {
+      rotationLines.push(`${prefix}Usernames currently active for this credential:`, hux.table(formatted, {
         connections: {
           get(row) {
             return `${row.connections} connections`
@@ -119,7 +117,7 @@ function presentCredentialAttachments(app: string, credAttachments: Required<Her
             return `${prefix}${row.user}`
           },
         },
-      })
+      }))
     }
   }
 

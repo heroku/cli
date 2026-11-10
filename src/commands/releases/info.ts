@@ -27,7 +27,7 @@ export default class Info extends Command {
     const release = await findByLatestOrId(platform, app, args.release)
 
     if (json) {
-      hux.styledJSON(release)
+      this.logJson(release)
     } else {
       let releaseChange = release.description
       const status = description(release)
@@ -61,22 +61,22 @@ export default class Info extends Command {
         releaseChange += ' (' + colorFn(status) + ')'
       }
 
-      hux.styledHeader(`Release ${color.name('v' + release.version)}`)
-      hux.styledObject({
+      this.log(hux.styledHeader(`Release ${color.name('v' + release.version)}`))
+      this.log(hux.styledObject({
         'Add-ons': release.addon_plan_names,
         By: userEmail,
         Change: releaseChange,
         'Eligible for Rollback?': release.eligible_for_rollback ? 'Yes' : 'No',
         When: release.created_at,
-      })
+      }))
       ux.stdout()
-      hux.styledHeader(`${color.name('v' + release.version)} Config vars`)
+      this.log(hux.styledHeader(`${color.name('v' + release.version)} Config vars`))
       if (shell) {
         for (const [k, v] of Object.entries(config)) {
           ux.stdout(`${k}=${quote(v)}`)
         }
       } else {
-        hux.styledObject(config)
+        this.log(hux.styledObject(config))
       }
     }
   }

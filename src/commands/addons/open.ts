@@ -1,6 +1,6 @@
 
 import {Command, flags} from '@heroku-cli/command'
-import * as color from '@heroku/heroku-cli-util/color'
+import {hux} from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
 import {addOnAttachmentExtensions, addOnExtensions} from '@heroku/sdk/extensions/platform'
 import {AddonAttachmentAmbiguousError, AddonAttachmentNotFoundError, type ResolvedAddOnAttachment} from '@heroku/sdk/resources/platform/add-on-attachment'
@@ -8,7 +8,6 @@ import {Args, ux} from '@oclif/core'
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
-import open from 'open'
 import tsheredoc from 'tsheredoc'
 
 import {isNotFound} from '../../lib/addons/addons-wait.js'
@@ -86,12 +85,6 @@ export default class Open extends Command {
     'show-url': flags.boolean({description: 'show URL, do not open browser'}),
   }
   public static topic = 'addons'
-  public static urlOpener: (url: string) => Promise<unknown> = open
-
-  public static async openUrl(url: string): Promise<void> {
-    ux.stdout(`Opening ${color.info(url)}...`)
-    await Open.urlOpener(url)
-  }
 
   public async run(): Promise<void> {
     const {args: {addon}, flags} = await this.parse(Open)
@@ -136,9 +129,10 @@ export default class Open extends Command {
 
     if (flags['show-url']) {
       ux.stdout(webUrl)
-    } else {
-      await Open.openUrl(webUrl)
+      return
     }
+
+    if (!await hux.openUrl(webUrl, {prompt: false})) this.exit(1)
   }
 
   private async sudo(app: string, addon: string): Promise<void> {
@@ -150,10 +144,10 @@ export default class Open extends Command {
     })
     const {action, method} = sso.body
     if (method === 'get') {
-      await Open.openUrl(action)
+      if (!await hux.openUrl(action, {prompt: false})) this.exit(1)
     } else {
       const ssoPath = await this.writeSudoTemplate(app, addon, sso.body)
-      await Open.openUrl(`file://${ssoPath}`)
+      if (!await hux.openUrl(`file://${ssoPath}`, {prompt: false})) this.exit(1)
     }
   }
 

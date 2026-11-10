@@ -47,12 +47,12 @@ export default class Index extends Command {
 
   private displayRules(space: string, ruleset: ExtendedInboundRuleset) {
     if (ruleset.rules.length > 0) {
-      hux.styledHeader('Trusted IP Ranges')
+      this.log(hux.styledHeader('Trusted IP Ranges'))
       for (const rule of ruleset.rules) {
         ux.stdout(rule.source)
       }
     } else {
-      hux.styledHeader(`${space} has no trusted IP ranges. All inbound web requests to dynos are blocked.`)
+      this.log(hux.styledHeader(`${space} has no trusted IP ranges. All inbound web requests to dynos are blocked.`))
     }
 
     // Check applied status to inform users whether rules are effectively applied to the space.

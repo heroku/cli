@@ -91,12 +91,12 @@ export default class DataMaintenancesHistory extends BaseCommand {
     const tableColumns = constructTableColumns(allTableColumns, Object.keys(allTableColumns), false, flags.columns)
 
     if (flags.json) {
-      hux.styledJSON(maintenances)
+      this.logJson(maintenances)
     } else if (flags.csv) {
       outputCSV(maintenances, tableColumns)
     } else {
       const tableOptions = constructSortFilterTableOptions(flags, tableColumns)
-      hux.table(maintenances, tableColumns, tableOptions)
+      this.log(hux.table(maintenances, tableColumns, tableOptions))
     }
   }
 }

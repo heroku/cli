@@ -24,9 +24,9 @@ export default class Features extends Command {
     features = features.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
 
     if (json) {
-      hux.styledJSON(features)
+      this.logJson(features)
     } else {
-      hux.styledHeader(`App Features ${color.app(app)}`)
+      this.log(hux.styledHeader(`App Features ${color.app(app)}`))
       const longest = Math.max.apply(null, features.map(f => f.name?.length || 0))
 
       for (const f of features) {

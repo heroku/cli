@@ -36,9 +36,9 @@ export default class DataMaintenancesWindow extends Command {
     ux.action.stop()
 
     if (flags.json) {
-      hux.styledJSON(window)
+      this.logJson(window)
     } else {
-      hux.styledObject(window)
+      this.log(hux.styledObject(window))
     }
   }
 }

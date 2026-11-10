@@ -1,5 +1,4 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {hux} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks.js'
@@ -45,7 +44,7 @@ export default class Set extends Command {
 
     const buildpackUpdates = await buildpackCommand.mutate(flags.app, buildpacks, spliceIndex, args.buildpack, 'set')
     if (flags.json) {
-      hux.styledJSON(buildpackUpdates)
+      this.logJson(buildpackUpdates)
     } else {
       buildpackCommand.displayUpdate(flags.app, flags.remote || '', buildpackUpdates, 'set')
     }

@@ -49,21 +49,21 @@ export default class Info extends Command {
   }
   static topic = 'pg'
   displayBackup = (backup: TransferInfoByAppResult) => {
-    hux.styledHeader(`Backup ${color.name(pgBackups.name(backup))}`)
+    ux.stdout(hux.styledHeader(`Backup ${color.name(pgBackups.name(backup))}`))
     /* eslint-disable perfectionist/sort-objects */
-    hux.styledObject({
+    ux.stdout(hux.styledObject({
       Database: backup.from_name ? color.datastore(backup.from_name) : 'UNKNOWN',
       'Started at': backup.started_at,
       'Finished at': backup.finished_at,
       Status: status(backup),
       Type: backup.schedule ? 'Scheduled' : 'Manual', 'Original DB Size': pgBackups.filesize(backup.source_bytes ?? null),
       'Backup Size': `${pgBackups.filesize(backup.processed_bytes)}${backup.finished_at ? compression(backup.processed_bytes, backup.source_bytes ?? null) : ''}`,
-    }, ['Database', 'Started at', 'Finished at', 'Status', 'Type', 'Original DB Size', 'Backup Size'])
+    }, ['Database', 'Started at', 'Finished at', 'Status', 'Type', 'Original DB Size', 'Backup Size']))
     /* eslint-enable perfectionist/sort-objects */
     ux.stdout('\n')
   }
   displayLogs = (backup: TransferInfoByAppResult) => {
-    hux.styledHeader('Backup Logs')
+    ux.stdout(hux.styledHeader('Backup Logs'))
     for (const log of backup.logs || [])
       ux.stdout(`${log.created_at} ${log.message}\n`)
     ux.stdout('\n')

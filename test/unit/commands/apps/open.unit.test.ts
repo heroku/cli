@@ -1,12 +1,14 @@
 import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import childProcess from 'node:child_process'
 import * as sinon from 'sinon'
 
 import OpenCommand from '../../../../src/commands/apps/open.js'
+import {fakeLauncher, spawnArgsInclude} from '../../../helpers/spawned-url.js'
 
 type FakePlatform = {
   app: {info: sinon.SinonStub}
@@ -30,13 +32,7 @@ describe('apps:open', function () {
   beforeEach(function () {
     fakePlatform = buildFakePlatform()
     sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
-    spawnStub = sinon.stub(childProcess, 'spawn').returns({
-      on(event: string, cb: CallableFunction) {
-        if (event === 'exit') {
-          cb()
-        }
-      }, unref() {},
-    } as any)
+    spawnStub = sinon.stub(childProcess, 'spawn').returns(fakeLauncher())
   })
 
   afterEach(function () {
@@ -46,13 +42,14 @@ describe('apps:open', function () {
   it('opens the url', async function () {
     fakePlatform.app.info.resolves(app)
 
-    await runCommand(OpenCommand, ['-a', 'myapp'])
+    const {stderr, stdout} = await runCommand(OpenCommand, ['-a', 'myapp'])
 
+    // Opens without the "Press any key" prompt; the status line goes to stderr.
+    expect(stdout).to.equal('')
+    expect(ansis.strip(stderr)).to.contain('Opening https://myapp.herokuapp.com/ in your default browser…')
+    expect(ansis.strip(stderr)).not.to.contain('can\'t open')
     const urlArgArray = spawnStub.getCall(0).args[1]
-    // For darwin-based platforms this arg is an array that contains the site url.
-    // For windows-based platforms this arg is an array that contains an encoded command that includes the url
-    const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAvACIA')
-    expect(hasCorrectUrl).to.be.true
+    expect(spawnArgsInclude(urlArgArray, 'https://myapp.herokuapp.com/')).to.be.true
     expect(fakePlatform.app.info.calledOnceWithExactly('myapp')).to.equal(true)
   })
 
@@ -65,13 +62,7 @@ describe('apps:open', function () {
     // command stops routing SDK construction through createSDK (the token would
     // fall back to the env value, flipping the header).
     sinon.restore()
-    sinon.stub(childProcess, 'spawn').returns({
-      on(event: string, cb: CallableFunction) {
-        if (event === 'exit') {
-          cb()
-        }
-      }, unref() {},
-    } as any)
+    sinon.stub(childProcess, 'spawn').returns(fakeLauncher())
     sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
     let authHeader: string | undefined
@@ -100,13 +91,7 @@ describe('apps:open', function () {
     const originalHerokuHost = process.env.HEROKU_HOST
     process.env.HEROKU_HOST = 'staging.herokudev.com'
     sinon.restore()
-    sinon.stub(childProcess, 'spawn').returns({
-      on(event: string, cb: CallableFunction) {
-        if (event === 'exit') {
-          cb()
-        }
-      }, unref() {},
-    } as any)
+    sinon.stub(childProcess, 'spawn').returns(fakeLauncher())
     sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
     const stagingAPI = nock('https://api.staging.herokudev.com:443')
@@ -132,9 +117,26 @@ describe('apps:open', function () {
     await runCommand(OpenCommand, ['-a', 'myapp', '/mypath'])
 
     const urlArgArray = spawnStub.getCall(0).args[1]
-    // For darwin-based platforms this arg is an array that contains the site url.
-    // For windows-based platforms this arg is an array that contains an encoded command that includes the url
-    const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/mypath') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAvAG0AeQBwAGEAdABoACIA')
-    expect(hasCorrectUrl).to.be.true
+    expect(spawnArgsInclude(urlArgArray, 'https://myapp.herokuapp.com/mypath')).to.be.true
+  })
+
+  it('warns with the url and exits 1 when the browser launcher can\'t be started', async function () {
+    fakePlatform.app.info.resolves(app)
+    spawnStub.returns({
+      off() {},
+      on() {},
+      // `open` rejects when the launcher emits 'error' instead of 'spawn' (e.g. no xdg-open).
+      once(event: string, cb: CallableFunction) {
+        if (event === 'error') cb(new Error('spawn xdg-open ENOENT'))
+      },
+      unref() {},
+    } as any)
+
+    const {error, stderr, stdout} = await runCommand(OpenCommand, ['-a', 'myapp'])
+
+    expect(error?.oclif?.exit).to.equal(1)
+    expect(stdout).to.equal('')
+    // oclif wraps warnings at the terminal width.
+    expect(ansis.strip(stderr).replaceAll(/\s*\n [›»]\s+/g, ' ')).to.contain('We can\'t open your default browser. Use a different browser or visit https://myapp.herokuapp.com/.')
   })
 })

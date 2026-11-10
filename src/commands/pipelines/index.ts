@@ -20,9 +20,9 @@ export default class Pipelines extends Command {
     const pipelines = await platform.pipeline.list()
 
     if (flags.json) {
-      hux.styledJSON(pipelines)
+      this.logJson(pipelines)
     } else {
-      hux.styledHeader('My Pipelines')
+      this.log(hux.styledHeader('My Pipelines'))
       for (const pipeline of pipelines) {
         ux.stdout(color.pipeline(pipeline.name || ''))
       }

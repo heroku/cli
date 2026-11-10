@@ -27,7 +27,7 @@ export const displayCertificateDetails = function (sniEndpoint: SniEndpoint, mes
     tableObject['Domain(s)'] = sniEndpoint.domains
   }
 
-  hux.styledObject(tableObject)
+  ux.stdout(hux.styledObject(tableObject))
 
   if (sniEndpoint.ssl_cert['ca_signed?']) {
     ux.stdout('SSL certificate is verified by a root authority.')

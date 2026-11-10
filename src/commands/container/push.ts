@@ -64,9 +64,9 @@ export default class Push extends Command {
     try {
       for (const job of jobs) {
         if (job.name === 'standard') {
-          hux.styledHeader(`Building ${processTypes} (${job.dockerfile})`)
+          this.log(hux.styledHeader(`Building ${processTypes} (${job.dockerfile})`))
         } else {
-          hux.styledHeader(`Building ${job.name} (${job.dockerfile})`)
+          this.log(hux.styledHeader(`Building ${job.name} (${job.dockerfile})`))
         }
 
         await this.dockerHelper.buildImage({
@@ -85,9 +85,9 @@ export default class Push extends Command {
     try {
       for (const job of jobs) {
         if (job.name === 'standard') {
-          hux.styledHeader(`Pushing ${processTypes} (${job.dockerfile})`)
+          this.log(hux.styledHeader(`Pushing ${processTypes} (${job.dockerfile})`))
         } else {
-          hux.styledHeader(`Pushing ${job.name} (${job.dockerfile})`)
+          this.log(hux.styledHeader(`Pushing ${job.name} (${job.dockerfile})`))
         }
 
         await this.dockerHelper.pushImage(job.resource, this.config.arch)

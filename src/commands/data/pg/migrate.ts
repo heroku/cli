@@ -463,11 +463,11 @@ export default class DataPgMigrate extends BaseCommand {
 
     const pendingMigrations = this.classicDatabases.filter(db => !this.migrationTargets.some(migration => migration.source_id === db.id && this.isActiveMigration(migration)))
 
-    hux.styledHeader('Configured Migrations')
+    this.log(hux.styledHeader('Configured Migrations'))
 
     if (this.migrationTargets.length > 0) {
       /* eslint-disable perfectionist/sort-objects */
-      hux.table(this.migrationTargets as MigrationRow[], {
+      this.log(hux.table(this.migrationTargets as MigrationRow[], {
         source: {
           get: (migration: MigrationRow) => color.datastore(this.classicDatabases.find(db => db.id === migration.source_id)?.name ?? color.gray('unknown')),
           header: 'Source Database',
@@ -480,7 +480,7 @@ export default class DataPgMigrate extends BaseCommand {
           get: (migration: MigrationRow) => migration.status_description ?? '',
           header: 'Status',
         },
-      }, huxTableNoWrapOptions(this.noWrap))
+      }, huxTableNoWrapOptions(this.noWrap)))
       /* eslint-enable perfectionist/sort-objects */
     } else {
       ux.stdout(`You haven't configured any migrations for ${color.app(app)} yet.\n`)

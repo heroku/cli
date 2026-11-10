@@ -60,11 +60,11 @@ export default class Index extends Command {
     ]) as [App, SniEndpoint[]]
 
     if (!app.acm) {
-      hux.styledHeader(`Automatic Certificate Management is ${color.inactive('disabled')} on ${color.app(flags.app)}`)
+      this.log(hux.styledHeader(`Automatic Certificate Management is ${color.inactive('disabled')} on ${color.app(flags.app)}`))
       return []
     }
 
-    hux.styledHeader(`Automatic Certificate Management is ${color.success('enabled')} on ${color.app(flags.app)}`)
+    this.log(hux.styledHeader(`Automatic Certificate Management is ${color.success('enabled')} on ${color.app(flags.app)}`))
 
     if (sniEndpoints.length === 1 && sniEndpoints[0].ssl_cert.acm) {
       displayCertificateDetails(sniEndpoints[0])
@@ -99,7 +99,7 @@ export default class Index extends Command {
     }
 
     if (domains.length > 0) {
-      hux.table<Record<keyof Domain, unknown>>(
+      this.log(hux.table<Record<keyof Domain, unknown>>(
         domains,
         {
           Domain: {
@@ -120,14 +120,14 @@ export default class Index extends Command {
             header: 'Last Updated',
           },
         },
-      )
+      ))
       if (message) {
         ux.stdout('')
       }
     }
 
     if (message) {
-      hux.styledHeader(message)
+      this.log(hux.styledHeader(message))
     }
 
     return domains

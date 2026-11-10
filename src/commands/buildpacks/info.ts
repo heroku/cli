@@ -34,12 +34,12 @@ export default class Info extends Command {
           ux.error(`Problems finding buildpack info: ${err.description}`)
         }
       },
-      Ok(buildpack: unknown) {
+      Ok: (buildpack: unknown) => {
         if (flags.json) {
-          hux.styledJSON(buildpack)
+          this.logJson(buildpack)
         } else {
-          hux.styledHeader(args.buildpack)
-          hux.styledObject(buildpack, ['description', 'category', 'license', 'support', 'source', 'readme'])
+          this.log(hux.styledHeader(args.buildpack))
+          this.log(hux.styledObject(buildpack, ['description', 'category', 'license', 'support', 'source', 'readme']))
         }
       },
     }, result as any)

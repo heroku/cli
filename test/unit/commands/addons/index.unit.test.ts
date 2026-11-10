@@ -68,7 +68,7 @@ describe('addons', function () {
           withHeaders: stub().returns({addOn: {listByApp: stub()}}),
         }
         sdkMock = mockSDKPlatform(fakePlatform)
-        const tableStub = stub(hux, 'table')
+        const tableStub = stub(hux, 'table').returns('')
 
         await runCommand(Cmd, ['--all', '--no-wrap'])
 

@@ -58,12 +58,7 @@ export function presentCredentialAttachments(app: string, credAttachments: AddOn
     const connectionInformationAvailable = formatted.some(c => c.connections != null)
     if (connectionInformationAvailable) {
       const prefix = '       '
-      rotationLines.push(`${prefix}Usernames currently active for this credential:`)
-      const printLine = (line: unknown) => {
-        rotationLines.push(line as string)
-      }
-
-      hux.table(formatted, {
+      rotationLines.push(`${prefix}Usernames currently active for this credential:`, hux.table(formatted, {
         connections: {
           get(row) {
             return `${row.connections} connections`
@@ -79,9 +74,7 @@ export function presentCredentialAttachments(app: string, credAttachments: AddOn
             return `${prefix}${row.user}`
           },
         },
-      }, {
-        printLine,
-      })
+      }))
     }
   }
 

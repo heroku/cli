@@ -20,9 +20,9 @@ export function renderInfo(space: SpaceWithOutboundIps, json: boolean) {
   if (json) {
     ux.stdout(JSON.stringify(space, null, 2))
   } else {
-    hux.styledHeader(color.space(space.name || ''))
+    ux.stdout(hux.styledHeader(color.space(space.name || '')))
     /* eslint-disable perfectionist/sort-objects */
-    hux.styledObject(
+    ux.stdout(hux.styledObject(
       {
         ID: space.id,
         Team: space.team?.name,
@@ -37,6 +37,6 @@ export function renderInfo(space: SpaceWithOutboundIps, json: boolean) {
       },
       /* eslint-enable perfectionist/sort-objects */
       ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Outbound IPs', 'Generation', 'Created at'],
-    )
+    ))
   }
 }

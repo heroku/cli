@@ -1,8 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
+import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
-import openBrowser from 'open'
 
 import {createPipeline, getAccountInfo, getTeam} from '../../lib/api.js'
 import GitHubAPI from '../../lib/pipelines/github-api.js'
@@ -43,7 +43,6 @@ export default class Setup extends Command {
       description: 'accept all default settings without prompting',
     }),
   }
-  static open = openBrowser
 
   async run() {
     const {args, flags} = await this.parse(Setup)
@@ -98,12 +97,13 @@ export default class Setup extends Command {
     ux.action.start('Configuring pipeline')
     try {
       await setup
-      await Setup.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
     } catch (error: any) {
       pipelineDebug(error)
       ux.error(error)
     } finally {
       ux.action.stop()
     }
+
+    await hux.openUrl(`https://dashboard.heroku.com/pipelines/${pipeline.id}`, {prompt: false})
   }
 }

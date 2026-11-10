@@ -50,9 +50,9 @@ export default class DataMaintenancesWindowUpdate extends Command {
     ux.action.stop()
 
     if (flags.json) {
-      hux.styledJSON(result)
+      this.logJson(result)
     } else {
-      hux.styledObject(result)
+      this.log(hux.styledObject(result))
     }
   }
 }

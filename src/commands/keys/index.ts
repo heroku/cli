@@ -14,11 +14,11 @@ export default class Keys extends Command {
     const {flags} = await this.parse(Keys)
     const {body: keys} = await this.heroku.get<Heroku.Key[]>('/account/keys')
     if (flags.json) {
-      hux.styledJSON(keys)
+      this.logJson(keys)
     } else if (keys.length === 0) {
       ux.warn('You have no SSH keys.')
     } else {
-      hux.styledHeader(`${color.user(keys[0].email || '')} keys`)
+      this.log(hux.styledHeader(`${color.user(keys[0].email || '')} keys`))
       if (flags.long) {
         for (const k of keys) ux.stdout(k.public_key)
       } else {

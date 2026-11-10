@@ -47,7 +47,7 @@ export default class Search extends Command {
       description: buildpack.description,
     }))
     const displayTable = (buildpacks: TableRow[]) => {
-      hux.table(buildpacks, {
+      this.log(hux.table(buildpacks, {
         buildpack: {
           header: 'Buildpack',
         },
@@ -57,7 +57,7 @@ export default class Search extends Command {
         description: {
           header: 'Description',
         },
-      })
+      }))
     }
 
     if (buildpacks.length === 0) {

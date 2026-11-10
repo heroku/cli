@@ -84,10 +84,10 @@ export default class DataMaintenancesInfo extends Command {
     ux.action.stop()
 
     if (json) {
-      hux.styledJSON(maintenance)
+      this.logJson(maintenance)
     } else {
       const styledMaintenance = this.createStyledMaintenance(maintenance, addSeconds, formatDistance)
-      hux.styledObject(styledMaintenance)
+      this.log(hux.styledObject(styledMaintenance))
     }
   }
 }

@@ -107,7 +107,7 @@ describe('pipelines:setup', function () {
 
           stub(hux, 'prompt').callsFake(promptStub)
           stub(hux, 'confirm').callsFake(confirmStub)
-          stub(SetupCommand, 'open').resolves()
+          const openUrlStub = stub(hux, 'openUrl').resolves(true)
 
           setupApiNock()
           githubApi.get(`/repos/${repo.name}`).reply(200, repo)
@@ -123,6 +123,7 @@ describe('pipelines:setup', function () {
 
           expect(promptStub.calledTwice).to.be.true
           expect(confirmStub.called).to.be.true
+          expect(openUrlStub.calledOnceWithExactly(`https://dashboard.heroku.com/pipelines/${pipeline.id}`, {prompt: false})).to.be.true
         })
 
         it('downcases capitalized pipeline names', async function () {
@@ -132,7 +133,7 @@ describe('pipelines:setup', function () {
 
           stub(hux, 'prompt').callsFake(promptStub)
           stub(hux, 'confirm').callsFake(confirmStub)
-          stub(SetupCommand, 'open').resolves()
+          stub(hux, 'openUrl').resolves(true)
 
           setupApiNock()
           githubApi.get(`/repos/${repo.name}`).reply(200, repo)
@@ -154,7 +155,7 @@ describe('pipelines:setup', function () {
           confirmStub.resetHistory()
 
           stub(hux, 'confirm').callsFake(confirmStub)
-          stub(SetupCommand, 'open').resolves()
+          stub(hux, 'openUrl').resolves(true)
 
           setupApiNock()
           githubApi.get(`/repos/${repo.name}`).reply(200, repo)
@@ -191,7 +192,7 @@ describe('pipelines:setup', function () {
 
           stub(hux, 'prompt').callsFake(promptStub)
           stub(hux, 'confirm').callsFake(confirmStub)
-          stub(SetupCommand, 'open').resolves()
+          stub(hux, 'openUrl').resolves(true)
 
           api.post('/pipelines').reply(201, pipeline)
 
@@ -243,7 +244,7 @@ describe('pipelines:setup', function () {
           confirmStub.resolves(true)
 
           stub(hux, 'confirm').callsFake(confirmStub)
-          stub(SetupCommand, 'open').resolves()
+          stub(hux, 'openUrl').resolves(true)
 
           api.post('/pipelines').reply(201, pipeline)
 
@@ -297,7 +298,7 @@ describe('pipelines:setup', function () {
           confirmStub.resolves(true)
 
           stub(hux, 'confirm').callsFake(confirmStub)
-          stub(SetupCommand, 'open').resolves()
+          stub(hux, 'openUrl').resolves(true)
 
           api.post('/pipelines').reply(201, pipeline)
 

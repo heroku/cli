@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {color, hux} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
 import {pipelineCouplingExtensions} from '@heroku/sdk/extensions/platform'
 import {Args} from '@oclif/core'
 
@@ -37,7 +37,7 @@ export default class PipelinesInfo extends Command {
 
     if (flags.json) {
       // eslint-disable-next-line perfectionist/sort-objects
-      hux.styledJSON({pipeline, apps: pipelineApps})
+      this.logJson({pipeline, apps: pipelineApps})
     } else {
       await renderPipeline(this.heroku, pipeline, pipelineApps, {
         showOwnerWarning: true,

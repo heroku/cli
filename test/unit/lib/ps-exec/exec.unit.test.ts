@@ -65,8 +65,8 @@ describe('HerokuExec', function () {
     uxStdoutStub = stub(ux, 'stdout')
     uxWarnStub = stub(ux, 'warn')
     huxPromptStub = stub(hux, 'prompt').resolves('n')
-    huxStyledHeaderStub = stub(hux, 'styledHeader')
-    huxTableStub = stub(hux, 'table')
+    huxStyledHeaderStub = stub(hux, 'styledHeader').returns('')
+    huxTableStub = stub(hux, 'table').returns('')
   })
 
   afterEach(function () {

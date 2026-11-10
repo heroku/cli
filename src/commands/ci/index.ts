@@ -3,7 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 
 import {getPipeline} from '../../lib/ci/pipelines.js'
-import {renderList} from '../../lib/ci/test-run.js'
+import {latestTestRuns, renderList} from '../../lib/ci/test-run.js'
 
 export default class CiIndex extends Command {
   static description = 'display the most recent CI runs for the given pipeline'
@@ -24,6 +24,11 @@ export default class CiIndex extends Command {
     const pipeline = await getPipeline(flags, this.heroku)
     const {body: testRuns} = await this.heroku.get<Heroku.TestRun[]>(`/pipelines/${pipeline.id}/test-runs`)
 
-    await renderList(this, testRuns, pipeline, flags.watch, flags.json)
+    if (flags.json) {
+      this.logJson(latestTestRuns(testRuns))
+      return
+    }
+
+    await renderList(this, testRuns, pipeline, flags.watch)
   }
 }

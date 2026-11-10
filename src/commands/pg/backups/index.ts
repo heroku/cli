@@ -40,12 +40,12 @@ export default class Index extends Command {
 
   private displayBackups(transfers: TransferListByAppResult) {
     const backups = transfers.filter(backupTransfer => backupTransfer.from_type === 'pg_dump' && backupTransfer.to_type === 'gof3r')
-    hux.styledHeader('Backups')
+    this.log(hux.styledHeader('Backups'))
     if (backups.length === 0) {
       ux.stdout(`No backups. Capture one with ${color.code('heroku pg:backups:capture')}`)
     } else {
       /* eslint-disable perfectionist/sort-objects */
-      hux.table<TransferRow>(backups as TransferRow[], {
+      this.log(hux.table<TransferRow>(backups as TransferRow[], {
         ID: {
           get: (transfer: TransferInfoByAppResult) => color.name(pgBackups.name(transfer)),
         },
@@ -61,7 +61,7 @@ export default class Index extends Command {
         Database: {
           get: (transfer: TransferInfoByAppResult) => transfer.from_name ? color.datastore(transfer.from_name) : 'UNKNOWN',
         },
-      })
+      }))
       /* eslint-enable perfectionist/sort-objects */
     }
 
@@ -70,12 +70,12 @@ export default class Index extends Command {
 
   private displayCopies(transfers: TransferListByAppResult) {
     const copies = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'pg_restore').slice(0, 10)
-    hux.styledHeader('Copies')
+    this.log(hux.styledHeader('Copies'))
     if (copies.length === 0) {
       ux.stdout(`No copies found. Use ${color.code('heroku pg:copy')} to copy a database to another`)
     } else {
       /* eslint-disable perfectionist/sort-objects */
-      hux.table<TransferRow>(copies as TransferRow[], {
+      this.log(hux.table<TransferRow>(copies as TransferRow[], {
         ID: {
           get: (transfer: TransferInfoByAppResult) => color.name(pgBackups.name(transfer)),
         },
@@ -94,7 +94,7 @@ export default class Index extends Command {
         To: {
           get: (transfer: TransferInfoByAppResult) => transfer.to_name ? color.datastore(transfer.to_name) : color.inactive('UNKNOWN'),
         },
-      })
+      }))
     }
     /* eslint-enable perfectionist/sort-objects */
 
@@ -105,12 +105,12 @@ export default class Index extends Command {
     const restores = transfers
       .filter(t => t.from_type !== 'pg_dump' && t.to_type === 'pg_restore')
       .slice(0, 10) // first 10 only
-    hux.styledHeader('Restores')
+    this.log(hux.styledHeader('Restores'))
     if (restores.length === 0) {
       ux.stdout(`No restores found. Use ${color.code('heroku pg:backups:restore')} to restore a backup`)
     } else {
       /* eslint-disable perfectionist/sort-objects */
-      hux.table<TransferRow>(restores as TransferRow[], {
+      this.log(hux.table<TransferRow>(restores as TransferRow[], {
         ID: {
           get: (transfer: TransferInfoByAppResult) => color.name(pgBackups.name(transfer)),
         },
@@ -126,7 +126,7 @@ export default class Index extends Command {
         Database: {
           get: (transfer: TransferInfoByAppResult) => transfer.to_name ? color.datastore(transfer.to_name) : 'UNKNOWN',
         },
-      })
+      }))
       /* eslint-enable perfectionist/sort-objects */
     }
 

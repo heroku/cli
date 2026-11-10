@@ -43,10 +43,10 @@ export default class CiConfigSet extends Command {
     await setPipelineConfigVars(this.heroku, pipeline.id, vars)
     ux.action.stop()
 
-    hux.styledObject(Object.keys(vars).reduce((memo: Record<string, string>, key: string) => {
+    this.log(hux.styledObject(Object.keys(vars).reduce((memo: Record<string, string>, key: string) => {
       memo[color.green(key)] = vars[key]
       return memo
-    }, {}))
+    }, {})))
   }
 }
 

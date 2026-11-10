@@ -22,11 +22,11 @@ export default class SessionsIndex extends Command {
     })
 
     if (flags.json) {
-      hux.styledJSON(sessions)
+      this.logJson(sessions)
     } else if (sessions.length === 0) {
       ux.stdout('No OAuth sessions.')
     } else {
-      hux.table(sessions, {
+      this.log(hux.table(sessions, {
         description: {
           get: (v: any) => color.info(v.description),
           header: 'Description',
@@ -34,7 +34,7 @@ export default class SessionsIndex extends Command {
         id: {
           header: 'ID',
         },
-      })
+      }))
     }
   }
 }

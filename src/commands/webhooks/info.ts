@@ -29,7 +29,7 @@ export default class WebhooksInfo extends BaseCommand {
       'Webhook ID': webhook.id,
     }
 
-    hux.styledHeader(webhook.id)
-    hux.styledObject(obj)
+    this.log(hux.styledHeader(webhook.id))
+    this.log(hux.styledObject(obj))
   }
 }

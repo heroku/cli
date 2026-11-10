@@ -21,11 +21,11 @@ export class ConfigIndex extends Command {
     if (flags.shell) {
       for (const [k, v] of Object.entries(config)) ux.stdout(`${k}=${quote(v)}`)
     } else if (flags.json) {
-      hux.styledJSON(config)
+      this.logJson(config)
     } else {
-      hux.styledHeader(`${color.app(flags.app)} Config Vars`)
+      this.log(hux.styledHeader(`${color.app(flags.app)} Config Vars`))
       const coloredConfig = Object.fromEntries(Object.entries(config).map(([key, value]) => [color.name(key), value]))
-      hux.styledObject(coloredConfig)
+      this.log(hux.styledObject(coloredConfig))
     }
   }
 }

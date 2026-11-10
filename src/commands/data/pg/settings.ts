@@ -79,7 +79,7 @@ export default class DataPgSettings extends BaseCommand {
         } else {
           const tableData = settingsChangeTableData(body)
           ux.stdout('Updating these settings...')
-          hux.table(tableData, settingsChangeHeaders)
+          this.log(hux.table(tableData, settingsChangeHeaders))
           ux.stdout(`Updating your database ${color.addon(addon.name)} shortly. You can use ${color.code(`data:pg:info ${addon.name} -a ${app}`)} to track progress`)
         }
 
@@ -89,7 +89,7 @@ export default class DataPgSettings extends BaseCommand {
       const {addon, settings: body} = await data.postgresSettings.info(databaseArg, {appIdentity: app})
       const tableData = settingsTableData(body)
       ux.stdout(`=== ${color.addon(addon.name)}`)
-      hux.table(tableData, settingsHeaders)
+      this.log(hux.table(tableData, settingsHeaders))
       return body
     } catch (error) {
       if (error instanceof NotAdvancedDatabaseError) {

@@ -69,7 +69,7 @@ RACK_ENV:  staging`)]
     config = Object.fromEntries(Object.entries(config)
       .filter(([k]) => vars[k])
       .map(([k, v]) => [color.name(k), v]))
-    hux.styledObject(config)
+    this.log(hux.styledObject(config))
     await this.config.runHook('recache', {app: flags.app, type: 'config'})
   }
 }

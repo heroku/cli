@@ -71,7 +71,7 @@ export default class AppsIndex extends Command {
     }
 
     if (json) {
-      hux.styledJSON(apps)
+      this.logJson(apps)
     } else {
       print(apps, user, space, team, _)
     }
@@ -101,15 +101,15 @@ function print(apps: App[], user: {email?: string}, space: string | undefined, t
     else if (team) ux.stdout(`There are no apps in team ${color.team(team)}.`)
     else ux.stdout('You have no apps.')
   } else if (space) {
-    hux.styledHeader(`Apps in space ${color.space(space)}`)
+    ux.stdout(hux.styledHeader(`Apps in space ${color.space(space)}`))
     listApps(apps)
   } else if (team) {
-    hux.styledHeader(`Apps in team ${color.team(team)}`)
+    ux.stdout(hux.styledHeader(`Apps in team ${color.team(team)}`))
     listApps(apps)
   } else {
     const [ownedApps, collabApps] = _.partition(apps, (app: App) => app.owner.email === user.email)
     if (ownedApps.length > 0) {
-      hux.styledHeader(`${color.user(user.email!)} Apps`)
+      ux.stdout(hux.styledHeader(`${color.user(user.email!)} Apps`))
       listApps(ownedApps)
     }
 
@@ -121,7 +121,7 @@ function print(apps: App[], user: {email?: string}, space: string | undefined, t
 
     if (collabApps.length > 0) {
       ux.stdout()
-      hux.table(collabApps, columns, {title: 'Collaborated Apps\n', titleOptions: {bold: true}})
+      ux.stdout(hux.table(collabApps, columns, {title: 'Collaborated Apps\n', titleOptions: {bold: true}}))
     }
   }
 }

@@ -1,5 +1,4 @@
 import {Command, flags} from '@heroku-cli/command'
-import {hux} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 
 import {display} from '../../lib/authorizations/authorizations.js'
@@ -21,7 +20,7 @@ export default class AuthorizationsInfo extends Command {
     const authentication = await platform.oauthAuthorization.info(args.id)
 
     if (flags.json) {
-      hux.styledJSON(authentication)
+      this.logJson(authentication)
     } else {
       display(authentication)
     }

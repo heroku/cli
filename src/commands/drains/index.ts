@@ -23,7 +23,7 @@ export default class Drains extends Command {
     const {body: drains} = await this.heroku.get<Heroku.LogDrain[]>(path)
 
     if (flags.json) {
-      hux.styledJSON(drains)
+      this.logJson(drains)
     } else {
       const [drainsWithAddons, drainsWithoutAddons] = drains.reduce<Heroku.LogDrain[]>((acc, drain) => {
         if (drain.addon) {
@@ -36,7 +36,7 @@ export default class Drains extends Command {
       }, [[], []])
 
       if (drainsWithoutAddons.length > 0) {
-        hux.styledHeader('Drains')
+        this.log(hux.styledHeader('Drains'))
         drainsWithoutAddons.forEach((drain: Heroku.LogDrain) => {
           styledDrain(drain.url || '', color.name(drain.token || ''), drain)
         })
@@ -44,7 +44,7 @@ export default class Drains extends Command {
 
       if (drainsWithAddons.length > 0) {
         const addons = await Promise.all(drainsWithAddons.map((d: Heroku.LogDrain) => this.heroku.get<Heroku.AddOn>(`/apps/${flags.app}/addons/${d.addon?.name}`)))
-        hux.styledHeader('Add-on Drains')
+        this.log(hux.styledHeader('Add-on Drains'))
         for (const [i, {body: addon}] of addons.entries()) {
           styledDrain(color.addon(addon.plan?.name || ''), color.addon(addon.name || ''), drainsWithAddons[i])
         }

@@ -118,17 +118,13 @@ export async function displayTestRunInfo(command: Command, testRun: Heroku.TestR
   }
 }
 
-export async function renderList(command: Command, testRuns: Heroku.TestRun[], pipeline: Heroku.Pipeline, watchOption: boolean, jsonOption: boolean) {
-  const watchable = (Boolean(watchOption && !jsonOption))
+export async function renderList(command: Command, testRuns: Heroku.TestRun[], pipeline: Heroku.Pipeline, watchOption: boolean) {
+  const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${color.pipeline(pipeline.name ?? '')} pipeline`
+  ux.stdout(hux.styledHeader(header))
 
-  if (!jsonOption) {
-    const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${color.pipeline(pipeline.name ?? '')} pipeline`
-    hux.styledHeader(header)
-  }
+  draw(testRuns, watchOption)
 
-  draw(testRuns, watchOption, jsonOption)
-
-  if (!watchable) {
+  if (!watchOption) {
     return
   }
 
@@ -208,13 +204,12 @@ async function display(pipeline: Heroku.Pipeline, number: number, command: Comma
   }
 }
 
-function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = false, count = 15) {
-  const latestTestRuns = sort(testRuns).slice(0, count)
+export function latestTestRuns(testRuns: Heroku.TestRun[], count = 15) {
+  return sort(testRuns).slice(0, count)
+}
 
-  if (jsonOption) {
-    hux.styledJSON(latestTestRuns)
-    return
-  }
+function draw(testRuns: Heroku.TestRun[], watchOption = false) {
+  const latest = latestTestRuns(testRuns)
 
   if (watchOption) {
     process.stdout.write(ansiEscapes.eraseDown)
@@ -222,7 +217,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
 
   const data: any = []
 
-  for (const testRun of latestTestRuns) {
+  for (const testRun of latest) {
     /* eslint-disable perfectionist/sort-objects */
     data.push({
       iconStatus: `${statusIcon(testRun)}`,
@@ -235,7 +230,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
   }
 
   /* eslint-disable perfectionist/sort-objects */
-  hux.table(
+  ux.stdout(hux.table(
     data,
     {
       iconStatus: {
@@ -248,10 +243,10 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
       sha: {},
       status: {},
     },
-  )
+  ))
   /* eslint-enable perfectionist/sort-objects */
   if (watchOption) {
-    process.stdout.write(ansiEscapes.cursorUp(latestTestRuns.length))
+    process.stdout.write(ansiEscapes.cursorUp(latest.length))
   }
 }
 

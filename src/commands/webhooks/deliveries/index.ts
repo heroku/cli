@@ -46,9 +46,8 @@ export default class Deliveries extends BaseCommand {
         this.warn('It is possible to filter deliveries by using the --status flag')
       }
 
-      const printLine: typeof this.log = (...args) => this.log(...args)
       /* eslint-disable perfectionist/sort-objects */
-      hux.table(deliveries, {
+      this.log(hux.table(deliveries, {
         id: {
           header: 'Delivery ID',
         },
@@ -76,9 +75,7 @@ export default class Deliveries extends BaseCommand {
         next_attempt_at: {
           header: 'Next Attempt', get: (w: any) => w.next_attempt_at || '',
         },
-      }, {
-        printLine,
-      })
+      }))
       /* eslint-enable perfectionist/sort-objects */
     }
   }

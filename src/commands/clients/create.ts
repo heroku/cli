@@ -1,6 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
@@ -35,7 +34,7 @@ export default class ClientsCreate extends Command {
     ux.action.stop()
 
     if (flags.json) {
-      hux.styledJSON(client)
+      this.logJson(client)
     } else {
       ux.stdout(`${color.label('HEROKU_OAUTH_ID')}=${color.name(client.id!)}`)
       ux.stdout(`${color.label('HEROKU_OAUTH_SECRET')}=${color.info(client.secret!)}`)

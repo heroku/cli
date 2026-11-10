@@ -77,11 +77,11 @@ export default class Info extends Command {
 
 function displayDB(db: DBObject, app: string) {
   if (db.addon.attachment_names) {
-    hux.styledHeader(db.addon.attachment_names.map((c: string) => color.attachment(c + '_URL'))
-      .join(', '))
+    ux.stdout(hux.styledHeader(db.addon.attachment_names.map((c: string) => color.attachment(c + '_URL'))
+      .join(', ')))
   } else {
-    hux.styledHeader(db.configVars?.map(c => color.name(c))
-      .join(', ') || '')
+    ux.stdout(hux.styledHeader(db.configVars?.map(c => color.name(c))
+      .join(', ') || ''))
   }
 
   if (db.addon.app.name && db.addon.app.name !== app) {
@@ -101,6 +101,6 @@ function displayDB(db: DBObject, app: string) {
   }
 
   const keys = db.dbInfo?.info.map(i => i.name)
-  hux.styledObject(info, keys)
+  ux.stdout(hux.styledObject(info, keys))
   ux.stdout('')
 }

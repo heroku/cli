@@ -24,7 +24,7 @@ export default class Index extends Command {
     const isFirApp = getGeneration(app) === 'fir'
     const buildpacks = await buildpacksCommand.fetch(flags.app, isFirApp)
     if (flags.json) {
-      hux.styledJSON(buildpacks)
+      this.logJson(buildpacks)
     } else if (buildpacks.length === 0) {
       this.log(`${color.app(flags.app)} has no Buildpacks.`)
     } else {
@@ -34,7 +34,7 @@ export default class Index extends Command {
         ? ` Cloud Native ${pluralizedBuildpacks} (from the latest release's OCI image)`
         : ` Classic ${pluralizedBuildpacks} (from the Heroku Buildpack Registry)`
 
-      hux.styledHeader(header)
+      this.log(hux.styledHeader(header))
       buildpacksCommand.display(buildpacks, '')
     }
   }

@@ -51,7 +51,7 @@ export class HerokuExec {
         headers: this._execHeaders(),
       })
 
-      hux.styledHeader(`Heroku Exec ${color.app(context.app)}`)
+      ux.stdout(hux.styledHeader(`Heroku Exec ${color.app(context.app)}`))
 
       if (reservations.length === 0) {
         ux.error(`Heroku Exec is not running. Check dyno status with ${color.command('heroku ps')}.`)
@@ -69,11 +69,11 @@ export class HerokuExec {
           })
         }
 
-        hux.table(statuses, {
+        ux.stdout(hux.table(statuses, {
           dyno_name: {header: 'Dyno'},
           dyno_status: {header: 'Dyno Status'},
           proxy_status: {header: 'Proxy Status'},
-        })
+        }))
       }
     } catch (error) {
       ux.error(error as Error)

@@ -58,11 +58,11 @@ export default class LabsIndex extends Command {
     if (flags.json) {
       printJSON({app, user})
     } else {
-      hux.styledHeader(`User Features ${color.user(features.currentUser.email!)}`)
+      this.log(hux.styledHeader(`User Features ${color.user(features.currentUser.email!)}`))
       printFeatures(features.user)
       if (features.app) {
         ux.stdout()
-        hux.styledHeader(`App Features ${color.app(flags.app!)}`)
+        this.log(hux.styledHeader(`App Features ${color.app(flags.app!)}`))
         printFeatures(features.app)
       }
     }

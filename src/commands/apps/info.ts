@@ -92,7 +92,7 @@ repo_size=5000000
       shell()
     } else if (flags.json) {
       const {pipelineCoupling, ...rest} = info
-      hux.styledJSON({...rest, pipeline_coupling: pipelineCoupling})
+      this.logJson({...rest, pipeline_coupling: pipelineCoupling})
     } else {
       print(info, addons, collaborators, flags.extended, _)
     }
@@ -148,8 +148,8 @@ function print(info: Info, addons: (string | undefined)[], collaborators: (strin
     return stack
   })(info.app)
 
-  hux.styledHeader(color.app(info.app.name))
-  hux.styledObject(data)
+  ux.stdout(hux.styledHeader(color.app(info.app.name)))
+  ux.stdout(hux.styledObject(data))
 
   if (extended) {
     ux.stdout('\n\n--- Extended Information ---\n\n')

@@ -1,4 +1,5 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {hux} from '@heroku/heroku-cli-util'
 import {NotFoundError} from '@heroku/heroku-fetch'
 import {AddonAttachmentAmbiguousError, AddonAttachmentNotFoundError} from '@heroku/sdk/resources/platform/add-on-attachment'
 import {expect} from 'chai'
@@ -17,7 +18,7 @@ describe('The addons:open command', function () {
   let resolveStub: SinonStub
 
   beforeEach(function () {
-    urlOpenerStub = stub(Cmd, 'urlOpener').callsFake(async () => {})
+    urlOpenerStub = stub(hux, 'openUrl').resolves(true)
     attachmentResolveStub = stub()
     resolveStub = stub()
     sdkMock = mockSDKPlatform({
@@ -64,8 +65,8 @@ describe('The addons:open command', function () {
       'myapp-2',
       'slowdb',
     ])
-    expect(urlOpenerStub.calledWith('http://myapp-2-slowdb')).to.be.true
-    expect(stdout).to.equal('Opening http://myapp-2-slowdb...\n')
+    expect(urlOpenerStub.calledOnceWithExactly('http://myapp-2-slowdb', {prompt: false})).to.be.true
+    expect(stdout).to.equal('')
     expect(attachmentResolveStub.calledWith('myapp-2', 'slowdb')).to.be.true
     expect(resolveStub.called).to.be.false
   })
@@ -83,8 +84,8 @@ describe('The addons:open command', function () {
         'myApp',
         'redis-321',
       ])
-      expect(urlOpenerStub.calledWith('https://heroku.com')).to.be.true
-      expect(stdout).to.equal('Opening https://heroku.com...\n')
+      expect(urlOpenerStub.calledOnceWithExactly('https://heroku.com', {prompt: false})).to.be.true
+      expect(stdout).to.equal('')
       // addOnAttachment.resolve receives the raw addon arg and app — a single call.
       expect(attachmentResolveStub.calledWith('myApp', 'redis-321')).to.be.true
       expect(resolveStub.called).to.be.false
@@ -98,8 +99,8 @@ describe('The addons:open command', function () {
         'myApp',
         'redis::321',
       ])
-      expect(urlOpenerStub.calledWith('https://heroku.com')).to.be.true
-      expect(stdout).to.equal('Opening https://heroku.com...\n')
+      expect(urlOpenerStub.calledOnceWithExactly('https://heroku.com', {prompt: false})).to.be.true
+      expect(stdout).to.equal('')
       expect(attachmentResolveStub.calledWith('myApp', 'redis::321')).to.be.true
       expect(resolveStub.called).to.be.false
     })
@@ -183,8 +184,8 @@ describe('The addons:open command', function () {
         '--show-url',
         'db2',
       ])
-      expect(urlOpenerStub.calledWith('exampleURL')).to.be.true
-      expect(stdout).to.equal('Opening exampleURL...\n')
+      expect(urlOpenerStub.calledOnceWithExactly('exampleURL', {prompt: false})).to.be.true
+      expect(stdout).to.equal('')
       return api.done()
     })
 
@@ -200,10 +201,10 @@ describe('The addons:open command', function () {
         '--show-url',
         'db2',
       ])
-      const {lastArg} = urlOpenerStub.getCall(0)
+      const [lastArg] = urlOpenerStub.getCall(0).args
       const normalizedPath = String(lastArg).replaceAll('/', path.sep)
       expect(lastArg).to.match(/^file:/)
-      expect(stdout).to.equal(`Opening ${lastArg}...\n`)
+      expect(stdout).to.equal('')
 
       const file = await fs.readFile(normalizedPath.replace(`file:${path.sep}${path.sep}`, ''))
       const html = file.toString()
@@ -213,5 +214,14 @@ describe('The addons:open command', function () {
       expect(html).to.contain('form.submit()')
       return api.done()
     })
+  })
+
+  it('exits 1 when the browser launcher can\'t be started', async function () {
+    attachmentResolveStub.resolves({addon: {app: {id: 'x'}, id: 'db2'}, web_url: 'http://db2'})
+    urlOpenerStub.resolves(false)
+
+    const {error} = await runCommand(Cmd, ['--app', 'myApp', 'db2'])
+
+    expect(error?.oclif?.exit).to.equal(1)
   })
 })

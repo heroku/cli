@@ -23,14 +23,14 @@ export default class Info extends Command {
     const feature = await platform.appFeature.info(app, args.feature)
 
     if (json) {
-      hux.styledJSON(feature)
+      this.logJson(feature)
     } else {
-      hux.styledHeader(feature.name || '')
-      hux.styledObject({
+      this.log(hux.styledHeader(feature.name || ''))
+      this.log(hux.styledObject({
         Description: feature.description,
         Docs: feature.doc_url,
         Enabled: feature.enabled ? color.success('true') : color.failure('false'),
-      })
+      }))
     }
   }
 }

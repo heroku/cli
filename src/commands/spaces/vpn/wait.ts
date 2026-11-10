@@ -1,6 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
-import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {vpnConnectionExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
@@ -61,7 +60,7 @@ export default class Wait extends Command {
     })
 
     if (json) {
-      hux.styledJSON(vpnConnection)
+      this.logJson(vpnConnection)
     } else {
       displayVPNConfigInfo(name, vpnConnection)
     }

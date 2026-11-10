@@ -34,7 +34,7 @@ export default class DataPgLogicalReplicationPublicationsIndex extends BaseComma
       return
     }
 
-    hux.table(items, {
+    this.log(hux.table(items, {
       Name: {get: publication => publication.name},
       'New Tables': {get: publication => publication.target.automatically_includes_new_tables ? 'Included' : 'Not Included'},
       Owner: {get: publication => publication.owner},
@@ -43,6 +43,6 @@ export default class DataPgLogicalReplicationPublicationsIndex extends BaseComma
           ? `schemas: ${publication.target.schemas.join(', ')}`
           : `tables: ${publication.current_tables.join(', ')}`,
       },
-    }, huxTableNoWrapOptions(flags['no-wrap']))
+    }, huxTableNoWrapOptions(flags['no-wrap'])))
   }
 }
