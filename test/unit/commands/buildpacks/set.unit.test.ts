@@ -18,6 +18,15 @@ describe('buildpacks:set', function () {
   })
 
   describe('URL', function () {
+    it('# errors on an invalid buildpack name without calling the registry', async function () {
+      Stubber.get(api)
+
+      const {error} = await runCommand(BuildpacksSet, ['not-a-slug', '-a', 'example'])
+
+      expect(error?.message).to.include("Could not find the buildpack 'not-a-slug'.")
+      expect(error?.message).to.include('namespace/name')
+    })
+
     it('# with no buildpacks sets the buildpack URL', async function () {
       Stubber.get(api)
       Stubber.put(api, [
