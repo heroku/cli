@@ -210,6 +210,26 @@ Run git push heroku main to create a new release using this buildpack.
 `)
     })
 
+    it('# remove by name works when the buildpack is no longer in the registry', async function () {
+      Stubber.get(api, [
+        {name: 'hone/test', url: 'urn:buildpack:hone/test'},
+      ])
+      Stubber.put(api)
+      api
+        .get('/apps/example/config-vars')
+        .reply(200, {})
+
+      nock('https://buildpack-registry.heroku.com')
+        .get('/buildpacks/hone%2Ftest')
+        .reply(404, {error: 'No such buildpack.'})
+
+      const {stderr, stdout} = await runCommand(BuildpacksRemove, ['hone/test', '-a', 'example'])
+
+      expect(stderr).to.equal('')
+      expect(stdout).to.equal(`Buildpack removed. Next release on ⬢ example will detect buildpacks normally.
+`)
+    })
+
     it('# with no buildpacks reports an error removing buildpack_url', async function () {
       Stubber.get(api)
 

@@ -27,6 +27,29 @@ describe('buildpacks:set', function () {
       expect(error?.message).to.include('namespace/name')
     })
 
+    it('# errors when the buildpack is not in the registry, without updating the app', async function () {
+      Stubber.get(api)
+      nock('https://buildpack-registry.heroku.com')
+        .get('/buildpacks/hone%2Ftest')
+        .times(2)
+        .reply(404, {error: 'No such buildpack.'})
+
+      const {error} = await runCommand(BuildpacksSet, ['hone/test', '-a', 'example'])
+
+      expect(error?.message).to.include('hone/test is not in the buildpack registry.')
+    })
+
+    it('# errors when the registry returns a server error', async function () {
+      Stubber.get(api)
+      nock('https://buildpack-registry.heroku.com')
+        .get('/buildpacks/heroku%2Fruby')
+        .reply(500, 'oops')
+
+      const {error} = await runCommand(BuildpacksSet, ['heroku/ruby', '-a', 'example'])
+
+      expect(error?.message).to.include('500: Internal Server Error')
+    })
+
     it('# with no buildpacks sets the buildpack URL', async function () {
       Stubber.get(api)
       Stubber.put(api, [
