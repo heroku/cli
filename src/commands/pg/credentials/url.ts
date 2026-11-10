@@ -1,11 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import {postgresDatabaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import {URL} from 'node:url'
 import tsheredoc from 'tsheredoc'
 
-import type {NonAdvancedCredentialInfo} from '../../../lib/data/types.js'
-
+import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc
@@ -30,42 +30,16 @@ export default class Url extends Command {
     const {args, flags} = await this.parse(Url)
     const {app, name} = flags
     const {database} = args
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const {addon: db} = await dbResolver.getAttachment(app, database)
-    if (utils.pg.isLegacyEssentialDatabase(db) && name !== 'default') {
-      ux.error('Legacy Essential-tier databases do not support named credentials.')
-    }
+    const {data} = createSDK(this.heroku, {extensions: [postgresDatabaseExtensions]})
 
-    const {body: credInfo} = await this.heroku.get<NonAdvancedCredentialInfo>(
-      `/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(name)}`,
-      {
-        headers: {
-          Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
-        },
-        hostname: utils.pg.host(),
-      },
-    )
-    const activeCreds = credInfo.credentials.find(c => c.state === 'active')
-    if (!activeCreds) {
-      ux.error(`Could not find any active credentials for ${name}`, {exit: 1})
-    }
-
-    const creds = {
-      ...db, database: credInfo.database, host: credInfo.host, password: activeCreds?.password, port: credInfo.port, user: activeCreds?.user,
-    }
-    const connUrl = new URL(`postgres://${creds.host}/${creds.database}`)
-    connUrl.port = creds.port.toString()
-    if (creds.user && creds.password) {
-      connUrl.username = creds.user
-      connUrl.password = creds.password
-    }
+    const {credentialConnectionInfo: credInfo} = await data.postgresDatabase.getUrl(app, name, {addonIdentity: database})
 
     ux.stdout(heredoc(`
       Connection information for ${color.yellow(name)} credential.
       Connection info string:
-        "dbname=${creds.database} host=${creds.host} port=${creds.port} user=${creds.user} password=${creds.password} sslmode=require"
+        "dbname=${credInfo.database} host=${credInfo.host} port=${credInfo.port} user=${credInfo.user} password=${credInfo.password} sslmode=require"
       Connection URL:
-        ${connUrl}
+        ${credInfo.url}
     `))
   }
 }
