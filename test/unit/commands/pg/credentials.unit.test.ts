@@ -103,7 +103,7 @@ describe('pg:credentials', function () {
       .reply(200, [{addon}])
       .get('/addons/1/addon-attachments')
       .reply(200, attachments)
-    sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves(credentials)}})
+    sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves({addon, credentials})}})
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -176,7 +176,7 @@ describe('pg:credentials', function () {
       .reply(200, [{addon}])
       .get('/addons/1/addon-attachments')
       .reply(200, attachments)
-    sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves(rotatingCredentials)}})
+    sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves({addon, credentials: rotatingCredentials})}})
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -210,7 +210,7 @@ describe('pg:credentials', function () {
       .reply(200, [{addon}])
       .get('/addons/1/addon-attachments')
       .reply(200, simpleAttachments)
-    sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves(simpleCredentials)}})
+    sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves({addon, credentials: simpleCredentials})}})
 
     const tableStub = stub(hux, 'table').returns('')
     await runCommand(Cmd, ['--app', 'myapp', '--no-wrap'])
@@ -241,7 +241,7 @@ describe('pg:credentials', function () {
         .reply(200, [{addon}])
         .get('/addons/1/addon-attachments')
         .reply(200, mixedAttachments)
-      sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves(sortCredentials)}})
+      sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves({addon, credentials: sortCredentials})}})
 
       const {stdout} = await runCommand(Cmd, ['--app', 'myapp'])
 
