@@ -2,7 +2,6 @@ import {Command, flags as Flags} from '@heroku-cli/command'
 import {BuildpackRegistry} from '@heroku/buildpack-registry'
 import {hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
-import {Result} from 'true-myth'
 
 export default class Info extends Command {
   static args = {
@@ -21,20 +20,20 @@ export default class Info extends Command {
     const registry = new BuildpackRegistry()
 
     const validationResult = BuildpackRegistry.isValidBuildpackSlug(args.buildpack)
-    if (!validationResult.isOk) {
-      this.error(`Could not publish the buildpack.\n${(validationResult as any).error}`)
+    if (validationResult.isErr) {
+      this.error(`Could not find the buildpack '${args.buildpack}'.\n${validationResult.error}`)
     }
 
     const result = await registry.info(args.buildpack)
-    Result.match({
-      Err(err: any) {
+    result.match({
+      Err(err) {
         if (err.status === 404) {
           ux.error(`Could not find the buildpack '${args.buildpack}'`)
         } else {
           ux.error(`Problems finding buildpack info: ${err.description}`)
         }
       },
-      Ok(buildpack: unknown) {
+      Ok(buildpack) {
         if (flags.json) {
           hux.styledJSON(buildpack)
         } else {
@@ -42,6 +41,6 @@ export default class Info extends Command {
           hux.styledObject(buildpack, ['description', 'category', 'license', 'support', 'source', 'readme'])
         }
       },
-    }, result as any)
+    })
   }
 }

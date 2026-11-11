@@ -1,11 +1,11 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {Fixture} from '@heroku/buildpack-registry'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import BuildpacksRemove from '../../../../src/commands/buildpacks/remove.js'
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
+import {Fixture} from '../../../helpers/buildpacks/fixture.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('buildpacks:remove', function () {
@@ -204,6 +204,26 @@ Run git push heroku main to create a new release using this buildpack.
         .reply(200, buildpack)
 
       const {stderr, stdout} = await runCommand(BuildpacksRemove, ['heroku/ruby', '-a', 'example'])
+
+      expect(stderr).to.equal('')
+      expect(stdout).to.equal(`Buildpack removed. Next release on ⬢ example will detect buildpacks normally.
+`)
+    })
+
+    it('# remove by name works when the buildpack is no longer in the registry', async function () {
+      Stubber.get(api, [
+        {name: 'hone/test', url: 'urn:buildpack:hone/test'},
+      ])
+      Stubber.put(api)
+      api
+        .get('/apps/example/config-vars')
+        .reply(200, {})
+
+      nock('https://buildpack-registry.heroku.com')
+        .get('/buildpacks/hone%2Ftest')
+        .reply(404, {error: 'No such buildpack.'})
+
+      const {stderr, stdout} = await runCommand(BuildpacksRemove, ['hone/test', '-a', 'example'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(`Buildpack removed. Next release on ⬢ example will detect buildpacks normally.
