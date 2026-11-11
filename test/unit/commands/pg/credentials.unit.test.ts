@@ -1,16 +1,43 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
-import nock from 'nock'
-import {restore, stub} from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/pg/credentials.js'
-import {type MockSDK, mockSDKData} from '../../../helpers/mock-sdk.js'
+import {type MockSDK, mockSDK} from '../../../helpers/mock-sdk.js'
 import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
 /** Strip app icon (⬢) so assertions pass whether or not the CLI outputs it. */
 function stripAppIcon(s: string): string {
   return s.replaceAll('⬢', '')
+}
+
+type FakePlatform = {
+  addOnAttachment: {
+    listByAddOn: SinonStub
+  }
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    addOnAttachment: {
+      listByAddOn: stub(),
+    },
+  }
+}
+
+type FakeData = {
+  postgresDatabase: {
+    listCredentials: SinonStub
+  }
+}
+
+function buildFakeData(): FakeData {
+  return {
+    postgresDatabase: {
+      listCredentials: stub(),
+    },
+  }
 }
 
 describe('pg:credentials', function () {
@@ -84,26 +111,24 @@ describe('pg:credentials', function () {
     },
   ]
 
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
+  let fakeData: FakeData
   let sdkMock: MockSDK
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    fakeData = buildFakeData()
+    sdkMock = mockSDK(fakeData, fakePlatform)
   })
 
   afterEach(function () {
-    nock.cleanAll()
     sdkMock.restore()
     restore()
-    api.done()
   })
 
   it('shows the correct credentials', async function () {
-    api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', app: 'myapp'})
-      .reply(200, [{addon}])
-      .get('/addons/1/addon-attachments')
-      .reply(200, attachments)
-    sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves({addon, credentials})}})
+    fakeData.postgresDatabase.listCredentials.resolves({addon, credentials})
+    fakePlatform.addOnAttachment.listByAddOn.resolves(attachments)
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -130,6 +155,8 @@ describe('pg:credentials', function () {
     expect(outerHeader).to.be.within(0, rotation)
     expect(rotation).to.be.above(normalized.indexOf('jeff'))
     expect(rotation).to.be.below(normalized.indexOf('ransom'))
+    expect(fakeData.postgresDatabase.listCredentials.calledOnceWithExactly('myapp', {addonIdentity: undefined})).to.equal(true)
+    expect(fakePlatform.addOnAttachment.listByAddOn.calledOnceWithExactly(addon.id)).to.equal(true)
   })
 
   it('shows the correct rotation information if no connection information is available yet', async function () {
@@ -172,11 +199,8 @@ describe('pg:credentials', function () {
       },
     ]
 
-    api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', app: 'myapp'})
-      .reply(200, [{addon}])
-      .get('/addons/1/addon-attachments')
-      .reply(200, attachments)
-    sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves({addon, credentials: rotatingCredentials})}})
+    fakeData.postgresDatabase.listCredentials.resolves({addon, credentials: rotatingCredentials})
+    fakePlatform.addOnAttachment.listByAddOn.resolves(attachments)
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -206,55 +230,13 @@ describe('pg:credentials', function () {
       {app: {name: 'main-app'}, name: 'DATABASE', namespace: null},
     ]
 
-    api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', app: 'myapp'})
-      .reply(200, [{addon}])
-      .get('/addons/1/addon-attachments')
-      .reply(200, simpleAttachments)
-    sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves({addon, credentials: simpleCredentials})}})
+    fakeData.postgresDatabase.listCredentials.resolves({addon, credentials: simpleCredentials})
+    fakePlatform.addOnAttachment.listByAddOn.resolves(simpleAttachments)
 
     const tableStub = stub(hux, 'table').returns('')
     await runCommand(Cmd, ['--app', 'myapp', '--no-wrap'])
 
     const callArgs = tableStub.firstCall.args
     expect(callArgs[2]).to.include({maxWidth: 'none', overflow: 'truncate'})
-  })
-
-  // Targets coverage gaps in the local presentCredentialAttachments sort
-  // (src/commands/pg/credentials.ts). Same-app vs foreign hits isForeignApp, and
-  // two foreign attachments with the same name fall through to the app-name
-  // comparator. Remove once pg:credentials is migrated to use @heroku/sdk.
-  describe('attachment sorting', function () {
-    it('sorts the local-app attachment ahead of foreign-app attachments, then by app name', async function () {
-      const sortCredentials = [
-        {
-          credentials: [], database: 'd123', host: 'localhost', name: 'default', port: 5442, state: 'active', uuid: 'cccc',
-        },
-      ]
-      const mixedAttachments = [
-        {app: {name: 'zeta-app'}, name: 'HEROKU_POSTGRESQL_PINK', namespace: null},
-        {app: {name: 'myapp'}, name: 'DATABASE', namespace: null},
-        {app: {}, name: 'HEROKU_POSTGRESQL_PINK', namespace: null},
-        {app: {name: 'alpha-app'}, name: 'HEROKU_POSTGRESQL_PINK', namespace: null},
-      ]
-
-      api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', app: 'myapp'})
-        .reply(200, [{addon}])
-        .get('/addons/1/addon-attachments')
-        .reply(200, mixedAttachments)
-      sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves({addon, credentials: sortCredentials})}})
-
-      const {stdout} = await runCommand(Cmd, ['--app', 'myapp'])
-
-      const normalized = normalizeTableOutput(stripAppIcon(stdout))
-      const localIndex = normalized.indexOf('as database')
-      const alphaIndex = normalized.indexOf('on alpha-app app')
-      const zetaIndex = normalized.indexOf('on zeta-app app')
-
-      expect(localIndex).to.be.greaterThan(-1)
-      expect(localIndex).to.be.lessThan(alphaIndex)
-      expect(alphaIndex).to.be.lessThan(zetaIndex)
-      // the local attachment omits the "on <app> app" suffix since it isn't foreign
-      expect(normalized).not.to.include('as database on')
-    })
   })
 })
