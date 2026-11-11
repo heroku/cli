@@ -43,22 +43,10 @@ describe('pg:credentials:create', function () {
     expect(fakeData.postgresDatabase.createCredentials.calledOnceWithExactly('myapp', {name: 'credname'}, {addonIdentity: undefined})).to.equal(true)
   })
 
-  it('throws an error when the db is numbered essential plan', async function () {
-    fakeData.postgresDatabase.createCredentials.rejects(new Error('You can\'t create a custom credential on Essential-tier databases.'))
+  it('propagates errors from createCredentials', async function () {
     const err = "You can't create a custom credential on Essential-tier databases."
-    const {error} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      '--name',
-      'jeff',
-    ])
-    expect(error!.message).to.contain(err)
-  })
+    fakeData.postgresDatabase.createCredentials.rejects(new Error(err))
 
-  it('throws an error when the db is essential plan', async function () {
-    fakeData.postgresDatabase.createCredentials.rejects(new Error('You can\'t create a custom credential on Essential-tier databases.'))
-
-    const err = "You can't create a custom credential on Essential-tier databases."
     const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',

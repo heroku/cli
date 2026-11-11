@@ -155,6 +155,8 @@ describe('pg:credentials', function () {
     expect(outerHeader).to.be.within(0, rotation)
     expect(rotation).to.be.above(normalized.indexOf('jeff'))
     expect(rotation).to.be.below(normalized.indexOf('ransom'))
+    expect(fakeData.postgresDatabase.listCredentials.calledOnceWithExactly('myapp', {addonIdentity: undefined})).to.equal(true)
+    expect(fakePlatform.addOnAttachment.listByAddOn.calledOnceWithExactly(addon.id)).to.equal(true)
   })
 
   it('shows the correct rotation information if no connection information is available yet', async function () {

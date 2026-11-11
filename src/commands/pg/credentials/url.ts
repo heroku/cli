@@ -2,7 +2,6 @@ import {Command, flags} from '@heroku-cli/command'
 import {color} from '@heroku/heroku-cli-util'
 import {postgresDatabaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
-import {URL} from 'node:url'
 import tsheredoc from 'tsheredoc'
 
 import {createSDK} from '../../../lib/sdk.js'

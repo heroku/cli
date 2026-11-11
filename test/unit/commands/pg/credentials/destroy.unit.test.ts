@@ -54,52 +54,7 @@ describe('pg:credentials:destroy', function () {
     expect(fakeData.postgresDatabase.deleteCredential.calledOnceWithExactly('myapp', 'credname', {addonIdentity: undefined})).to.equal(true)
   })
 
-  it('throws an error when the db is starter plan', async function () {
-    const err = "You can't destroy the default credential on Essential-tier databases."
-    fakeData.postgresDatabase.deleteCredential.rejects(new Error(err))
-
-    const {error} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      '--name',
-      'jeff',
-      '--confirm',
-      'myapp',
-    ])
-    expect(error!.message).to.equal(err)
-  })
-
-  it('throws an error when the db is numbered essential plan', async function () {
-    const err = "You can't destroy the default credential on Essential-tier databases."
-    fakeData.postgresDatabase.deleteCredential.rejects(new Error(err))
-
-    const {error} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      '--name',
-      'gandalf',
-      '--confirm',
-      'myapp',
-    ])
-    expect(error!.message).to.equal(err)
-  })
-
-  it('throws an error when the credential is still used for an attachment', async function () {
-    const err = 'Credential gandalf must be detached from the app otherapp before destroying.'
-    fakeData.postgresDatabase.deleteCredential.rejects(new Error(err))
-
-    const {error} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      '--name',
-      'gandalf',
-      '--confirm',
-      'myapp',
-    ])
-    expect(error!.message).to.equal(err)
-  })
-
-  it('only mentions an app with multiple attachments once', async function () {
+  it('propagates errors from deleteCredential', async function () {
     const err = 'Credential gandalf must be detached from the apps otherapp, yetanotherapp before destroying.'
     fakeData.postgresDatabase.deleteCredential.rejects(new Error(err))
 
