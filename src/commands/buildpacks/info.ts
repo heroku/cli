@@ -37,6 +37,10 @@ export default class Info extends Command {
         if (flags.json) {
           hux.styledJSON(buildpack)
         } else {
+          if (buildpack.archived) {
+            ux.warn('This buildpack has been archived.')
+          }
+
           hux.styledHeader(args.buildpack)
           hux.styledObject(buildpack, ['description', 'category', 'license', 'support', 'source', 'readme'])
         }

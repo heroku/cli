@@ -4,6 +4,7 @@ import nock from 'nock'
 
 import BuildpacksInfo from '../../../../src/commands/buildpacks/info.js'
 import {Fixture} from '../../../helpers/buildpacks/fixture.js'
+import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('buildpacks:info', function () {
   let registryApi: nock.Scope
@@ -40,11 +41,27 @@ describe('buildpacks:info', function () {
       .get('/buildpacks/heroku%2Fruby/readme')
       .reply(200, Fixture.readme())
 
-    const {stdout} = await runCommand(BuildpacksInfo, ['heroku/ruby'])
+    const {stderr, stdout} = await runCommand(BuildpacksInfo, ['heroku/ruby'])
 
     expect(stdout).to.contain('=== heroku/ruby')
     expect(stdout).to.contain('languages')
     expect(stdout).to.match(/source:\s+https:\/\/github\.com\/heroku\/heroku-buildpack-ruby/)
+    expect(stderr).to.equal('')
+  })
+
+  it('warns when the buildpack is archived', async function () {
+    registryApi
+      .get('/buildpacks/heroku%2Fruby')
+      .reply(200, Fixture.buildpack({archived: true, name: 'ruby'}))
+      .get('/buildpacks/heroku%2Fruby/revisions')
+      .reply(200, [Fixture.revision()])
+      .get('/buildpacks/heroku%2Fruby/readme')
+      .reply(200, Fixture.readme())
+
+    const {stderr, stdout} = await runCommand(BuildpacksInfo, ['heroku/ruby'])
+
+    expect(unwrap(stderr)).to.equal('Warning: This buildpack has been archived.\n')
+    expect(stdout).to.contain('=== heroku/ruby')
   })
 
   it("handles if the buildpack doesn't exist", async function () {
@@ -83,10 +100,27 @@ describe('buildpacks:info', function () {
       .get('/buildpacks/heroku%2Fruby/readme')
       .reply(200, Fixture.readme())
 
-    const {stdout} = await runCommand(BuildpacksInfo, ['heroku/ruby', '--json'])
+    const {stderr, stdout} = await runCommand(BuildpacksInfo, ['heroku/ruby', '--json'])
 
     const parsed = JSON.parse(stdout)
     expect(parsed).to.be.an('object')
     expect(parsed).to.have.property('description')
+    expect(parsed).to.have.property('archived', false)
+    expect(stderr).to.equal('')
+  })
+
+  it('does not warn when the buildpack is archived and --json flag is set', async function () {
+    registryApi
+      .get('/buildpacks/heroku%2Fruby')
+      .reply(200, Fixture.buildpack({archived: true, name: 'ruby'}))
+      .get('/buildpacks/heroku%2Fruby/revisions')
+      .reply(200, [Fixture.revision()])
+      .get('/buildpacks/heroku%2Fruby/readme')
+      .reply(200, Fixture.readme())
+
+    const {stderr, stdout} = await runCommand(BuildpacksInfo, ['heroku/ruby', '--json'])
+
+    expect(JSON.parse(stdout)).to.have.property('archived', true)
+    expect(stderr).to.equal('')
   })
 })
