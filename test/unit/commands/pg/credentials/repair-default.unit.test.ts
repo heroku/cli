@@ -1,28 +1,41 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/credentials/repair-default.js'
+import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
+
+type FakeData = {
+  postgresDatabase: {repairDefault: SinonStub}
+}
+
+function buildFakeData(): FakeData {
+  return {postgresDatabase: {repairDefault: stub()}}
+}
 
 describe('pg:credentials:repair-default', function () {
   const addon = {
     name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
   }
 
+  let fakeData: FakeData
+  let sdkMock: MockSDK
+
+  beforeEach(function () {
+    fakeData = buildFakeData()
+    sdkMock = mockSDKData(fakeData)
+  })
+
   afterEach(function () {
-    nock.cleanAll()
+    sdkMock.restore()
   })
 
   it('resets the credential permissions', async function () {
-    nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve')
-      .reply(200, [{addon}])
-    nock('https://api.data.heroku.com')
-      .post('/postgres/v0/databases/postgres-1/repair-default')
-      .reply(200)
+    fakeData.postgresDatabase.repairDefault.resolves({addon, result: {message: 'done'}})
+
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -33,17 +46,13 @@ describe('pg:credentials:repair-default', function () {
     expectOutput(stderr, heredoc(`
       Resetting permissions and object ownership for default role to factory settings... done
     `))
+    expect(fakeData.postgresDatabase.repairDefault.calledOnceWithExactly('myapp', {addonIdentity: undefined})).to.equal(true)
   })
 
   it('throws an error when the db is essential plan', async function () {
-    const hobbyAddon = {
-      name: 'postgres-1', plan: {name: 'heroku-postgresql:mini'},
-    }
-
-    nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve')
-      .reply(200, [{addon: hobbyAddon}])
     const err = "You can't perform this operation on Essential-tier databases."
+    fakeData.postgresDatabase.repairDefault.rejects(new Error(err))
+
     const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',

@@ -1,34 +1,36 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../../src/commands/pg/credentials/create.js'
+import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
+
+type FakeData = {
+  postgresDatabase: {createCredentials: SinonStub}
+}
+
+function buildFakeData(): FakeData {
+  return {postgresDatabase: {createCredentials: stub()}}
+}
 
 describe('pg:credentials:create', function () {
-  let api: nock.Scope
-  let pg: nock.Scope
+  let fakeData: FakeData
+  let sdkMock: MockSDK
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
-    pg = nock('https://api.data.heroku.com')
+    fakeData = buildFakeData()
+    sdkMock = mockSDKData(fakeData)
   })
 
   afterEach(function () {
-    nock.cleanAll()
-    api.done()
+    sdkMock.restore()
   })
 
   it('creates the credential', async function () {
     const addon = {
       name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
     }
-    api.post('/actions/addon-attachments/resolve', {
-      addon_attachment: 'DATABASE_URL',
-      app: 'myapp',
-    }).reply(200, [{addon}])
-
-    pg.post('/postgres/v0/databases/postgres-1/credentials')
-      .reply(200)
+    fakeData.postgresDatabase.createCredentials.resolves({addon, result: {message: 'created'}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -37,19 +39,12 @@ describe('pg:credentials:create', function () {
       'credname',
     ])
     expect(stdout).to.equal('\nPlease attach the credential to the apps you want to use it in by running heroku addons:attach postgres-1 --credential credname -a myapp.\nPlease define the new grants for the credential within Postgres: heroku pg:psql postgres-1 -a myapp.\n')
-    return expect(stderr).to.equal('Creating credential credname... done\n')
+    expect(stderr).to.equal('Creating credential credname... done\n')
+    expect(fakeData.postgresDatabase.createCredentials.calledOnceWithExactly('myapp', {name: 'credname'}, {addonIdentity: undefined})).to.equal(true)
   })
 
   it('throws an error when the db is numbered essential plan', async function () {
-    const essentialAddon = {
-      name: 'postgres-1', plan: {name: 'heroku-postgresql:essential-0'},
-    }
-
-    api.post('/actions/addon-attachments/resolve', {
-      addon_attachment: 'DATABASE_URL',
-      app: 'myapp',
-    }).reply(200, [{addon: essentialAddon}])
-
+    fakeData.postgresDatabase.createCredentials.rejects(new Error('You can\'t create a custom credential on Essential-tier databases.'))
     const err = "You can't create a custom credential on Essential-tier databases."
     const {error} = await runCommand(Cmd, [
       '--app',
@@ -61,13 +56,7 @@ describe('pg:credentials:create', function () {
   })
 
   it('throws an error when the db is essential plan', async function () {
-    const hobbyAddon = {
-      name: 'postgres-1', plan: {name: 'heroku-postgresql:mini'},
-    }
-    api.post('/actions/addon-attachments/resolve', {
-      addon_attachment: 'DATABASE_URL',
-      app: 'myapp',
-    }).reply(200, [{addon: hobbyAddon}])
+    fakeData.postgresDatabase.createCredentials.rejects(new Error('You can\'t create a custom credential on Essential-tier databases.'))
 
     const err = "You can't create a custom credential on Essential-tier databases."
     const {error} = await runCommand(Cmd, [
