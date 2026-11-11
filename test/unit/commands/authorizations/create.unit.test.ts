@@ -1,9 +1,15 @@
-import {runCommand} from '@heroku-cli/test-utils'
+import type {OauthAuthorization} from '@heroku/types/3.sdk'
+
+import {captureOutput, runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 
 import AuthorizationsCreate from '../../../../src/commands/authorizations/create.js'
+import {clientAuthorization, tokenAuthorization} from '../../../fixtures/authorizations/fixtures.js'
+import {expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
+import {getConfig} from '../../../helpers/test-instances.js'
 
 // Anchor the fake to the real SDK platform so renaming the oauthAuthorization.create
 // path fails to compile here; intersect with SinonStub so the stub assertions stay available.
@@ -62,18 +68,6 @@ describe('authorizations:create', function () {
     })
   })
 
-  context('with json flag', function () {
-    it('prints json', async function () {
-      fakePlatform.oauthAuthorization.create.resolves({access_token: {token: 'secrettoken'}, scope: ['global']})
-
-      const {stdout} = await runCommand(AuthorizationsCreate, ['--json'])
-
-      const json = JSON.parse(stdout)
-      expect(json.access_token).to.contain({token: 'secrettoken'})
-      expect(json.scope).to.contain('global')
-    })
-  })
-
   context('with team flag', function () {
     it('creates the authorization for the team', async function () {
       fakePlatform.oauthAuthorization.teamCreate.resolves({access_token: {token: 'secrettoken'}, scope: ['global']})
@@ -88,6 +82,54 @@ describe('authorizations:create', function () {
         expires_in: undefined,
         scope: undefined,
       })).to.equal(true)
+    })
+  })
+
+  context('with short flag and HEROKU_CONTENT_TYPE=json', function () {
+    let previous: string | undefined
+
+    beforeEach(function () {
+      previous = process.env.HEROKU_CONTENT_TYPE
+      process.env.HEROKU_CONTENT_TYPE = 'json'
+    })
+
+    afterEach(function () {
+      if (previous === undefined) delete process.env.HEROKU_CONTENT_TYPE
+      else process.env.HEROKU_CONTENT_TYPE = previous
+    })
+
+    it('prints only the token, not JSON', async function () {
+      fakePlatform.oauthAuthorization.create.resolves(tokenAuthorization)
+      const cmd = new AuthorizationsCreate(['--short'], await getConfig()) as unknown as {_run(): Promise<unknown>}
+
+      const {stdout} = await captureOutput(async () => {
+        await cmd._run()
+      })
+
+      expect(stdout).to.equal('HRKU-fake-access-token-0000\n')
+    })
+  })
+
+  describe('--json', function () {
+    it('returns the created authorization', async function () {
+      fakePlatform.oauthAuthorization.create.resolves(tokenAuthorization)
+
+      await expectJsonSnapshot<OauthAuthorization>(this, AuthorizationsCreate, ['--description', 'b description'])
+    })
+
+    it('returns the authorization created for the team', async function () {
+      fakePlatform.oauthAuthorization.teamCreate.resolves(clientAuthorization)
+
+      await expectJsonSnapshot<OauthAuthorization>(this, AuthorizationsCreate, ['--description', 'awesome', '--team', 'my-team'])
+    })
+
+    // Asserted via runCommand: oclif's parse-error document under --json serializes the whole
+    // parse context (including Config), which isn't a useful thing to pin here.
+    it('rejects --short with --json', async function () {
+      const {error} = await runCommand(AuthorizationsCreate, ['--short', '--json'])
+
+      expect(ansis.strip(error?.message ?? '')).to.contain('--json=true cannot also be provided when using --short')
+      expect(fakePlatform.oauthAuthorization.create.called).to.equal(false)
     })
   })
 })

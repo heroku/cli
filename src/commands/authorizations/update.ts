@@ -1,8 +1,9 @@
+import type {OauthAuthorization, OauthAuthorizationUpdateOpts} from '@heroku/types/3.sdk'
+
 import {Command, flags} from '@heroku-cli/command'
-import {OauthAuthorizationUpdateOpts} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 
-import {display} from '../../lib/authorizations/authorizations.js'
+import {format} from '../../lib/authorizations/authorizations.js'
 import {createSDK} from '../../lib/sdk.js'
 
 export default class AuthorizationsUpdate extends Command {
@@ -10,13 +11,14 @@ export default class AuthorizationsUpdate extends Command {
     id: Args.string({description: 'ID of the authorization', required: true}),
   }
   static description = 'updates an OAuth authorization'
+  static enableJsonFlag = true
   static flags = {
     'client-id': flags.string({dependsOn: ['client-secret'], description: 'identifier of OAuth client to set'}),
     'client-secret': flags.string({dependsOn: ['client-id'], description: 'secret of OAuth client to set'}),
     description: flags.string({char: 'd', description: 'set a custom authorization description'}),
   }
 
-  async run() {
+  async run(): Promise<OauthAuthorization> {
     const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(AuthorizationsUpdate)
 
@@ -37,6 +39,7 @@ export default class AuthorizationsUpdate extends Command {
 
     ux.action.stop()
 
-    display(authentication)
+    this.log(format(authentication))
+    return authentication
   }
 }

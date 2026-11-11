@@ -1,9 +1,13 @@
+import type {OauthAuthorization} from '@heroku/types/3.sdk'
+
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 
 import AuthorizationsRotate from '../../../../src/commands/authorizations/rotate.js'
+import {tokenAuthorization} from '../../../fixtures/authorizations/fixtures.js'
+import {expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
 
 type FakePlatform = {
   oauthAuthorization: {regenerate: sinon.SinonStub}
@@ -38,5 +42,13 @@ describe('authorizations:rotate', function () {
     expect(stdout).to.contain('Token:  secrettoken\n')
     expect(stderr).to.contain('Rotating OAuth Authorization... done')
     expect(fakePlatform.oauthAuthorization.regenerate.calledOnceWithExactly(authorizationID)).to.equal(true)
+  })
+
+  describe('--json', function () {
+    it('returns the rotated authorization', async function () {
+      fakePlatform.oauthAuthorization.regenerate.resolves(tokenAuthorization)
+
+      await expectJsonSnapshot<OauthAuthorization>(this, AuthorizationsRotate, [tokenAuthorization.id])
+    })
   })
 })

@@ -1,9 +1,13 @@
+import type {OauthAuthorization} from '@heroku/types/3.sdk'
+
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 
 import AuthorizationsUpdate from '../../../../src/commands/authorizations/update.js'
+import {clientAuthorization} from '../../../fixtures/authorizations/fixtures.js'
+import {expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
 
 type FakePlatform = {
   oauthAuthorization: {update: sinon.SinonStub}
@@ -47,5 +51,13 @@ describe('authorizations:update', function () {
       authorizationID,
       {client: {id: '100', secret: 'secret'}, description: 'awesome'},
     )).to.equal(true)
+  })
+
+  describe('--json', function () {
+    it('returns the updated authorization', async function () {
+      fakePlatform.oauthAuthorization.update.resolves(clientAuthorization)
+
+      await expectJsonSnapshot<OauthAuthorization>(this, AuthorizationsUpdate, [clientAuthorization.id, '--description', 'awesome'])
+    })
   })
 })

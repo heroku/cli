@@ -1,11 +1,11 @@
-import {captureOutput} from '@heroku-cli/test-utils'
 import {OauthAuthorization} from '@heroku/types/3.sdk'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import {addSeconds, formatDistanceToNow} from 'date-fns'
 
-import {display} from '../../../../src/lib/authorizations/authorizations.js'
+import {format} from '../../../../src/lib/authorizations/authorizations.js'
 
-describe('display', function () {
+describe('format', function () {
   const authId = 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'
   const authDesc = 'a cool auth'
 
@@ -16,21 +16,19 @@ describe('display', function () {
       scope: ['global', 'app'],
     } as OauthAuthorization
 
-    it('prints the styled authorization', async function () {
-      const {stdout} = await captureOutput(async () => {
-        display(auth)
-      })
+    it('formats the styled authorization', function () {
+      const output = `${ansis.strip(format(auth))}\n`
 
-      expect(stdout).to.contain(`ID:          ${authId}\n`)
-      expect(stdout).to.contain('Scope:       global,app\n')
-      expect(stdout).to.contain(`Description: ${authDesc}\n`)
+      expect(output).to.contain(`ID:          ${authId}\n`)
+      expect(output).to.contain('Scope:       global,app\n')
+      expect(output).to.contain(`Description: ${authDesc}\n`)
 
-      expect(stdout).to.contain('Client:      <none>\n')
-      expect(stdout).to.not.contain('Redirect URI')
+      expect(output).to.contain('Client:      <none>\n')
+      expect(output).to.not.contain('Redirect URI')
 
-      expect(stdout).to.not.contain('Token')
-      expect(stdout).to.not.contain('Expires at')
-      expect(stdout).to.not.contain('Updated at')
+      expect(output).to.not.contain('Token')
+      expect(output).to.not.contain('Expires at')
+      expect(output).to.not.contain('Updated at')
     })
   })
 
@@ -47,25 +45,23 @@ describe('display', function () {
       updated_at: `${updatedAt}`,
     } as OauthAuthorization
 
-    it('prints the styled authorization with access token info', async function () {
-      const {stdout} = await captureOutput(async () => {
-        display(auth)
-      })
+    it('formats the styled authorization with access token info', function () {
+      const output = `${ansis.strip(format(auth))}\n`
 
       const expirationDate = addSeconds(new Date(), 10_000)
-      expect(stdout).to.contain(`ID:          ${authId}\n`)
-      expect(stdout).to.contain('Scope:       global,app\n')
-      expect(stdout).to.contain('Description: a cool auth\n')
+      expect(output).to.contain(`ID:          ${authId}\n`)
+      expect(output).to.contain('Scope:       global,app\n')
+      expect(output).to.contain('Description: a cool auth\n')
 
-      expect(stdout).to.contain('Client:      <none>\n')
-      expect(stdout).to.not.contain('Redirect URI')
+      expect(output).to.contain('Client:      <none>\n')
+      expect(output).to.not.contain('Redirect URI')
 
-      expect(stdout).to.contain(`ID:          ${authId}\n`)
-      expect(stdout).to.contain(`Updated at:  ${updatedAt}`)
-      expect(stdout).to.contain(`(${formatDistanceToNow(updatedAt)} ago)`)
+      expect(output).to.contain(`ID:          ${authId}\n`)
+      expect(output).to.contain(`Updated at:  ${updatedAt}`)
+      expect(output).to.contain(`(${formatDistanceToNow(updatedAt)} ago)`)
 
-      expect(stdout).to.contain(`Expires at:  ${expirationDate}`)
-      expect(stdout).to.contain(`(in ${formatDistanceToNow(expirationDate)})`)
+      expect(output).to.contain(`Expires at:  ${expirationDate}`)
+      expect(output).to.contain(`(in ${formatDistanceToNow(expirationDate)})`)
     })
   })
 
@@ -81,21 +77,19 @@ describe('display', function () {
       id: authId,
     } as OauthAuthorization
 
-    it('prints the styled authorization with client info', async function () {
-      const {stdout} = await captureOutput(async () => {
-        display(auth)
-      })
+    it('formats the styled authorization with client info', function () {
+      const output = `${ansis.strip(format(auth))}\n`
 
-      expect(stdout).to.contain(`ID:           ${authId}\n`)
-      expect(stdout).to.contain(`Description:  ${authDesc}\n`)
-      expect(stdout).to.not.contain('Scope')
+      expect(output).to.contain(`ID:           ${authId}\n`)
+      expect(output).to.contain(`Description:  ${authDesc}\n`)
+      expect(output).to.not.contain('Scope')
 
-      expect(stdout).to.contain('Client:       a cool client\n')
-      expect(stdout).to.contain('Redirect URI: https://myapp.com\n')
+      expect(output).to.contain('Client:       a cool client\n')
+      expect(output).to.contain('Redirect URI: https://myapp.com\n')
 
-      expect(stdout).to.not.contain('Token')
-      expect(stdout).to.not.contain('Expires at')
-      expect(stdout).to.not.contain('Updated at')
+      expect(output).to.not.contain('Token')
+      expect(output).to.not.contain('Expires at')
+      expect(output).to.not.contain('Updated at')
     })
   })
 })

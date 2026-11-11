@@ -1,9 +1,13 @@
+import type {OauthAuthorization} from '@heroku/types/3.sdk'
+
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 
 import AuthorizationsRevoke from '../../../../src/commands/authorizations/revoke.js'
+import {tokenAuthorization} from '../../../fixtures/authorizations/fixtures.js'
+import {expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
 
 type FakePlatform = {
   oauthAuthorization: {delete: sinon.SinonStub}
@@ -42,6 +46,14 @@ describe('authorizations:revoke', function () {
       const {error} = await runCommand(AuthorizationsRevoke, [])
 
       expect(error?.message).to.equal('Missing 1 required arg:\nid  ID of the authorization\nSee more help with --help')
+    })
+  })
+
+  describe('--json', function () {
+    it('returns the revoked authorization', async function () {
+      fakePlatform.oauthAuthorization.delete.resolves(tokenAuthorization)
+
+      await expectJsonSnapshot<OauthAuthorization>(this, AuthorizationsRevoke, [tokenAuthorization.id])
     })
   })
 })
