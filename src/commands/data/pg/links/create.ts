@@ -22,7 +22,7 @@ export default class DataPgLinksCreate extends BaseCommand {
   }
   static description = 'create a link between Advanced-tier data stores'
   static examples = [
-    '<%= config.bin %> <%= command.id %> HEROKU_REDIS_RED HEROKU_POSTGRESQL_CERULEAN --as example_link_name --app example-app',
+    '<%= config.bin %> <%= command.id %> HEROKU_POSTGRESQL_RED HEROKU_POSTGRESQL_CERULEAN --as example_link_name --app example-app',
   ]
   static flags = {
     app: Flags.app({required: true}),
