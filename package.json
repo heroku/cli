@@ -130,7 +130,7 @@
     "mock-stdin": "^1",
     "nock": "^14.0.12",
     "oclif": "^4.22.87",
-    "rimraf": "5.0.5",
+    "rimraf": "6.1.4",
     "sinon": "^21.0.2",
     "source-map-support": "^0.5.21",
     "ts-node": "^10.9.2",
