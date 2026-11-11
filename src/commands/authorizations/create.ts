@@ -55,9 +55,7 @@ export default class AuthorizationsCreate extends Command {
           scope: scope as string[],
         })
     } catch (error) {
-      // Stop the spinner before oclif handles the error. oclif's catch() only stops it when
-      // JSON output is off, and a running spinner buffers stdout, so under --json the error
-      // document would never be printed.
+      // Under --json, oclif's catch() leaves the spinner running and it swallows the error output.
       ux.action.stop(color.red('!'))
       throw error
     }
