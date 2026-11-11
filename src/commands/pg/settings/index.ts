@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
-import {hux, utils} from '@heroku/heroku-cli-util'
-import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
+import {type DatabaseSettingKey, databaseSettingsExtensions} from '@heroku/sdk/extensions/data'
+import {Args} from '@oclif/core'
 
-import type {SettingKey, SettingsResponse} from '../../../lib/pg/types.js'
-
-import {essentialPlan} from '../../../lib/pg/util.js'
+import {withSettingsTierMessages} from '../../../lib/pg/setter.js'
+import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
 
 export default class Index extends Command {
@@ -22,18 +22,13 @@ export default class Index extends Command {
     const {args, flags} = await this.parse(Index)
     const {app} = flags
     const {database} = args
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const {addon: db} = await dbResolver.getAttachment(app, database)
+    const {data} = createSDK(this.heroku, {extensions: [databaseSettingsExtensions]})
+    const {addon, settings} = await withSettingsTierMessages(this, app, () => data.databaseSettings.getAll(app, database))
 
-    if (essentialPlan(db)) {
-      ux.error('You can\'t perform this operation on Essential-tier databases.')
-    }
-
-    const {body: settings} = await this.heroku.get<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {hostname: utils.pg.host()})
-    this.log(hux.styledHeader(db.name))
+    this.log(hux.styledHeader(addon.name))
     const remapped: Record<string, unknown> = {}
     for (const k of Object.keys(settings).sort()) {
-      remapped[k.replaceAll('_', '-')] = settings[k as SettingKey].value
+      remapped[k.replaceAll('_', '-')] = settings[k as DatabaseSettingKey]?.value
     }
 
     this.log(hux.styledObject(remapped))

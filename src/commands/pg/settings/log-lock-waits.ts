@@ -1,14 +1,14 @@
+import type {DatabaseSetting} from '@heroku/sdk/extensions/data'
+
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-
-import type {Setting, SettingKey} from '../../../lib/pg/types.js'
 
 import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../lib/pg/setter.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc
 
-export default class LogLockWaits extends PGSettingsCommand {
+export default class LogLockWaits extends PGSettingsCommand<'log_lock_waits'> {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({description: 'boolean indicating if a message gets logged when a session waits longer than the deadlock_timeout to acquire a lock'}),
@@ -19,13 +19,13 @@ export default class LogLockWaits extends PGSettingsCommand {
     Applications and their query patterns should try to avoid changes to many different tables within the same transaction.
   `)
   static topic = 'pg'
-  protected settingKey: SettingKey = 'log_lock_waits'
+  protected settingKey = 'log_lock_waits' as const
 
-  protected convertValue(val: unknown): boolean {
+  protected convertValue(val: string): boolean {
     return booleanConverter(val as BooleanAsString)
   }
 
-  protected explain(setting: Setting<unknown>) {
+  protected explain(setting: DatabaseSetting<'log_lock_waits'>) {
     if (setting.value) {
       return "When a deadlock is detected, a log message will be emitted in your application's logs."
     }

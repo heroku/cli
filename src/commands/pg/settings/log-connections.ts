@@ -1,15 +1,15 @@
+import type {DatabaseSetting} from '@heroku/sdk/extensions/data'
+
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-
-import type {Setting, SettingKey} from '../../../lib/pg/types.js'
 
 import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../lib/pg/setter.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc
 
-export default class LogConnections extends PGSettingsCommand {
+export default class LogConnections extends PGSettingsCommand<'log_connections'> {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({description: 'boolean indicating if database login attempts get logged'}),
@@ -22,13 +22,13 @@ export default class LogConnections extends PGSettingsCommand {
     remote: flags.remote(),
   }
   static topic = 'pg'
-  protected settingKey: SettingKey = 'log_connections'
+  protected settingKey = 'log_connections' as const
 
-  protected convertValue(val: unknown): unknown {
+  protected convertValue(val: string): boolean {
     return booleanConverter(val as BooleanAsString)
   }
 
-  protected explain(setting: Setting<unknown>): string {
+  protected explain(setting: DatabaseSetting<'log_connections'>): string {
     if (setting.value) {
       return 'When login attempts are made, a log message will be emitted in your application\'s logs.'
     }

@@ -1,15 +1,15 @@
+import type {DatabaseSetting} from '@heroku/sdk/extensions/data'
+
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-
-import type {Setting, SettingKey} from '../../../../lib/pg/types.js'
 
 import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../lib/pg/setter.js'
 import {nls} from '../../../../nls.js'
 
 const heredoc = tsheredoc
 
-export default class AutoExplainLogVerbose extends PGSettingsCommand {
+export default class AutoExplainLogVerbose extends PGSettingsCommand<'auto_explain.log_verbose'> {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({description: 'boolean indicating if the database has verbose execution plan logging enabled'}),
@@ -21,13 +21,13 @@ export default class AutoExplainLogVerbose extends PGSettingsCommand {
     remote: flags.remote(),
   }
   static topic = 'pg'
-  protected settingKey: SettingKey = 'auto_explain.log_verbose'
+  protected settingKey = 'auto_explain.log_verbose' as const
 
-  protected convertValue(val: unknown): boolean {
+  protected convertValue(val: string): boolean {
     return booleanConverter(val as BooleanAsString)
   }
 
-  protected explain(setting: Setting<unknown>) {
+  protected explain(setting: DatabaseSetting<'auto_explain.log_verbose'>) {
     if (setting.value) {
       return 'Verbose execution plan logging has been enabled for auto_explain.'
     }

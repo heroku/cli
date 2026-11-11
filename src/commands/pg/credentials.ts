@@ -35,7 +35,7 @@ export default class Credentials extends Command {
     const {addon} = await dbResolver.getAttachment(app, database)
 
     const {data} = createSDK(this.heroku, {extensions: [postgresDatabaseExtensions]})
-    const credentials = await data.postgresDatabase.listCredentials(app, addon.name)
+    const {credentials} = await data.postgresDatabase.listCredentials(app, {addonIdentity: addon.name})
     const sortedCredentials = this.sortByDefaultAndName(credentials)
     const {body: attachments} = await this.heroku.get<Required<Heroku.AddOnAttachment>[]>(`/addons/${addon.id}/addon-attachments`)
 

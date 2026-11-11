@@ -1,42 +1,29 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/settings/log-connections.js'
+import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
 
 describe('pg:settings:log-connections', function () {
-  let api: nock.Scope
-  let pg: nock.Scope
+  const addon = {id: 'addon-1', name: 'postgres-1'}
+  let fakeData: {databaseSettings: {get: SinonStub; update: SinonStub}}
+  let sdkMock: MockSDK
 
   beforeEach(function () {
-    const addon = {
-      app: {name: 'myapp'},
-      config_vars: ['READONLY_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_RED_URL'],
-      id: 1,
-      name: 'postgres-1',
-      plan: {name: 'heroku-postgresql:standard-0'},
-    }
-
-    api = nock('https://api.heroku.com')
-    api.post('/actions/addon-attachments/resolve', {
-      addon_attachment: 'test-database',
-      app: 'myapp',
-    }).reply(200, [{addon}])
-
-    pg = nock('https://api.data.heroku.com')
+    fakeData = {databaseSettings: {get: stub(), update: stub()}}
+    sdkMock = mockSDKData(fakeData)
   })
 
   afterEach(function () {
-    api.done()
-    pg.done()
-    nock.cleanAll()
+    sdkMock.restore()
   })
 
   it('shows settings for log-connections with value', async function () {
-    pg.get('/postgres/v0/databases/1/config').reply(200, {log_connections: {value: 'test_value'}})
+    fakeData.databaseSettings.get.resolves({addon, setting: {value: 'test_value'}})
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
     log-connections is set to test_value for postgres-1.
@@ -45,7 +32,7 @@ describe('pg:settings:log-connections', function () {
   })
 
   it('shows settings for log-connections with no value', async function () {
-    pg.get('/postgres/v0/databases/1/config').reply(200, {log_connections: {value: ''}})
+    fakeData.databaseSettings.get.resolves({addon, setting: {value: ''}})
     const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
     log-connections is set to  for postgres-1.
