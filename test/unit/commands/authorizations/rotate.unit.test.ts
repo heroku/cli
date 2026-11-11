@@ -7,7 +7,8 @@ import * as sinon from 'sinon'
 
 import AuthorizationsRotate from '../../../../src/commands/authorizations/rotate.js'
 import {tokenAuthorization} from '../../../fixtures/authorizations/fixtures.js'
-import {expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
+import {expectJsonSnapshot, runCommandJson} from '../../../helpers/json-snapshot.js'
+import {withRealUxAction} from '../../../helpers/ux-stub.js'
 
 type FakePlatform = {
   oauthAuthorization: {regenerate: sinon.SinonStub}
@@ -45,6 +46,19 @@ describe('authorizations:rotate', function () {
   })
 
   describe('--json', function () {
+    it('renders an API error as a JSON error document', async function () {
+      fakePlatform.oauthAuthorization.regenerate.rejects(new Error('Couldn\'t find that authorization.'))
+
+      for (const activation of ['flag', 'env'] as const) {
+        // The real spinner buffers stdout while it runs, so the error document must still be printed.
+        // eslint-disable-next-line no-await-in-loop -- runs must not overlap; each sets or clears HEROKU_CONTENT_TYPE
+        const {exitCode, json} = await withRealUxAction(() => runCommandJson<{error: {message: string}}>(AuthorizationsRotate, [authorizationID], {activation}))
+
+        expect(exitCode, activation).to.equal(1)
+        expect(json.error.message, activation).to.equal('Couldn\'t find that authorization.')
+      }
+    })
+
     it('returns the rotated authorization', async function () {
       fakePlatform.oauthAuthorization.regenerate.resolves(tokenAuthorization)
 

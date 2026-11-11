@@ -27,16 +27,15 @@ export default class AuthorizationsIndex extends Command {
       if (authorizations.length === 0) {
         this.log('No OAuth authorizations.')
       } else {
-        // Display-only ordering: sort a copy so --json returns the SDK result unchanged (API order).
-        const rows = [...authorizations]
-          .sort((a, b) => a.description.localeCompare(b.description))
-          .map(({description, id, scope}) => ({
-            Description: color.name(description),
-            ID: id,
-            Scope: scope.join(','),
-          }))
+        // The table sorts its own display rows (natural order), so --json returns the SDK
+        // result unchanged (API order).
+        const rows = authorizations.map(({description, id, scope}) => ({
+          Description: color.name(description),
+          ID: id,
+          Scope: scope.join(','),
+        }))
 
-        this.log(hux.table(rows, {Description: {}, ID: {}, Scope: {}}))
+        this.log(hux.table(rows, {Description: {}, ID: {}, Scope: {}}, {sort: 'Description'}))
       }
     }
 

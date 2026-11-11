@@ -55,6 +55,18 @@ describe('authorizations', function () {
     expect(actual).to.include(expected)
   })
 
+  it('sorts numbers in descriptions in natural order', async function () {
+    fakePlatform.oauthAuthorization.list.resolves([
+      {...exampleAuthorization1, description: 'token 10'},
+      {...exampleAuthorization2, description: 'token 9'},
+    ])
+
+    const {stdout} = await runCommand(Authorizations, [])
+
+    expect(stdout.indexOf('token 9')).to.be.greaterThan(-1)
+    expect(stdout.indexOf('token 9')).to.be.lessThan(stdout.indexOf('token 10'))
+  })
+
   context('without authorizations', function () {
     it('shows no authorizations message', async function () {
       fakePlatform.oauthAuthorization.list.resolves([])

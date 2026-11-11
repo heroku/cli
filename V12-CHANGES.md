@@ -30,10 +30,11 @@ Commands now render tables, headers, and objects with `@heroku/heroku-cli-util` 
 
 ## Authorizations commands
 
-- `authorizations`, `authorizations:create`, `authorizations:info`, `authorizations:revoke` (alias `authorizations:destroy`), `authorizations:rotate`, and `authorizations:update` now use the CLI's standard `--json` flag, so `HEROKU_CONTENT_TYPE=json` also switches them to JSON output and errors are rendered as a JSON error document. `authorizations:revoke`, `authorizations:rotate`, and `authorizations:update` gain `--json`; each returns the revoked, rotated, or updated authorization as the API returns it. `--json` output includes token values exactly as the API returns them, as it already did for `authorizations:create --json`.
+- `authorizations`, `authorizations:create`, `authorizations:info`, `authorizations:revoke` (alias `authorizations:destroy`), `authorizations:rotate`, and `authorizations:update` now use the CLI's standard `--json` flag. Setting `HEROKU_CONTENT_TYPE=json` also switches them to JSON output, and errors are printed as a JSON error document.
+- `authorizations:revoke`, `authorizations:rotate`, and `authorizations:update` gain `--json`. Each returns the revoked, rotated, or updated authorization as the API returns it. `--json` output includes token values exactly as the API returns them, as `authorizations:create --json` already did; for `authorizations:rotate`, that includes the new token.
 - **`-j` short flag removed (breaking)**: `authorizations`, `authorizations:create`, and `authorizations:info` no longer accept `-j`; use `--json`.
 - **`authorizations --json` output order changes (breaking)**: `--json` returns the SDK result unchanged, so authorizations are listed in the order the API returns them. Previously the JSON list was sorted by description. The table output is still sorted.
-- **`authorizations:create --short --json` is rejected (breaking)**: the two flags can't be combined. Previously `--short` won and only the token was printed. `--short` still prints only the token when `HEROKU_CONTENT_TYPE=json` is set.
+- **`authorizations:create --short --json` is rejected (breaking)**: the two flags can't be combined, and the command fails with `--json=true cannot also be provided when using --short`. Previously `--short` won and only the token was printed. To print only the token, drop `--json`. To read it from the JSON output instead, use `heroku authorizations:create --json | jq -r .access_token.token`. `--short` still prints only the token when `HEROKU_CONTENT_TYPE=json` is set.
 
 ## Certs commands
 

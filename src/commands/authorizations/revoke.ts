@@ -22,7 +22,17 @@ export default class AuthorizationsRevoke extends Command {
     const {args} = await this.parse(AuthorizationsRevoke)
 
     ux.action.start('Revoking OAuth Authorization')
-    const auth = await platform.oauthAuthorization.delete(args.id)
+    let auth: OauthAuthorization
+    try {
+      auth = await platform.oauthAuthorization.delete(args.id)
+    } catch (error) {
+      // Stop the spinner before oclif handles the error. oclif's catch() only stops it when
+      // JSON output is off, and a running spinner buffers stdout, so under --json the error
+      // document would never be printed.
+      ux.action.stop(color.red('!'))
+      throw error
+    }
+
     ux.action.stop(`done, revoked authorization from ${color.cyan(auth.description)}`)
     return auth
   }
