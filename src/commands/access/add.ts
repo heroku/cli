@@ -27,7 +27,7 @@ export default class AccessAdd extends Command {
     if (appInfo?.team) {
       const body: {permissions?: string[], user: string} = {user: email}
       if (permissions) {
-        const permissionsArray = permissions.split(',')
+        const permissionsArray = permissions.split(',').map((permission: string) => permission.trim()).filter(Boolean)
         permissionsArray.push('view')
         const normalizedPermissions: string[] = [...new Set<string>(permissionsArray)].sort()
         body.permissions = normalizedPermissions

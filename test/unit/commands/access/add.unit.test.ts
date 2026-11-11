@@ -27,7 +27,7 @@ describe('heroku access:add', function () {
         '--app',
         'myapp',
         '--permissions',
-        'view,deploy,deploy',
+        'view, deploy,deploy, ',
         'gandalf@heroku.com',
       ])
       apiGet.done()
