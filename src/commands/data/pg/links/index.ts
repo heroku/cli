@@ -35,13 +35,14 @@ export default class DataPgLinks extends BaseCommand {
     if (database) {
       const {addon} = await getAdvancedAttachment(this.heroku, app, database)
 
-      if (isEssentialDatabase(addon as any) || isLegacyEssentialDatabase(addon as any)) {
-        ux.error('You can only use this command to view Data Links on Advanced-tier databases.')
-      }
-
+      const unsupportedTierError = 'You can only use this command to view Data Links on Advanced-tier databases.'
       if (!isAdvancedDatabase(addon as any)) {
-        ux.error('You can only use this command to view Data Links on Advanced-tier databases.\n'
-          + `Use ${color.code(`heroku pg:links ${addon.name} -a ${app}`)} instead.`)
+        if (!isEssentialDatabase(addon as any) && !isLegacyEssentialDatabase(addon as any)) {
+          ux.error(`${unsupportedTierError}\n`
+            + `Use ${color.code(`heroku pg:links ${addon.name} -a ${app}`)} instead.`)
+        }
+
+        ux.error(unsupportedTierError)
       }
 
       databases = [addon]
