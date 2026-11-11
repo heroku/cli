@@ -1,9 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import {databaseCommandExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../lib/confirm-command.js'
+import {createSDK} from '../../lib/sdk.js'
 import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc
@@ -21,13 +23,11 @@ export default class Reset extends Command {
   }
   static topic = 'pg'
 
-  public async run(): Promise<void> {
+  public async run() {
     const {args, flags} = await this.parse(Reset)
     const {app, confirm, extensions} = flags
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const {addon: db} = await dbResolver.getAttachment(app, args.database)
 
-    let extensionsArray
+    let extensionsArray: string[] | undefined
     if (extensions) {
       extensionsArray = extensions.split(',')
         .map((ext: string) => ext.trim()
@@ -35,15 +35,20 @@ export default class Reset extends Command {
         .sort()
     }
 
-    const confirmCommand = new ConfirmCommand()
-    await confirmCommand.confirm(app, confirm, heredoc(`
-      Destructive action
-      ${color.addon(db.name)} will lose all of its data
-    `))
-    ux.action.start(`Resetting ${color.addon(db.name)}`)
-    await this.heroku.put(`/client/v11/databases/${db.id}/reset`, {
-      body: {extensions: extensionsArray}, hostname: utils.pg.host(),
+    const {data} = createSDK(this.heroku, {extensions: [databaseCommandExtensions]})
+    const result = await data.database.resetForApp(app, args.database, {
+      async beforeReset({addon}) {
+        const confirmCommand = new ConfirmCommand()
+        await confirmCommand.confirm(app, confirm, heredoc(`
+          Destructive action
+          ${color.addon(addon.name)} will lose all of its data
+        `))
+        ux.action.start(`Resetting ${color.addon(addon.name)}`)
+      },
+      extensions: extensionsArray,
     })
     ux.action.stop()
+
+    return result
   }
 }

@@ -1,15 +1,24 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import {databaseCommandExtensions, DatabaseNotFollowerError} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../lib/confirm-command.js'
-import {PgDatabase} from '../../lib/pg/types.js'
-import {databaseNameFromUrl} from '../../lib/pg/util.js'
+import {createSDK} from '../../lib/sdk.js'
 import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc
+
+const formatOrigin = (origin: string, following: string) => {
+  const url = new URL(following)
+  const fallbackOrigin = `${url.hostname}:${url.port || '5432'}${url.pathname}`
+  if (origin === fallbackOrigin && !url.port && process.env.PGPORT) {
+    return `${url.hostname}:${process.env.PGPORT}${url.pathname}`
+  }
+
+  return origin === fallbackOrigin || origin.includes(':') ? origin : color.name(origin)
+}
 
 export default class Unfollow extends Command {
   static args = {
@@ -23,22 +32,30 @@ export default class Unfollow extends Command {
   }
   static topic = 'pg'
 
-  public async run(): Promise<void> {
+  public async run() {
     const {args, flags} = await this.parse(Unfollow)
     const {app, confirm} = flags
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const {addon: db} = await dbResolver.getAttachment(app, args.database)
-    const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: utils.pg.host()})
-    if (!replica.following)
-      ux.error(`${color.addon(db.name)} is not a follower`)
-    const {body: configVars} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
-    const origin = databaseNameFromUrl(replica.following as string, configVars)
-    await new ConfirmCommand().confirm(app, confirm, heredoc(`
-      Destructive action
-      ${color.addon(db.name)} will become writeable and no longer follow ${origin}. This cannot be undone.
-    `))
-    ux.action.start(`${color.addon(db.name)} unfollowing`)
-    await this.heroku.put(`/client/v11/databases/${db.id}/unfollow`, {hostname: utils.pg.host()})
-    ux.action.stop()
+
+    const {data} = createSDK(this.heroku, {extensions: [databaseCommandExtensions]})
+    try {
+      const result = await data.database.unfollowForApp(app, args.database, {
+        async beforeUnfollow({addon, following, origin}) {
+          await new ConfirmCommand().confirm(app, confirm, heredoc(`
+            Destructive action
+            ${color.addon(addon.name)} will become writeable and no longer follow ${formatOrigin(origin, following)}. This cannot be undone.
+          `))
+          ux.action.start(`${color.addon(addon.name)} unfollowing`)
+        },
+      })
+
+      ux.action.stop()
+      return result
+    } catch (error) {
+      if (error instanceof DatabaseNotFollowerError) {
+        ux.error(`${color.addon(error.addon.name)} is not a follower`)
+      }
+
+      throw error
+    }
   }
 }

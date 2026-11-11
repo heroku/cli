@@ -1,16 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, pg, utils} from '@heroku/heroku-cli-util'
-import {HTTPError} from '@heroku/http-call'
+import {color} from '@heroku/heroku-cli-util'
+import {LegacyDatabaseWaitError, legacyDatabaseWaitExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
-import debug from 'debug'
 
 import notify from '../../lib/notify.js'
-import {PgStatus} from '../../lib/pg/types.js'
+import {createSDK} from '../../lib/sdk.js'
 import {nls} from '../../nls.js'
-
-const wait = (ms: number) => new Promise(resolve => {
-  setTimeout(resolve, ms)
-})
 
 export default class Wait extends Command {
   static args = {
@@ -26,70 +21,53 @@ export default class Wait extends Command {
   public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
   static topic = 'pg'
 
-  public async run(): Promise<void> {
+  public async run() {
     const {args, flags} = await this.parse(Wait)
     const {app, 'wait-interval': waitInterval} = flags
     const dbName = args.database
-    const pgDebug = debug('pg')
 
-    const waitFor = async (db: pg.ExtendedAddonAttachment['addon']) => {
-      let interval = waitInterval && Number.parseInt(waitInterval, 10)
-      if (!interval || interval < 0) interval = 5
-      let status
-      let waiting = false
-      let retries = 20
-      const notFoundMessage = 'Waiting to provision...'
+    const {data} = createSDK(this.heroku, {extensions: [legacyDatabaseWaitExtensions]})
+    const interval = waitInterval && Number.parseInt(waitInterval, 10)
+    const waitIntervalMs = (!interval || interval < 0 ? 5 : interval) * 1000
+    let waitingDatabaseId: string | undefined
+    let waiting = false
 
-      while (true) {
-        try {
-          ({body: status} = await this.heroku.get<PgStatus>(
-            `/client/v11/databases/${db.id}/wait_status`,
-            {hostname: utils.pg.host()},
-          ))
-        } catch (error) {
-          const httpError = error as HTTPError
-          pgDebug(httpError)
-          if (!retries || httpError.statusCode !== 404) throw httpError
-          retries--
-          status = {message: notFoundMessage, 'waiting?': true}
-        }
+    try {
+      const result = await data.database.waitForReady(app, dbName, {
+        onPoll({addon, status}) {
+          if (status['error?']) return
 
-        if (status['error?']) {
-          Wait.notifier('error', `${db.name} ${status.message}`, false)
-          ux.error(status.message || '', {exit: 1})
-        }
-
-        if (!status['waiting?']) {
-          if (waiting) {
-            ux.action.stop(status.message)
+          if (waitingDatabaseId !== addon.id) {
+            waitingDatabaseId = addon.id
+            waiting = false
           }
 
-          return
-        }
+          if (!status['waiting?']) {
+            if (waiting) {
+              ux.action.stop(status.message)
+            }
 
-        if (!waiting) {
-          waiting = true
-          ux.action.start(`Waiting for database ${color.yellow(db.name)}`, status.message)
-        }
+            return
+          }
 
-        ux.action.status = status.message
+          if (!waiting) {
+            waiting = true
+            ux.action.start(`Waiting for database ${color.yellow(addon.name)}`, status.message)
+          }
 
-        await wait(interval * 1000)
+          ux.action.status = status.message
+        },
+        waitIntervalMs,
+      })
+
+      return result
+    } catch (error) {
+      if (error instanceof LegacyDatabaseWaitError) {
+        Wait.notifier('error', `${error.addon.name} ${error.status.message}`, false)
+        ux.error(error.status.message || '', {exit: 1})
       }
-    }
 
-    let dbs: pg.ExtendedAddonAttachment['addon'][]
-    if (dbName) {
-      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-      const {addon} = await dbResolver.getAttachment(app, dbName)
-      dbs = [addon]
-    } else {
-      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-      dbs = await dbResolver.getAllLegacyDatabases(app)
-    }
-
-    for (const db of dbs) {
-      await waitFor(db)
+      throw error
     }
   }
 }
