@@ -3,8 +3,6 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
-import {getOwner} from '../../lib/team-utils.js'
-
 export default class AccessAdd extends Command {
   static args = {
     email: Args.string({description: 'email address of the team member', required: true}),
@@ -26,23 +24,19 @@ export default class AccessAdd extends Command {
     const {app: appName, permissions} = flags
     const {body: appInfo} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
     let output = `Adding ${color.user(email)} access to the app ${color.app(appName)}`
-    let teamFeatures: Heroku.TeamFeature[] = []
     if (appInfo?.team) {
-      const teamName = appInfo.team.name ?? getOwner(appInfo?.owner?.email)
-      const teamFeaturesRequest = await this.heroku.get<Heroku.TeamFeature[]>(`/teams/${teamName}/features`)
-      teamFeatures = teamFeaturesRequest.body
-    }
+      const body: {permissions?: string[], user: string} = {user: email}
+      if (permissions) {
+        const permissionsArray = permissions.split(',').map((permission: string) => permission.trim()).filter(Boolean)
+        permissionsArray.push('view')
+        const normalizedPermissions: string[] = [...new Set<string>(permissionsArray)].sort()
+        body.permissions = normalizedPermissions
+        output += ` with ${color.green(normalizedPermissions.join(', '))} permissions`
+      }
 
-    if (teamFeatures.some(feature => feature.name === 'org-access-controls')) {
-      if (!permissions)
-        this.error('Missing argument: permissions', {exit: 1})
-      const permissionsArray = permissions ? permissions.split(',') : []
-      permissionsArray.push('view')
-      const permissionsArraySorted = [...new Set(permissionsArray.sort())]
-      output += ` with ${color.green(permissionsArraySorted.join(', '))} permissions`
       ux.action.start(output)
       await this.heroku.post<Heroku.TeamAppCollaborator[]>(`/teams/apps/${appName}/collaborators`, {
-        body: {permissions: permissionsArraySorted, user: email},
+        body,
       })
       ux.action.stop()
     } else {
