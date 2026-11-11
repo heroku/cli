@@ -61,7 +61,7 @@ describe('pg:credentials:url', function () {
     expect(fakeData.postgresDatabase.getUrl.calledOnceWithExactly('myapp', 'gandalf', {addonIdentity: undefined})).to.equal(true)
   })
 
-  it('throws an error when the db is starter plan but the name is specified', async function () {
+  it('propagates errors from getUrl', async function () {
     const err = 'Legacy Essential-tier databases do not support named credentials.'
     fakeData.postgresDatabase.getUrl.rejects(new Error(err))
 
@@ -101,6 +101,7 @@ describe('pg:credentials:url', function () {
       Connection URL:
         postgres://lucy:hunter2@localhost:5442/d123
     `))
+    expect(fakeData.postgresDatabase.getUrl.calledOnceWithExactly('myapp', 'lucy', {addonIdentity: undefined})).to.equal(true)
   })
 
   it('shows the correct credentials with starter plan', async function () {

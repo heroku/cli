@@ -224,7 +224,7 @@ describe('pg:credentials:rotate', function () {
     })
   })
 
-  it('throws an error when the db is essential plan but the name is specified', async function () {
+  it('propagates errors from rotateCredential', async function () {
     const err = 'Legacy Essential-tier databases do not support named credentials.'
     fakeData.postgresDatabase.rotateCredential.rejects(new Error(err))
 
@@ -259,6 +259,11 @@ describe('pg:credentials:rotate', function () {
     expect(stderr).to.equal(heredoc(`
       Rotating lucy on ⛁ postgres-1... done
     `))
+    expect(fakeData.postgresDatabase.rotateCredential.calledOnceWithExactly(
+      'myapp',
+      {all: undefined, credName: 'lucy', forced: true},
+      {addonIdentity: undefined, beforeRotate: match.func},
+    )).to.equal(true)
   })
 
   it('rotates credentials with no --name with starter plan', async function () {
@@ -280,6 +285,11 @@ describe('pg:credentials:rotate', function () {
     expect(stderr).to.equal(heredoc(`
       Rotating default on ⛁ postgres-1... done
     `))
+    expect(fakeData.postgresDatabase.rotateCredential.calledOnceWithExactly(
+      'myapp',
+      {all: undefined, credName: undefined, forced: undefined},
+      {addonIdentity: undefined, beforeRotate: match.func},
+    )).to.equal(true)
   })
 
   it('rotates credentials with --all with starter plan', async function () {
@@ -302,5 +312,10 @@ describe('pg:credentials:rotate', function () {
     expect(stderr).to.equal(heredoc(`
       Rotating all credentials on ⛁ postgres-1... done
     `))
+    expect(fakeData.postgresDatabase.rotateCredential.calledOnceWithExactly(
+      'myapp',
+      {all: true, credName: undefined, forced: undefined},
+      {addonIdentity: undefined, beforeRotate: match.func},
+    )).to.equal(true)
   })
 })

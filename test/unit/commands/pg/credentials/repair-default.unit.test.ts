@@ -49,7 +49,7 @@ describe('pg:credentials:repair-default', function () {
     expect(fakeData.postgresDatabase.repairDefault.calledOnceWithExactly('myapp', {addonIdentity: undefined})).to.equal(true)
   })
 
-  it('throws an error when the db is essential plan', async function () {
+  it('propagates errors from repairDefault', async function () {
     const err = "You can't perform this operation on Essential-tier databases."
     fakeData.postgresDatabase.repairDefault.rejects(new Error(err))
 
