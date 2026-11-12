@@ -6,6 +6,9 @@ import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import {createSDK} from '../../lib/sdk.js'
 import {SniEndpoint} from '../../lib/types/sni-endpoint.js'
 
+/** The files the command wrote, as paths relative to the current directory. */
+type GeneratedFiles = {certificate: string; domain: string; key: string} | {csr: string; domain: string; key: string}
+
 function getCommand(certs: SniEndpoint[], domain: string): 'add' | 'update' {
   const shouldUpdate = certs
     .map(cert => cert?.ssl_cert?.cert_domains)
@@ -21,6 +24,7 @@ export default class Generate extends Command {
     domain: Args.string({description: 'domain name to generate', required: true}),
   }
   static description = 'generate a key and a CSR or self-signed certificate'
+  static enableJsonFlag = true
   static flags = {
     app: flags.app({required: true}),
     area: flags.string({description: 'sub-country area (state, province, etc.) of owner', optional: true}),
@@ -91,13 +95,17 @@ export default class Generate extends Command {
     return false
   }
 
-  public async run() {
+  public async run(): Promise<GeneratedFiles> {
     const {platform} = createSDK(this.heroku)
     const inquirer = await lazyModuleLoader.loadInquirer()
 
     const {args, flags} = await this.parse(Generate)
     const {app, selfsigned} = flags
     if (this.requiresPrompt(flags)) {
+      if (this.jsonEnabled()) {
+        throw new Error('Pass --now, --subject, or at least one of --owner, --country, --area or --city. Commands don\'t prompt for owner information with --json.')
+      }
+
       const {area, city, country, owner} = await this.promptForOwnerInfo(inquirer)
       Object.assign(flags, {
         area, city, country, owner,
@@ -116,23 +124,24 @@ export default class Generate extends Command {
       console.error('Your key and self-signed certificate have been generated.')
       console.error('Next, run:')
       console.error(`$ heroku certs:${command} ${crtfile} ${keyfile}`)
-    } else {
-      const csrfile = `${domain}.csr`
-      await this.spawnOpenSSL(['req', '-new', '-newkey', `rsa:${keysize}`, '-nodes', '-keyout', keyfile, '-out', csrfile, '-subj', subject])
-      console.error('Your key and certificate signing request have been generated.')
-      console.error(`Submit the CSR in '${csrfile}' to your preferred certificate authority.`)
-      console.error('When you\'ve received your certificate, run:')
-      console.error(`$ heroku certs:${command} CERTFILE ${keyfile}`)
+      return {certificate: crtfile, domain, key: keyfile}
     }
 
-    return certs
+    const csrfile = `${domain}.csr`
+    await this.spawnOpenSSL(['req', '-new', '-newkey', `rsa:${keysize}`, '-nodes', '-keyout', keyfile, '-out', csrfile, '-subj', subject])
+    console.error('Your key and certificate signing request have been generated.')
+    console.error(`Submit the CSR in '${csrfile}' to your preferred certificate authority.`)
+    console.error('When you\'ve received your certificate, run:')
+    console.error(`$ heroku certs:${command} CERTFILE ${keyfile}`)
+    return {csr: csrfile, domain, key: keyfile}
   }
 
   protected async spawnOpenSSL(args: ReadonlyArray<string>) {
     return new Promise((resolve, reject) => {
-      const process = spawn('openssl', args, {stdio: 'inherit'})
-      process.once('error', reject)
-      process.once('close', (code: number) => code ? reject(new Error(`Non zero openssl error ${code}`)) : resolve(code))
+      // Under --json, openssl's stdout goes to our stderr (fd 2) so stdout holds only the JSON document.
+      const child = spawn('openssl', args, {stdio: ['inherit', this.jsonEnabled() ? 2 : 'inherit', 'inherit']})
+      child.once('error', reject)
+      child.once('close', (code: number) => code ? reject(new Error(`Non zero openssl error ${code}`)) : resolve(code))
     })
   }
 }

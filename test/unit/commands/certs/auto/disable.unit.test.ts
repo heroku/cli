@@ -6,6 +6,8 @@ import * as sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/disable.js'
+import {acmDisabledApp} from '../../../../fixtures/certs/fixtures.js'
+import {expectJsonError, expectJsonSnapshot} from '../../../../helpers/json-snapshot.js'
 
 const heredoc = tsheredoc
 
@@ -56,5 +58,25 @@ describe('heroku certs:auto:disable', function () {
     expect(error).to.exist
     expect(ansis.strip(error!.message)).to.equal('Confirmation notexample did not match example. Aborted.')
     expect(fakePlatform.app.disableACM.called).to.equal(false)
+  })
+
+  describe('--json', function () {
+    it('returns the app', async function () {
+      fakePlatform.app.disableACM.resolves(acmDisabledApp)
+
+      await expectJsonSnapshot(this, Cmd, ['--app', 'example', '--confirm', 'example'])
+    })
+
+    it('requires --confirm instead of prompting', async function () {
+      await expectJsonError(Cmd, ['--app', 'example'], 'To proceed, re-run this command with --confirm example. Commands don\'t prompt for confirmation with --json.')
+
+      expect(fakePlatform.app.disableACM.called).to.equal(false)
+    })
+
+    it('renders an API error as a JSON error document', async function () {
+      fakePlatform.app.disableACM.rejects(new Error('Couldn\'t find that app.'))
+
+      await expectJsonError(Cmd, ['--app', 'example', '--confirm', 'example'], 'Couldn\'t find that app.')
+    })
   })
 })

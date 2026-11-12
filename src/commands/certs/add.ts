@@ -4,7 +4,7 @@ import {sniEndpointExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import {displayCertificateDetails} from '../../lib/certs/certificate-details.js'
+import {formatCertificateDetails} from '../../lib/certs/certificate-details.js'
 import {CertAndKeyManager} from '../../lib/certs/get-cert-and-key.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import {createSDK} from '../../lib/sdk.js'
@@ -20,7 +20,9 @@ export default class Add extends Command {
   static description = `Add an SSL certificate to an app.
 
   Note: certificates with PEM encoding are also valid.
+  With --json, the certificate isn't associated with any domains; use domains:update --cert to associate it.
   `
+  static enableJsonFlag = true
   static examples = [heredoc(`
     ${color.command('heroku certs:add example.com.crt example.com.key')}
     If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
@@ -60,6 +62,12 @@ export default class Add extends Command {
           },
           resolveDomains: async (candidates: string[]) => {
             ux.action.stop()
+            if (this.jsonEnabled()) {
+              // --json never prompts. The certificate already exists, so associate none rather than fail.
+              ux.warn(`Not associating this certificate with ${candidates.join(', ')}: --json doesn't prompt for domains. To associate one, run ${color.code('heroku domains:update <hostname> --cert <name>')}.`)
+              return []
+            }
+
             this.log(hux.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?'))
             const {domains} = await this.selectDomains(candidates, inquirer)
             return domains
@@ -75,7 +83,7 @@ export default class Add extends Command {
       throw error
     }
 
-    displayCertificateDetails(sniEndpoint)
+    this.log(formatCertificateDetails(sniEndpoint))
     return sniEndpoint
   }
 

@@ -17,6 +17,8 @@ import {
   untrustedCertificateDetails,
 } from '../../../helpers/stubs/sni-endpoints.js'
 import * as sharedSni from './shared-sni.unit.test.js'
+import {customDomain, sniEndpointA} from '../../../fixtures/certs/fixtures.js'
+import {expectJsonError, expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
 
 const heredoc = tsheredoc
 
@@ -107,6 +109,37 @@ describe('heroku certs:info', function () {
       Subject:        /C=US/ST=California/L=San Francisco/O=Trusted/CN=trusted.example.org
       SSL certificate is verified by a root authority.
     `))
+  })
+
+  describe('--json', function () {
+    beforeEach(function () {
+      fakePlatform.sniEndpoint.list.resolves([sniEndpointA])
+    })
+
+    it('returns the SDK certificate with its domain IDs untouched', async function () {
+      fakePlatform.sniEndpoint.info.resolves(sniEndpointA)
+
+      const {json} = await expectJsonSnapshot<Record<string, unknown>>(this, Cmd, ['--app', 'example'])
+
+      expect(json.domains).to.deep.equal(sniEndpointA.domains)
+      expect(json).not.to.have.property('domain_hostnames')
+    })
+
+    it('adds domain_hostnames with --show-domains', async function () {
+      fakePlatform.sniEndpoint.info.resolves(sniEndpointA)
+      fakePlatform.domain.info.withArgs('example', customDomain.id).resolves(customDomain)
+
+      const {json} = await expectJsonSnapshot<Record<string, unknown>>(this, Cmd, ['--app', 'example', '--show-domains'])
+
+      expect(json.domains).to.deep.equal(sniEndpointA.domains)
+      expect(json.domain_hostnames).to.deep.equal(['www.example.com'])
+    })
+
+    it('renders an API error as a JSON error document', async function () {
+      fakePlatform.sniEndpoint.info.rejects(new Error('Couldn\'t find that SNI endpoint.'))
+
+      await expectJsonError(Cmd, ['--app', 'example'], 'Couldn\'t find that SNI endpoint.')
+    })
   })
 })
 

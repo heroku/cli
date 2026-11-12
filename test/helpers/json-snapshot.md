@@ -34,7 +34,7 @@ describe('--json', function () {
 
 It returns `{json, stdout, stderr, exitCode}` for extra assertions; pass a type argument (`expectJsonSnapshot<Region[]>`) to type `json`.
 
-`runCommandJson(Cmd, args, {activation: 'flag' | 'env'})` does steps 1–2 for a single activation path without a snapshot. Use it for error cases (assert on `exitCode` and `json.error.message`, under both activations) or anything nondeterministic. Error documents include every enumerable property of the error (HTTP response details, request IDs), so don't snapshot them.
+`runCommandJson(Cmd, args, {activation: 'flag' | 'env'})` does steps 1–2 for a single activation path without a snapshot. Use it for anything nondeterministic. For error cases, use `expectJsonError(Cmd, args, message)`, which asserts exit code 1 and `json.error.message` under both activations, against the real `ux.action` spinner (the test hooks otherwise stub it, which hides a spinner left running when the command throws). Error documents include every enumerable property of the error (HTTP response details, request IDs), so don't snapshot them.
 
 To take more than one snapshot in a test, give each a `name`: `expectJsonSnapshot(this, Cmd, args, {name: 'common'})`. Reusing a key in one run fails the test.
 

@@ -11,6 +11,7 @@ const heredoc = tsheredoc
 
 export default class Disable extends Command {
   static description = 'disable ACM for an app'
+  static enableJsonFlag = true
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({char: 'c', hidden: true}),
@@ -32,10 +33,18 @@ export default class Disable extends Command {
       1) Request a new SSL certificate for your domains names from your certificate provider
       2) heroku certs:update CRT KEY
     `)
-    await new ConfirmCommand().confirm(app, confirm, warning)
+    await new ConfirmCommand().confirm(app, confirm, warning, {json: this.jsonEnabled()})
 
     ux.action.start('Disabling Automatic Certificate Management')
-    const disabledApp = await platform.app.disableACM(app)
+    let disabledApp: App
+    try {
+      disabledApp = await platform.app.disableACM(app)
+    } catch (error) {
+      // Under --json, oclif's catch() leaves the spinner running and it swallows the error output.
+      ux.action.stop(color.failure('!'))
+      throw error
+    }
+
     ux.action.stop()
 
     return disabledApp

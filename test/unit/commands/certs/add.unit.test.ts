@@ -14,6 +14,8 @@ import {
   endpoint,
   endpointStables,
 } from '../../../helpers/stubs/sni-endpoints.js'
+import {sniEndpointA} from '../../../fixtures/certs/fixtures.js'
+import {expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
 
 const heredoc = tsheredoc
 
@@ -185,5 +187,21 @@ describe('heroku certs:add', function () {
     const waitingIndex = stderr.indexOf('Waiting for stable domains to be created... done')
     expect(addingIndex).to.be.greaterThan(-1)
     expect(waitingIndex).to.be.greaterThan(addingIndex)
+  })
+
+  describe('--json', function () {
+    it('returns the created certificate without prompting for domains', async function () {
+      const resolved: string[][] = []
+      fakePlatform.sniEndpoint.createAndAssociate.callsFake(async (_app: string, _crt: string, _key: string, options: CreateAndAssociateOptions) => {
+        resolved.push(await options.resolveDomains(['www.example.com']))
+        return sniEndpointA
+      })
+
+      const {stderr} = await expectJsonSnapshot(this, Cmd, ['--app', 'example', 'pem_file', 'key_file'])
+
+      expect(resolved).to.deep.equal([[], []])
+      expect(stubbedSelectDomains.called).to.equal(false)
+      expect(stderr).to.contain('Not associating this certificate with www.example.com')
+    })
   })
 })

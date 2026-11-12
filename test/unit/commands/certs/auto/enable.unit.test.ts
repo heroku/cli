@@ -7,6 +7,8 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/enable.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
+import {app, domainList} from '../../../../fixtures/certs/fixtures.js'
+import {expectJsonError, expectJsonSnapshot} from '../../../../helpers/json-snapshot.js'
 
 const heredoc = tsheredoc
 const sandbox = sinon.createSandbox()
@@ -260,6 +262,28 @@ describe('heroku certs:auto:enable', function () {
       expect(stdout).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.\n\n')
       // Pre-check found every custom domain terminal, so the SDK wait must be skipped entirely.
       expect(fakePlatform.app.waitForACMCertificates.called).to.equal(false)
+    })
+  })
+
+  describe('--json', function () {
+    it('returns the app and its domains with their DNS record types', async function () {
+      fakePlatform.domain.list.resolves(domainList)
+      fakePlatform.app.enableACM.resolves(app)
+
+      const {json} = await expectJsonSnapshot<{domains: {dns_record_type: null | string; hostname: string}[]}>(this, Cmd, ['--app', 'example'])
+
+      expect(json.domains.map(({dns_record_type, hostname}) => [hostname, dns_record_type])).to.deep.equal([
+        ['example-0123456789ab.herokuapp.com', null],
+        ['www.example.com', 'CNAME'],
+        ['example.com', 'ALIAS/ANAME'],
+      ])
+    })
+
+    it('renders an API error as a JSON error document', async function () {
+      fakePlatform.domain.list.resolves(domainList)
+      fakePlatform.app.enableACM.rejects(new Error('ACM is not available for this app.'))
+
+      await expectJsonError(Cmd, ['--app', 'example'], 'ACM is not available for this app.')
     })
   })
 })

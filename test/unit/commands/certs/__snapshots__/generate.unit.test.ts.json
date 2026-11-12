@@ -1,0 +1,12 @@
+{
+  "heroku certs:generate --json returns the key and CSR file names": {
+    "csr": "example.com.csr",
+    "domain": "example.com",
+    "key": "example.com.key"
+  },
+  "heroku certs:generate --json returns the key and certificate file names with --selfsigned": {
+    "certificate": "example.com.crt",
+    "domain": "example.com",
+    "key": "example.com.key"
+  }
+}

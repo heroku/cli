@@ -29,6 +29,26 @@ describe('confirmApp', function () {
     }
   })
 
+  it('errors instead of prompting under --json without a confirm value', async function () {
+    const prompt = stub(hux, 'prompt')
+
+    const {stderr} = await captureOutput(async () => {
+      try {
+        await new ConfirmCommand().confirm('app', undefined, 'custom message', {json: true})
+        expect.fail('Expected confirm to throw error')
+      } catch (error: any) {
+        expect(error.message).to.equal('To proceed, re-run this command with --confirm app. Commands don\'t prompt for confirmation with --json.')
+      }
+    })
+
+    expect(prompt.called).to.equal(false)
+    expect(stderr).to.equal('')
+  })
+
+  it('accepts a matching confirm value under --json', async function () {
+    await new ConfirmCommand().confirm('app', 'app', undefined, {json: true})
+  })
+
   it('should not err on confirm prompt match', async function () {
     stub(hux, 'prompt').resolves('app')
 

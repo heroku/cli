@@ -39,6 +39,18 @@ Commands now render tables, headers, and objects with `@heroku/heroku-cli-util` 
 ## Certs commands
 
 - `certs:add` matches wildcard certificates against your app's domains more strictly: a `*.example.com` certificate now matches only direct subdomains (e.g. `www.example.com`), no longer matching deeper or trailing-suffix domains
+- `certs`, `certs:add`, `certs:generate`, `certs:info`, `certs:remove`, `certs:update`, `certs:auto`, `certs:auto:disable`, `certs:auto:enable`, and `certs:auto:refresh` gain `--json`. Setting `HEROKU_CONTENT_TYPE=json` also switches them to JSON output, and errors are printed as a JSON error document. Each returns the API's records unchanged:
+  - `certs` returns the SNI endpoint list in the order the API returns it (`[]` when there are none). The table output is still sorted by name.
+  - `certs:info` returns the SNI endpoint. With `--show-domains`, it adds `domain_hostnames`, the hostnames of the endpoint's domains.
+  - `certs:add` and `certs:update` return the SNI endpoint; `certs:remove` returns the removed SNI endpoint.
+  - `certs:generate` returns the paths of the files it wrote: `{key, domain, csr}`, or `{key, domain, certificate}` with `--selfsigned`. With `--json`, openssl's own output goes to stderr.
+  - `certs:auto` returns `{app, sniEndpoints, domains}`. `domains` lists all of the app's domains and is omitted when Automated Certificate Management is disabled.
+  - `certs:auto:enable` returns `{app, domains}`. Each domain gains `dns_record_type` (`CNAME` or `ALIAS/ANAME`), the record type its DNS needs; it's `null` for Heroku-managed domains.
+  - `certs:auto:disable` and `certs:auto:refresh` return the app.
+- With `--json`, the certs commands never prompt:
+  - `certs:remove`, `certs:update`, and `certs:auto:disable` require `--confirm <app>`. Without it they fail with `To proceed, re-run this command with --confirm <app>.`
+  - `certs:generate` requires `--now`, `--subject`, or at least one of `--owner`, `--country`, `--area`, or `--city`.
+  - `certs:add` doesn't associate the certificate with any domains, and warns on stderr which domains it skipped. Use `domains:update <hostname> --cert <name>` to associate one.
 
 ## Data commands
 - `data:pg:credentials:url` error messages ("no active credentials", "credential isn't active", "Essential-tier databases don't support named credentials") are now plain text. Previously the app/database name and credential name in these messages were colorized (`color.datastore`, `color.name`) with a `⛁` icon on the database name; the SDK throws plain, uncolored `Error`s instead.

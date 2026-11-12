@@ -7,6 +7,8 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/index.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
+import {acmDisabledApp, app, domainList, sniEndpointList} from '../../../../fixtures/certs/fixtures.js'
+import {expectJsonSnapshot} from '../../../../helpers/json-snapshot.js'
 
 const heredoc = tsheredoc
 const sandbox = createSandbox()
@@ -701,6 +703,28 @@ describe('heroku certs:auto', function () {
       expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
       expect(fakePlatform.app.waitForACMCertificates.calledOnceWithExactly('example')).to.equal(true)
       expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
+    })
+  })
+
+  describe('--json', function () {
+    it('returns the app, its certificates and all of its domains', async function () {
+      fakePlatform.app.info.resolves(app)
+      fakePlatform.sniEndpoint.list.resolves(sniEndpointList)
+      fakePlatform.domain.list.resolves(domainList)
+
+      const {json} = await expectJsonSnapshot<{domains: {kind: string}[]}>(this, Cmd, ['--app', 'example'])
+
+      expect(json.domains.map(domain => domain.kind)).to.deep.equal(['heroku', 'custom', 'custom'])
+    })
+
+    it('returns the app and its certificates when ACM is disabled', async function () {
+      fakePlatform.app.info.resolves(acmDisabledApp)
+      fakePlatform.sniEndpoint.list.resolves(sniEndpointList)
+
+      const {json} = await expectJsonSnapshot<Record<string, unknown>>(this, Cmd, ['--app', 'example'])
+
+      expect(json).to.have.keys('app', 'sniEndpoints')
+      expect(fakePlatform.domain.list.called).to.equal(false)
     })
   })
 })

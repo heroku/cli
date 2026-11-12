@@ -9,6 +9,8 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../src/commands/certs/remove.js'
 import {endpoint} from '../../../helpers/stubs/sni-endpoints.js'
 import * as sharedSni from './shared-sni.unit.test.js'
+import {sniEndpointA} from '../../../fixtures/certs/fixtures.js'
+import {expectJsonError, expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
 
 const heredoc = tsheredoc
 
@@ -68,6 +70,30 @@ describe('heroku certs:remove', function () {
     expect(fakePlatform.sniEndpoint.list.called).to.equal(true)
     expect(fakePlatform.sniEndpoint.delete.called).to.equal(false)
     expect(stdout).to.equal('')
+  })
+
+  describe('--json', function () {
+    beforeEach(function () {
+      fakePlatform.sniEndpoint.list.resolves([sniEndpointA])
+    })
+
+    it('returns the removed certificate', async function () {
+      fakePlatform.sniEndpoint.delete.resolves(sniEndpointA)
+
+      await expectJsonSnapshot(this, Cmd, ['--app', 'example', '--confirm', 'example'])
+    })
+
+    it('requires --confirm instead of prompting', async function () {
+      await expectJsonError(Cmd, ['--app', 'example'], 'To proceed, re-run this command with --confirm example. Commands don\'t prompt for confirmation with --json.')
+
+      expect(fakePlatform.sniEndpoint.delete.called).to.equal(false)
+    })
+
+    it('renders an API error as a JSON error document', async function () {
+      fakePlatform.sniEndpoint.delete.rejects(new Error('Couldn\'t find that SNI endpoint.'))
+
+      await expectJsonError(Cmd, ['--app', 'example', '--confirm', 'example'], 'Couldn\'t find that SNI endpoint.')
+    })
   })
 })
 

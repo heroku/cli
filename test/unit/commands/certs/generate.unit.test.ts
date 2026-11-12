@@ -6,6 +6,7 @@ import {SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/certs/generate.js'
 import {endpoint} from '../../../helpers/stubs/sni-endpoints.js'
+import {expectJsonError, expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
 
 type FakePlatform = {
   sniEndpoint: {list: sinon.SinonStub}
@@ -164,5 +165,22 @@ describe('heroku certs:generate', function () {
     expect(stdout).to.equal('')
     expect(stderr).to.equal('Your key and certificate signing request have been generated.\nSubmit the CSR in \'example.org.csr\' to your preferred certificate authority.\nWhen you\'ve received your certificate, run:\n$ heroku certs:update CERTFILE example.org.key\n')
     expect(spawnOpenSSLStub.calledWith(['req', '-new', '-newkey', 'rsa:4096', '-nodes', '-keyout', 'example.org.key', '-out', 'example.org.csr', '-subj', '/CN=example.org'])).to.be.true
+  })
+
+  describe('--json', function () {
+    it('returns the key and CSR file names', async function () {
+      await expectJsonSnapshot(this, Cmd, ['example.com', '--app', 'example', '--now'])
+    })
+
+    it('returns the key and certificate file names with --selfsigned', async function () {
+      await expectJsonSnapshot(this, Cmd, ['example.com', '--app', 'example', '--owner', 'Heroku', '--selfsigned'])
+    })
+
+    it('requires owner information instead of prompting', async function () {
+      await expectJsonError(Cmd, ['example.com', '--app', 'example'], 'Pass --now, --subject, or at least one of --owner, --country, --area or --city. Commands don\'t prompt for owner information with --json.')
+
+      expect(promptForOwnerInfoStub.called).to.equal(false)
+      expect(spawnOpenSSLStub.called).to.equal(false)
+    })
   })
 })

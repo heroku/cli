@@ -4,7 +4,7 @@ import {SniEndpoint} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import {displayCertificateDetails} from '../../lib/certs/certificate-details.js'
+import {formatCertificateDetails} from '../../lib/certs/certificate-details.js'
 import getEndpoint from '../../lib/certs/flags.js'
 import {CertAndKeyManager} from '../../lib/certs/get-cert-and-key.js'
 import ConfirmCommand from '../../lib/confirm-command.js'
@@ -28,6 +28,7 @@ export default class Update extends Command {
         If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
         https://help.salesforce.com/s/articleView?id=000333504&type=1
   `]
+  static enableJsonFlag = true
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({hidden: true}),
@@ -51,16 +52,24 @@ export default class Update extends Command {
         Potentially Destructive Action
         This command will change the certificate of endpoint ${sniEndpoint.name} from ${color.app(app)}.
       `,
+      {json: this.jsonEnabled()},
     )
 
     ux.action.start(`Updating SSL certificate ${sniEndpoint.name} for ${color.app(app)}`)
-    sniEndpoint = await platform.sniEndpoint.update(app, sniEndpoint.name, {
-      certificate_chain: files.crt,
-      private_key: files.key,
-    })
+    try {
+      sniEndpoint = await platform.sniEndpoint.update(app, sniEndpoint.name, {
+        certificate_chain: files.crt,
+        private_key: files.key,
+      })
+    } catch (error) {
+      // Under --json, oclif's catch() leaves the spinner running and it swallows the error output.
+      ux.action.stop(color.failure('!'))
+      throw error
+    }
+
     ux.action.stop()
 
-    displayCertificateDetails(sniEndpoint as LocalSniEndpoint, 'Updated certificate details:')
+    this.log(formatCertificateDetails(sniEndpoint as LocalSniEndpoint, 'Updated certificate details:'))
 
     return sniEndpoint
   }

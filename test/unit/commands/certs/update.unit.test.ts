@@ -12,6 +12,8 @@ import {CertAndKeyManager} from '../../../../src/lib/certs/get-cert-and-key.js'
 import {SniEndpoint} from '../../../../src/lib/types/sni-endpoint.js'
 import {certificateDetails, endpoint} from '../../../helpers/stubs/sni-endpoints.js'
 import * as sharedSni from './shared-sni.unit.test.js'
+import {sniEndpointA} from '../../../fixtures/certs/fixtures.js'
+import {expectJsonError, expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
 
 const heredoc = tsheredoc
 
@@ -115,6 +117,30 @@ describe('heroku certs:update', function () {
     expect(ansis.strip(message)).to.equal('Unexpected argument: key_file\nSee more help with --help')
     expect(oclif.exit).to.equal(2)
     expect(stdout).to.equal('')
+  })
+
+  describe('--json', function () {
+    beforeEach(function () {
+      fakePlatform.sniEndpoint.list.resolves([sniEndpointA])
+    })
+
+    it('returns the updated certificate', async function () {
+      fakePlatform.sniEndpoint.update.resolves(sniEndpointA)
+
+      await expectJsonSnapshot(this, Cmd, ['--app', 'example', '--confirm', 'example', 'pem_file', 'key_file'])
+    })
+
+    it('requires --confirm instead of prompting', async function () {
+      await expectJsonError(Cmd, ['--app', 'example', 'pem_file', 'key_file'], 'To proceed, re-run this command with --confirm example. Commands don\'t prompt for confirmation with --json.')
+
+      expect(fakePlatform.sniEndpoint.update.called).to.equal(false)
+    })
+
+    it('renders an API error as a JSON error document', async function () {
+      fakePlatform.sniEndpoint.update.rejects(new Error('The certificate is invalid.'))
+
+      await expectJsonError(Cmd, ['--app', 'example', '--confirm', 'example', 'pem_file', 'key_file'], 'The certificate is invalid.')
+    })
   })
 })
 

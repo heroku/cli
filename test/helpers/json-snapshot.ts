@@ -6,6 +6,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import {getConfig} from './test-instances.js'
+import {withRealUxAction} from './ux-stub.js'
 
 /**
  * How JSON output is switched on for a run.
@@ -132,6 +133,28 @@ export async function expectJsonSnapshot<T = unknown>(
   expect(viaEnv.exitCode, 'HEROKU_CONTENT_TYPE=json and --json exit differently').to.equal(viaFlag.exitCode)
   matchJsonSnapshot(ctx, viaFlag.json, {name})
   return viaFlag
+}
+
+/**
+ * Assert that a command fails under --json with an error document carrying `message`, under
+ * both `--json` and `HEROKU_CONTENT_TYPE=json`. Runs against the real `ux.action` spinner,
+ * which buffers stdout while it runs, so a command that leaves its spinner running fails here.
+ *
+ *   await expectJsonError(Remove, ['--app', 'example'], 'To proceed, re-run this command with --confirm example. ...')
+ */
+export async function expectJsonError(
+  Cmd: CommandClass,
+  args: string[],
+  message: string,
+  {config, exitCode = 1}: {config?: Config; exitCode?: number} = {},
+): Promise<void> {
+  for (const activation of ['flag', 'env'] as const) {
+    // eslint-disable-next-line no-await-in-loop -- runs must not overlap; each sets or clears HEROKU_CONTENT_TYPE
+    const result = await withRealUxAction(() => runCommandJson<{error: {message: string}}>(Cmd, args, {activation, config}))
+
+    expect(result.exitCode, activation).to.equal(exitCode)
+    expect(result.json.error.message, activation).to.equal(message)
+  }
 }
 
 /** Snapshot keys used so far in this process, per snapshot file, to catch collisions. */

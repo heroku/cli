@@ -1,0 +1,46 @@
+{
+  "heroku certs:auto:disable --json returns the app": {
+    "acm": false,
+    "archived_at": null,
+    "base_image_name": null,
+    "build_stack": {
+      "id": "69bee368-352b-4bd0-9b7c-819b860a2588",
+      "name": "heroku-24"
+    },
+    "buildpack_provided_description": "Node.js",
+    "buildpacks": null,
+    "created_at": "2026-01-01T00:00:00Z",
+    "current_build_architecture": [],
+    "generation": "cedar",
+    "generation_object": {
+      "id": "7c8d9e0f-1a2b-4c3d-8e4f-5a6b7c8d9e0f",
+      "name": "cedar"
+    },
+    "git_url": "https://git.heroku.com/example.git",
+    "id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+    "internal_routing": null,
+    "maintenance": false,
+    "name": "example",
+    "organization": null,
+    "owner": {
+      "email": "developer@example.com",
+      "id": "d7760946-8565-43f7-b4c0-7abf654c3a3c"
+    },
+    "process_tier": "fir",
+    "region": {
+      "id": "59accabd-516d-4f0e-83e6-6e3757701145",
+      "name": "us"
+    },
+    "released_at": "2026-01-02T00:00:00Z",
+    "repo_size": null,
+    "slug_size": 12345678,
+    "space": null,
+    "stack": {
+      "id": "69bee368-352b-4bd0-9b7c-819b860a2588",
+      "name": "heroku-24"
+    },
+    "team": null,
+    "updated_at": "2026-01-02T00:00:00Z",
+    "web_url": "https://example-0123456789ab.herokuapp.com/"
+  }
+}

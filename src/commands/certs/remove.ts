@@ -12,6 +12,7 @@ const heredoc = tsheredoc
 
 export default class Remove extends Command {
   static description = 'remove an SSL certificate from an app'
+  static enableJsonFlag = true
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({hidden: true}),
@@ -33,9 +34,18 @@ export default class Remove extends Command {
         WARNING: Destructive Action - you cannot rollback this change
         This command will remove the endpoint ${sniEndpoint.name} from ${color.app(app)}.
       `,
+      {json: this.jsonEnabled()},
     )
     ux.action.start(`Removing SSL certificate ${sniEndpoint.name} from ${color.app(app)}`)
-    const deletedEndpoint = await platform.sniEndpoint.delete(app, sniEndpoint.name)
+    let deletedEndpoint: SniEndpoint
+    try {
+      deletedEndpoint = await platform.sniEndpoint.delete(app, sniEndpoint.name)
+    } catch (error) {
+      // Under --json, oclif's catch() leaves the spinner running and it swallows the error output.
+      ux.action.stop(color.failure('!'))
+      throw error
+    }
+
     ux.action.stop()
 
     return deletedEndpoint
