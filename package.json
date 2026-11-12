@@ -15,7 +15,7 @@
     "@heroku/heroku-fetch": "^0.3.0",
     "@heroku/http-call": "5.5.2",
     "@heroku/mcp-server": "^1.2.9",
-    "@heroku/sdk": "github:heroku/heroku-sdk#eb/certs-add-domains",
+    "@heroku/sdk": "^0.14.0",
     "@heroku/types": "^5.4.1",
     "@inquirer/prompts": "^8.7",
     "@oclif/core": "^5.1.9",
