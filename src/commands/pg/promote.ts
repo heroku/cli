@@ -14,6 +14,7 @@ import {nls} from '../../nls.js'
 const heredoc = tsheredoc
 
 export default class Promote extends Command {
+  static aliases = ['data:pg:promote']
   static args = {
     database: Args.string({description: nls('pg:database:arg:description'), required: true}),
   }
