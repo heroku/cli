@@ -7,20 +7,20 @@ import {SinonStub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/certs/remove.js'
+import {sniEndpointA} from '../../../fixtures/certs/fixtures.js'
+import {expectJsonError, expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
 import {endpoint} from '../../../helpers/stubs/sni-endpoints.js'
 import * as sharedSni from './shared-sni.unit.test.js'
 
 const heredoc = tsheredoc
 
 type FakePlatform = {
-  domain: {info: SinonStub},
-  sniEndpoint: {delete: SinonStub, list: SinonStub},
+  sniEndpoint: {deleteByApp: SinonStub},
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
-    domain: {info: sinon.stub()},
-    sniEndpoint: {delete: sinon.stub(), list: sinon.stub()},
+    sniEndpoint: {deleteByApp: sinon.stub()},
   }
 }
 
@@ -37,8 +37,7 @@ describe('heroku certs:remove', function () {
   })
 
   it('# deletes the endpoint', async function () {
-    fakePlatform.sniEndpoint.list.resolves([endpoint])
-    fakePlatform.sniEndpoint.delete.resolves(endpoint)
+    sharedSni.resolvesThroughHook(fakePlatform.sniEndpoint.deleteByApp, 'beforeDelete', endpoint)
 
     const {stderr} = await runCommand(Cmd, [
       '--app',
@@ -50,11 +49,16 @@ describe('heroku certs:remove', function () {
     expect(stderr).to.equal(heredoc`
       Removing SSL certificate tokyo-1050 from ⬢ example... done
     `)
-    expect(fakePlatform.sniEndpoint.delete.calledOnceWithExactly('example', 'tokyo-1050')).to.equal(true)
+    expect(fakePlatform.sniEndpoint.deleteByApp.calledOnceWith('example', {})).to.equal(true)
   })
 
   it('# requires confirmation if wrong endpoint on app', async function () {
-    fakePlatform.sniEndpoint.list.resolves([endpoint])
+    const deleted = sinon.stub()
+    fakePlatform.sniEndpoint.deleteByApp.callsFake(async (_app, _selector, options) => {
+      await options.beforeDelete({sniEndpoint: endpoint})
+      deleted()
+      return endpoint
+    })
 
     const {error, stdout} = await runCommand(Cmd, [
       '--app',
@@ -65,9 +69,40 @@ describe('heroku certs:remove', function () {
 
     expect(error).to.exist
     expect(ansis.strip(error!.message)).to.equal('Confirmation notexample did not match example. Aborted.')
-    expect(fakePlatform.sniEndpoint.list.called).to.equal(true)
-    expect(fakePlatform.sniEndpoint.delete.called).to.equal(false)
+    expect(deleted.called).to.equal(false)
     expect(stdout).to.equal('')
+  })
+
+  describe('--json', function () {
+    const deleted = sinon.stub()
+
+    beforeEach(function () {
+      deleted.reset()
+      fakePlatform.sniEndpoint.deleteByApp.callsFake(async (_app, _selector, options) => {
+        await options.beforeDelete({sniEndpoint: sniEndpointA})
+        deleted()
+        return sniEndpointA
+      })
+    })
+
+    it('returns the removed certificate', async function () {
+      await expectJsonSnapshot(this, Cmd, ['--app', 'example', '--confirm', 'example'])
+    })
+
+    it('requires --confirm instead of prompting', async function () {
+      await expectJsonError(Cmd, ['--app', 'example'], 'To proceed, re-run this command with --confirm example. Commands don\'t prompt for confirmation with --json.')
+
+      expect(deleted.called).to.equal(false)
+    })
+
+    it('renders an API error as a JSON error document', async function () {
+      fakePlatform.sniEndpoint.deleteByApp.callsFake(async (_app, _selector, options) => {
+        await options.beforeDelete({sniEndpoint: sniEndpointA})
+        throw new Error('Couldn\'t find that SNI endpoint.')
+      })
+
+      await expectJsonError(Cmd, ['--app', 'example', '--confirm', 'example'], 'Couldn\'t find that SNI endpoint.')
+    })
   })
 })
 
@@ -76,7 +111,7 @@ describe('heroku shared', function () {
 
   beforeEach(function () {
     fakePlatform = buildFakePlatform()
-    fakePlatform.sniEndpoint.delete.resolves(endpoint)
+    sharedSni.resolvesThroughHook(fakePlatform.sniEndpoint.deleteByApp, 'beforeDelete', endpoint)
     sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
@@ -90,5 +125,5 @@ describe('heroku shared', function () {
     `)
   }
 
-  sharedSni.shouldHandleArgs('certs:remove', Cmd, () => fakePlatform, {flags: {confirm: 'example'}, stderr})
+  sharedSni.shouldHandleArgs('certs:remove', Cmd, () => fakePlatform.sniEndpoint.deleteByApp, {flags: {confirm: 'example'}, stderr})
 })

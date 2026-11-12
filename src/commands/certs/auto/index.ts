@@ -1,17 +1,20 @@
+import type {App, Domain as SdkDomain, SniEndpoint as SdkSniEndpoint} from '@heroku/types/3.sdk'
+
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {appExtensions} from '@heroku/sdk/extensions/platform'
-import {App} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
-import {displayCertificateDetails} from '../../../lib/certs/certificate-details.js'
+import {formatCertificateDetails} from '../../../lib/certs/certificate-details.js'
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import {createSDK} from '../../../lib/sdk.js'
 import {Domain} from '../../../lib/types/domain.js'
 import {SniEndpoint} from '../../../lib/types/sni-endpoint.js'
 
 const heredoc = tsheredoc
+
+type AcmStatus = {app: App; domains: SdkDomain[]; sniEndpoints: SdkSniEndpoint[]}
 
 function humanize(value: null | string) {
   if (!value) {
@@ -42,6 +45,7 @@ function humanize(value: null | string) {
 export default class Index extends Command {
   static command: 'auto'
   static description = 'show ACM status for an app'
+  static enableJsonFlag = true
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
@@ -49,7 +53,7 @@ export default class Index extends Command {
   }
   static topic = 'certs'
 
-  public async run(): Promise<Domain[]> {
+  public async run(): Promise<AcmStatus> {
     const {formatDistanceToNow} = await lazyModuleLoader.loadDateFns()
 
     const {flags} = await this.parse(Index)
@@ -57,18 +61,19 @@ export default class Index extends Command {
     const [app, sniEndpoints] = await Promise.all([
       platform.app.info(flags.app),
       platform.sniEndpoint.list(flags.app),
-    ]) as [App, SniEndpoint[]]
+    ])
 
     if (!app.acm) {
       this.log(hux.styledHeader(`Automatic Certificate Management is ${color.inactive('disabled')} on ${color.app(flags.app)}`))
-      return []
+      return {app, domains: await platform.domain.list(flags.app), sniEndpoints}
     }
 
     this.log(hux.styledHeader(`Automatic Certificate Management is ${color.success('enabled')} on ${color.app(flags.app)}`))
 
-    if (sniEndpoints.length === 1 && sniEndpoints[0].ssl_cert.acm) {
-      displayCertificateDetails(sniEndpoints[0])
-      ux.stdout('')
+    const localSniEndpoints = sniEndpoints as SniEndpoint[]
+    if (localSniEndpoints.length === 1 && localSniEndpoints[0].ssl_cert.acm) {
+      this.log(formatCertificateDetails(localSniEndpoints[0]))
+      this.log('')
     }
 
     if (flags.wait) {
@@ -77,13 +82,18 @@ export default class Index extends Command {
         await platform.app.waitForACMCertificates(flags.app)
         ux.action.stop()
       } catch {
+        // Exit 0 and show the status anyway. certs:auto reports ACM status; --wait only delays
+        // the report until every custom domain settles. The wait throws when some domain settled
+        // as 'failed', and the table below (or --json's domains[].acm_status) reports that state
+        // the same way it does without --wait. certs:auto:enable --wait is the command that fails
+        // when a certificate isn't issued. An API error would fail the domain.list call below.
         ux.action.stop(color.failure('!'))
       }
     }
 
-    let domains = await platform.domain.list(flags.app) as Domain[]
-
-    domains = domains.filter(domain => domain.kind === 'custom')
+    const allDomains = await platform.domain.list(flags.app)
+    // The table shows custom domains only; --json returns every domain.
+    const domains = (allDomains as Domain[]).filter(domain => domain.kind === 'custom')
 
     let message
     if (domains.length === 0) {
@@ -122,7 +132,7 @@ export default class Index extends Command {
         },
       ))
       if (message) {
-        ux.stdout('')
+        this.log('')
       }
     }
 
@@ -130,6 +140,6 @@ export default class Index extends Command {
       this.log(hux.styledHeader(message))
     }
 
-    return domains
+    return {app, domains: allDomains, sniEndpoints}
   }
 }

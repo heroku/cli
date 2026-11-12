@@ -1,18 +1,18 @@
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {ux} from '@oclif/core/ux'
 import {parse} from 'tldts'
 
-export function printDomains(domains: Required<Heroku.Domain>[], message: string) {
+export function formatDomains(domains: Required<Heroku.Domain>[], message: string): string {
   domains = domains.filter(domain => domain.kind === 'custom')
-  const domains_with_type: (Required<Heroku.Domain> & {type: string})[] = domains.map(domain => ({...domain, type: type(domain)}))
+  const domains_with_type: (Required<Heroku.Domain> & {type: string})[] = domains.map(domain => ({...domain, type: dnsRecordType(domain)}))
 
   if (domains_with_type.length === 0) {
-    ux.stdout(hux.styledHeader(`${message}  Add a custom domain to your app by running ${color.code('heroku domains:add <yourdomain.com>')}`))
-  } else {
-    ux.stdout(hux.styledHeader(`${message}  Update your application's DNS settings as follows`))
+    return hux.styledHeader(`${message}  Add a custom domain to your app by running ${color.code('heroku domains:add <yourdomain.com>')}`)
+  }
 
-    ux.stdout(hux.table(
+  return [
+    hux.styledHeader(`${message}  Update your application's DNS settings as follows`),
+    hux.table(
       domains_with_type,
       {
         domain: {
@@ -29,11 +29,12 @@ export function printDomains(domains: Required<Heroku.Domain>[], message: string
           header: 'DNS Target',
         },
       },
-    ))
-  }
+    ),
+  ].join('\n')
 }
 
-function type(domain: Required<Heroku.Domain>) {
+/** The DNS record type a custom domain needs: CNAME for a subdomain, ALIAS/ANAME for a root domain. */
+export function dnsRecordType(domain: Pick<Heroku.Domain, 'hostname'> & {hostname: string}) {
   // Wildcard domains (*.example.com) are always treated as subdomains (CNAME)
   // This must be checked before parsing since wildcards aren't valid hostnames
   if (domain.hostname.includes('*')) {

@@ -1,15 +1,33 @@
+import type {App, Domain as SdkDomain} from '@heroku/types/3.sdk'
+
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {appExtensions, domainExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
-import {printDomains} from '../../../lib/domains/domains.js'
+import {dnsRecordType, formatDomains} from '../../../lib/domains/domains.js'
 import notify from '../../../lib/notify.js'
 import {createSDK} from '../../../lib/sdk.js'
 import {Domain} from '../../../lib/types/domain.js'
 
+/**
+ * `dns_record_type` is the record type the DNS table shows for a custom domain; null for Heroku
+ * domains and for hostnames it can't classify.
+ */
+type AcmEnabled = {app: App; domains: (SdkDomain & {dns_record_type: null | string})[]}
+
+// ACM is already enabled by the time this runs, so a hostname dnsRecordType can't parse mustn't fail the command.
+function recordTypeOrNull(domain: SdkDomain): null | string {
+  try {
+    return dnsRecordType(domain)
+  } catch {
+    return null
+  }
+}
+
 export default class Enable extends Command {
   static description = 'enable ACM status for an app'
+  static enableJsonFlag = true
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
@@ -18,7 +36,7 @@ export default class Enable extends Command {
   public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
   static topic = 'certs'
 
-  public async run(): Promise<Domain[]> {
+  public async run(): Promise<AcmEnabled> {
     const {flags} = await this.parse(Enable)
     const {app, wait} = flags
     const {platform} = createSDK(this.heroku, {extensions: [appExtensions, domainExtensions]})
@@ -30,9 +48,16 @@ export default class Enable extends Command {
 
     ux.action.start('Enabling Automatic Certificate Management')
 
-    const domainsBeforeEnable = await platform.domain.list(app) as Domain[]
-
-    await platform.app.enableACM(app)
+    let domainsBeforeEnable: Domain[]
+    let enabledApp: App
+    try {
+      domainsBeforeEnable = await platform.domain.list(app) as Domain[]
+      enabledApp = await platform.app.enableACM(app)
+    } catch (error) {
+      // Under --json, oclif's catch() leaves the spinner running and it swallows the error output.
+      ux.action.stop(color.failure('!'))
+      throw error
+    }
 
     if (wait) {
       ux.action.stop(`${color.info('starting')}.`)
@@ -62,8 +87,14 @@ export default class Enable extends Command {
     let domains = await platform.domain.list(app) as Domain[]
     if (someCustomNullCname(domains)) {
       ux.action.start('Waiting for stable domains to be created')
-      await platform.domain.wait(app)
-      domains = await platform.domain.list(app) as Domain[]
+      try {
+        await platform.domain.wait(app)
+        domains = await platform.domain.list(app) as Domain[]
+      } catch (error) {
+        ux.action.stop(color.failure('!'))
+        throw error
+      }
+
       ux.action.stop()
     }
 
@@ -74,11 +105,17 @@ export default class Enable extends Command {
     const message = `Your certificate will now be managed by Heroku. Check the status by running ${color.code('heroku certs:auto')}.`
 
     if (domains.length === 0 || changedCnames.length > 0) {
-      printDomains(changedCnames as Parameters<typeof printDomains>[0], message)
+      this.log(formatDomains(changedCnames as Parameters<typeof formatDomains>[0], message))
     } else {
       this.log(hux.styledHeader(message))
     }
 
-    return domains
+    return {
+      app: enabledApp,
+      domains: (domains as SdkDomain[]).map(domain => ({
+        ...domain,
+        dns_record_type: domain.kind === 'custom' ? recordTypeOrNull(domain) : null,
+      })),
+    }
   }
 }

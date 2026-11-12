@@ -6,7 +6,8 @@ import {SinonStub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/certs/info.js'
-import {SniEndpoint} from '../../../../src/lib/types/sni-endpoint.js'
+import {customDomain, sniEndpointA} from '../../../fixtures/certs/fixtures.js'
+import {expectJsonError, expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
 import {
   certificateDetails,
   certificateDetailsWithDomains,
@@ -21,14 +22,12 @@ import * as sharedSni from './shared-sni.unit.test.js'
 const heredoc = tsheredoc
 
 type FakePlatform = {
-  domain: {info: SinonStub},
-  sniEndpoint: {info: SinonStub, list: SinonStub},
+  sniEndpoint: {infoByApp: SinonStub},
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
-    domain: {info: sinon.stub()},
-    sniEndpoint: {info: sinon.stub(), list: sinon.stub()},
+    sniEndpoint: {infoByApp: sinon.stub()},
   }
 }
 
@@ -45,12 +44,11 @@ describe('heroku certs:info', function () {
   })
 
   it('shows certificate details when self-signed', async function () {
-    fakePlatform.sniEndpoint.list.resolves([endpoint])
-    fakePlatform.sniEndpoint.info.resolves(structuredClone(endpoint))
+    fakePlatform.sniEndpoint.infoByApp.resolves(structuredClone(endpoint))
     const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
-    expect(fakePlatform.sniEndpoint.info.calledOnceWithExactly('example', 'tokyo-1050')).to.equal(true)
+    expect(fakePlatform.sniEndpoint.infoByApp.calledOnceWithExactly('example', {})).to.equal(true)
     expectOutput(stderr, heredoc(`
-      Fetching SSL certificate tokyo-1050 info for ⬢ example... done
+      Fetching SSL certificate info for ⬢ example... done
     `))
     expectOutput(stdout, heredoc(`
       Certificate details:
@@ -58,20 +56,23 @@ describe('heroku certs:info', function () {
     `))
   })
 
+  it('names the certificate in the progress message when --name is passed', async function () {
+    fakePlatform.sniEndpoint.infoByApp.resolves(structuredClone(endpoint))
+    const {stderr} = await runCommand(Cmd, ['--app', 'example', '--name', 'tokyo-1050'])
+    expect(fakePlatform.sniEndpoint.infoByApp.calledOnceWithExactly('example', {name: 'tokyo-1050'})).to.equal(true)
+    expectOutput(stderr, heredoc(`
+      Fetching SSL certificate tokyo-1050 info for ⬢ example... done
+    `))
+  })
+
   it('returns domains when show-domains flag is passed', async function () {
-    fakePlatform.sniEndpoint.list.resolves([endpointWithDomains])
-    fakePlatform.sniEndpoint.info.resolves(structuredClone(endpointWithDomains))
-    fakePlatform.domain.info.withArgs('example', 'tokyo-1050.herokussl.com').resolves({
-      cname: 'example.herokudns.com',
-      hostname: 'subdomain.example.com',
-      kind: 'custom',
-      status: 'pending',
-    })
+    fakePlatform.sniEndpoint.infoByApp.resolves({...structuredClone(endpointWithDomains), domain_hostnames: ['subdomain.example.com']})
     const {stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       '--show-domains',
     ])
+    expect(fakePlatform.sniEndpoint.infoByApp.calledOnceWithExactly('example', {}, {includeDomainHostnames: true})).to.equal(true)
     expectOutput(stdout, heredoc(`
       Certificate details:
       ${certificateDetailsWithDomains}
@@ -79,11 +80,10 @@ describe('heroku certs:info', function () {
   })
 
   it('shows certificate details when not trusted', async function () {
-    fakePlatform.sniEndpoint.list.resolves([endpoint])
-    fakePlatform.sniEndpoint.info.resolves(structuredClone(endpointUntrusted))
+    fakePlatform.sniEndpoint.infoByApp.resolves(structuredClone(endpointUntrusted))
     const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr, heredoc(`
-      Fetching SSL certificate tokyo-1050 info for ⬢ example... done
+      Fetching SSL certificate info for ⬢ example... done
     `))
     expectOutput(heredoc(stdout), heredoc(`
       Certificate details:
@@ -92,11 +92,10 @@ describe('heroku certs:info', function () {
   })
 
   it('shows certificate details when trusted', async function () {
-    fakePlatform.sniEndpoint.list.resolves([endpoint])
-    fakePlatform.sniEndpoint.info.resolves(structuredClone(endpointTrusted))
+    fakePlatform.sniEndpoint.infoByApp.resolves(structuredClone(endpointTrusted))
     const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr, heredoc(`
-      Fetching SSL certificate tokyo-1050 info for ⬢ example... done
+      Fetching SSL certificate info for ⬢ example... done
     `))
     expectOutput(stdout, heredoc(`
       Certificate details:
@@ -108,6 +107,32 @@ describe('heroku certs:info', function () {
       SSL certificate is verified by a root authority.
     `))
   })
+
+  describe('--json', function () {
+    it('returns the SDK certificate with its domain IDs untouched', async function () {
+      fakePlatform.sniEndpoint.infoByApp.resolves(sniEndpointA)
+
+      const {json} = await expectJsonSnapshot<Record<string, unknown>>(this, Cmd, ['--app', 'example'])
+
+      expect(json.domains).to.deep.equal(sniEndpointA.domains)
+      expect(json).not.to.have.property('domain_hostnames')
+    })
+
+    it('adds domain_hostnames with --show-domains', async function () {
+      fakePlatform.sniEndpoint.infoByApp.resolves({...sniEndpointA, domain_hostnames: [customDomain.hostname]})
+
+      const {json} = await expectJsonSnapshot<Record<string, unknown>>(this, Cmd, ['--app', 'example', '--show-domains'])
+
+      expect(json.domains).to.deep.equal(sniEndpointA.domains)
+      expect(json.domain_hostnames).to.deep.equal(['www.example.com'])
+    })
+
+    it('renders an API error as a JSON error document', async function () {
+      fakePlatform.sniEndpoint.infoByApp.rejects(new Error('Couldn\'t find that SNI endpoint.'))
+
+      await expectJsonError(Cmd, ['--app', 'example'], 'Couldn\'t find that SNI endpoint.')
+    })
+  })
 })
 
 describe('heroku shared', function () {
@@ -115,7 +140,7 @@ describe('heroku shared', function () {
 
   beforeEach(function () {
     fakePlatform = buildFakePlatform()
-    fakePlatform.sniEndpoint.info.resolves(structuredClone(endpoint))
+    fakePlatform.sniEndpoint.infoByApp.resolves(structuredClone(endpoint))
     sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
@@ -123,9 +148,9 @@ describe('heroku shared', function () {
     sinon.restore()
   })
 
-  const stderr = function (endpoint: Partial<SniEndpoint>) {
+  const stderr = function (_endpoint: unknown, {name}: {name?: string}) {
     return heredoc(`
-      Fetching SSL certificate ${endpoint.name} info for ⬢ example... done
+      Fetching SSL certificate ${name === undefined ? '' : `${name} `}info for ⬢ example... done
     `)
   }
 
@@ -133,5 +158,5 @@ describe('heroku shared', function () {
     return `Certificate details:\n${heredoc(certDetails)}`
   }
 
-  sharedSni.shouldHandleArgs('certs:info', Cmd, () => fakePlatform, {stderr, stdout})
+  sharedSni.shouldHandleArgs('certs:info', Cmd, () => fakePlatform.sniEndpoint.infoByApp, {stderr, stdout})
 })

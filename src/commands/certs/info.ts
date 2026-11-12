@@ -1,49 +1,51 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {sniEndpointExtensions, type SniEndpointWithDomainHostnames} from '@heroku/sdk/extensions/platform'
 import {SniEndpoint} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 
-import {displayCertificateDetails} from '../../lib/certs/certificate-details.js'
-import getEndpoint from '../../lib/certs/flags.js'
+import {formatCertificateDetails} from '../../lib/certs/certificate-details.js'
+import {sniEndpointSelector, withSelectorFlagHint} from '../../lib/certs/flags.js'
 import {createSDK} from '../../lib/sdk.js'
 import {SniEndpoint as LocalSniEndpoint} from '../../lib/types/sni-endpoint.js'
 
 export default class Info extends Command {
   static description = 'show certificate information for an SSL certificate'
+  static enableJsonFlag = true
   static flags = {
     app: flags.app({required: true}),
-    endpoint: flags.string({description: 'endpoint to check info on'}),
-    name: flags.string({description: 'name to check info on'}),
+    endpoint: flags.string({description: 'endpoint to check info on', exclusive: ['name']}),
+    name: flags.string({description: 'name to check info on', exclusive: ['endpoint']}),
     remote: flags.remote(),
     'show-domains': flags.boolean({description: 'show associated domains'}),
   }
   static topic = 'certs'
 
-  public async run(): Promise<SniEndpoint> {
-    const {platform} = createSDK(this.heroku)
+  public async run(): Promise<SniEndpoint | SniEndpointWithDomainHostnames> {
+    const {platform} = createSDK(this.heroku, {extensions: [sniEndpointExtensions]})
     const {flags} = await this.parse(Info)
     const {app} = flags
-    const endpoint = await getEndpoint(flags, platform)
-    ux.action.start(`Fetching SSL certificate ${endpoint.name} info for ${color.app(app)}`)
-    // This is silly, we just fetched all SNI Endpoints and filtered to get the one we want just
-    // to use the name on the start action message, but then we re-fetch the exact same SNI Endpoint we
-    // already have.
-    const cert = await platform.sniEndpoint.info(app, endpoint.name)
-    ux.action.stop()
-
-    if (flags['show-domains']) {
-      ux.action.start(`Fetching domains for ${endpoint.name}`)
-      const domains = await Promise.all(endpoint.domains.map(async domain => {
-        const response = await platform.domain.info(app, domain)
-        return response.hostname
-      }))
-      ux.action.stop()
-      cert.domains = domains
-    } else {
-      cert.domains = []
+    const selector = sniEndpointSelector(flags)
+    // Only --name gives the certificate's name before the SDK call returns.
+    ux.action.start(flags.name === undefined
+      ? `Fetching SSL certificate info for ${color.app(app)}`
+      : `Fetching SSL certificate ${flags.name} info for ${color.app(app)}`)
+    let cert: SniEndpoint | SniEndpointWithDomainHostnames
+    try {
+      cert = flags['show-domains']
+        ? await platform.sniEndpoint.infoByApp(app, selector, {includeDomainHostnames: true})
+        : await platform.sniEndpoint.infoByApp(app, selector)
+    } catch (error) {
+      // Under --json, oclif's catch() leaves the spinner running and it swallows the error output.
+      ux.action.stop(color.failure('!'))
+      throw withSelectorFlagHint(error)
     }
 
-    displayCertificateDetails(cert as LocalSniEndpoint)
+    ux.action.stop()
+
+    // The human view shows hostnames in place of the domain IDs, and no domains without --show-domains.
+    const hostnames = 'domain_hostnames' in cert ? cert.domain_hostnames : []
+    this.log(formatCertificateDetails({...cert, domains: hostnames} as LocalSniEndpoint))
     return cert
   }
 }

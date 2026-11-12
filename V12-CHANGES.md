@@ -38,7 +38,41 @@ Commands now render tables, headers, and objects with `@heroku/heroku-cli-util` 
 
 ## Certs commands
 
-- `certs:add` matches wildcard certificates against your app's domains more strictly: a `*.example.com` certificate now matches only direct subdomains (e.g. `www.example.com`), no longer matching deeper or trailing-suffix domains
+- `certs:add` matches a certificate's names against your app's domains exactly, ignoring case. Previously, when a certificate had a wildcard name, its names also matched domains that merely contained them: a `*.example.com` certificate matched `www.example.com.evil.org`, and a `www.example.com` name on the same certificate matched `shop.www.example.com`. A wildcard still matches one label (`www.example.com`, not `example.com` or `a.b.example.com`). The names come from the certificate file itself, read before upload.
+- `certs`, `certs:add`, `certs:generate`, `certs:info`, `certs:remove`, `certs:update`, `certs:auto`, `certs:auto:disable`, `certs:auto:enable`, and `certs:auto:refresh` gain `--json`. Setting `HEROKU_CONTENT_TYPE=json` also switches them to JSON output, and errors are printed as a JSON error document. Each returns the API's records unchanged:
+  - `certs` returns the SNI endpoint list in the order the API returns it (`[]` when there are none). The table output is still sorted by name.
+  - `certs:info` returns the SNI endpoint. With `--show-domains`, it adds `domain_hostnames`, the hostnames of the endpoint's domains.
+  - `certs:add` returns the SNI endpoint. When it associates domains, the endpoint is read again afterwards, so its `domains` list includes them. `certs:update` returns the SNI endpoint; `certs:remove` returns the removed SNI endpoint.
+  - `certs:generate` returns `{domain, key, csr}`, or `{domain, key, certificate}` with `--selfsigned`. `key`, `csr`, and `certificate` are the absolute paths of the files it wrote. With `--json`, openssl's own output goes to stderr and the next-step hints aren't printed.
+  - `certs:auto` returns `{app, sniEndpoints, domains}`. `domains` lists all of the app's domains, whether or not Automated Certificate Management is enabled.
+  - `certs:auto:enable` returns `{app, domains}`. Each domain gains `dns_record_type` (`CNAME` or `ALIAS/ANAME`), the record type its DNS needs; it's `null` for Heroku-managed domains and for hostnames it can't classify.
+  - `certs:auto:disable` and `certs:auto:refresh` return the app.
+- `certs:add` gains `--domains <hostnames>`, a comma-separated list of the app's domains to associate the certificate with, instead of the prompt. `--domains ''` associates none. Each hostname must be one of the app's domains and covered by the certificate; otherwise the command fails before uploading anything and names the hostnames that don't qualify.
+- `certs:auto --wait` now fails (non-zero exit) when waiting for the certificates fails. Previously it printed `!` and continued, exiting 0.
+- `certs:remove`, `certs:update`, and `certs:auto:disable` list `--confirm` in their help. The flag was already accepted but hidden.
+- `certs:generate` prints its next-step hints through the CLI's logger instead of writing to stderr directly. Without `--json`, they still appear on stderr.
+- `certs:info`, `certs:remove`, and `certs:update` select the certificate differently:
+  - `--endpoint <hostname>` selects the certificate that the app's domain `<hostname>` is associated with.
+  - `--name` and `--endpoint` can't be used together.
+  - The errors name what didn't match:
+    - `<hostname> isn't a domain on <app>.`
+    - `<hostname> on <app> isn't associated with an SSL certificate.`
+    - `Couldn't find an SSL certificate named <name> on <app>.`
+    - `<app> has no SSL certificates.`
+  - When the app has several certificates and neither flag is given, the error lists them: `<app> has <n> SSL certificates (<names>). Pass --name to select one.`
+- `certs:update` reads the certificate and key files before it looks up the certificate, so a missing file fails before any API request.
+- `certs:info`'s progress message no longer names the certificate (`Fetching SSL certificate info for <app>`).
+- `certs:generate` checks the domain and the output files before it does anything:
+  - It rejects a domain that contains `/` or `\`, or starts with `-`.
+  - It refuses to overwrite an existing key, CSR, or certificate file. The new `--force` flag overwrites them.
+  - It makes the key file readable only by its owner (mode 0600). LibreSSL, macOS's built-in `openssl`, otherwise leaves it readable by everyone.
+- If `certs:add` uploads the certificate but associating domains fails, the error names the uploaded certificate and the `certs:remove` command that removes it.
+- `certs:add` fails before uploading anything when the certificate file isn't a PEM certificate: `Couldn't read the certificate: expected a PEM-encoded certificate chain. Nothing was uploaded.`
+- `certs:add` with `--domains` waits only for the named domains to be ready, not for every pending domain on the app, and `--domains ''` doesn't wait at all.
+- With `--json`, the certs commands never prompt:
+  - `certs:remove`, `certs:update`, and `certs:auto:disable` require `--confirm <app>`. Without it they fail with `To proceed, re-run this command with --confirm <app>.`
+  - `certs:generate` requires `--now`, `--subject`, or at least one of `--owner`, `--country`, `--area`, or `--city`.
+  - `certs:add` requires `--domains` when the certificate covers any of the app's domains. Without it, the command fails before uploading anything, with `This certificate covers <hostnames> on <app>. Pass --domains with the hostnames to associate, or --domains '' to associate none. ...`.
 
 ## Data commands
 - `data:pg:credentials:url` error messages ("no active credentials", "credential isn't active", "Essential-tier databases don't support named credentials") are now plain text. Previously the app/database name and credential name in these messages were colorized (`color.datastore`, `color.name`) with a `⛁` icon on the database name; the SDK throws plain, uncolored `Error`s instead.
