@@ -81,9 +81,13 @@ export default class Index extends Command {
       try {
         await platform.app.waitForACMCertificates(flags.app)
         ux.action.stop()
-      } catch (error) {
+      } catch {
+        // Exit 0 and show the status anyway. certs:auto reports ACM status; --wait only delays
+        // the report until every custom domain settles. The wait throws when some domain settled
+        // as 'failed', and the table below (or --json's domains[].acm_status) reports that state
+        // the same way it does without --wait. certs:auto:enable --wait is the command that fails
+        // when a certificate isn't issued. An API error would fail the domain.list call below.
         ux.action.stop(color.failure('!'))
-        throw error
       }
     }
 
