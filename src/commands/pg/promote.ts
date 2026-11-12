@@ -16,14 +16,11 @@ import {nls} from '../../nls.js'
 const heredoc = tsheredoc
 
 // Platform API is deprecating the raw namespace param, so Advanced-tier namespaces go out as namespace_config. Platform
-// only returns the namespace it built from that config (sorted key:value pairs joined by `|`), so splitting it back
-// apart, keeping every value a string, resolves to the same existing namespace.
+// only returns the namespace it built from that config, so parsing its factors back out, with every value as a string,
+// resolves to the same existing namespace.
 function namespaceParams(namespace: null | string | undefined, isAdvanced: boolean) {
   if (!isAdvanced || !namespace) return {namespace}
-  const factors = namespace.split('|').map(factor => {
-    const separator = factor.indexOf(':')
-    return [factor.slice(0, separator), factor.slice(separator + 1)]
-  })
+  const factors = Object.entries(parseAttachmentFactors(namespace)).map(([key, value]) => [key, String(value)])
   return {namespace_config: Object.fromEntries(factors)}
 }
 
