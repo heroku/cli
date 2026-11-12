@@ -1,10 +1,10 @@
-import type {AddOnAttachment} from '@heroku-cli/schema'
-
-import {APIClient, Command, flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {Command, flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
+import {postgresDatabaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
+import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
 
 export default class Rotate extends Command {
@@ -28,64 +28,56 @@ export default class Rotate extends Command {
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Rotate)
     const {all, app, confirm, force, name} = flags
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const {addon: db} = await dbResolver.getAttachment(app, args.database)
-    const warnings: string[] = []
+    const {data, platform} = createSDK(this.heroku, {extensions: [postgresDatabaseExtensions]})
+
     const cred = name || 'default'
-    if (all && name !== undefined) {
-      throw new Error('cannot pass both --all and --name')
-    }
 
-    if (utils.pg.isLegacyEssentialDatabase(db) && cred !== 'default') {
-      throw new Error('Legacy Essential-tier databases do not support named credentials.')
-    }
+    await data.postgresDatabase.rotateCredential(app, {all, credName: name, forced: force}, {
+      addonIdentity: args.database,
+      async beforeRotate({addon}) {
+        const warnings: string[] = []
 
-    if (all && force) {
-      warnings.push('This forces rotation on all credentials including the default credential.')
-    }
+        if (all && force) {
+          warnings.push('This forces rotation on all credentials including the default credential.')
+        }
 
-    let {body: attachments} = await this.heroku.get<Required<AddOnAttachment>[]>(`/addons/${db.name}/addon-attachments`)
-    if (name) {
-      attachments = attachments.filter(a => a.namespace === `credential:${cred}`)
-    }
+        let attachments = await platform.addOnAttachment.listByAddOn(addon.id)
 
-    if (!all) {
-      warnings.push(`The password for the ${cred} credential will rotate.`)
-    }
+        if (name) {
+          attachments = attachments.filter(a => a.namespace === `credential:${cred}`)
+        }
 
-    if (all || force || cred === 'default') {
-      warnings.push('Connections will be reset and applications will be restarted.')
-    } else {
-      warnings.push('Connections older than 30 minutes will be reset, and a temporary rotation username will be used during the process.')
-    }
+        if (!all) {
+          warnings.push(`The password for the ${cred} credential will rotate.`)
+        }
 
-    if (force) {
-      warnings.push(`Any followers lagging in replication (see ${color.code('heroku pg:info')}) will be inaccessible until caught up.`)
-    }
+        if (all || force || cred === 'default') {
+          warnings.push('Connections will be reset and applications will be restarted.')
+        } else {
+          warnings.push('Connections older than 30 minutes will be reset, and a temporary rotation username will be used during the process.')
+        }
 
-    if (attachments.length > 0) {
-      const uniqueAppNames = [...new Set(attachments.map(attachment => color.app(attachment.app.name || '')))]
-        .sort()
-        .join(', ')
+        if (force) {
+          warnings.push(`Any followers lagging in replication (see ${color.code('heroku pg:info')}) will be inaccessible until caught up.`)
+        }
 
-      warnings.push(`This command will affect the app${(uniqueAppNames.length > 1) ? 's' : ''} ${uniqueAppNames}.`)
-    }
+        if (attachments.length > 0) {
+          const uniqueAppNames = [...new Set(attachments.map(attachment => color.app(attachment.app.name || '')))]
+            .sort()
+            .join(', ')
 
-    await new ConfirmCommand().confirm(app, confirm, `Destructive Action\n${warnings.join('\n')}`)
-    const options: APIClient.Options = {
-      body: {forced: force ?? undefined},
-      headers: {
-        Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
+          warnings.push(`This command will affect the app${(uniqueAppNames.length > 1) ? 's' : ''} ${uniqueAppNames}.`)
+        }
+
+        await new ConfirmCommand().confirm(app, confirm, `Destructive Action\n${warnings.join('\n')}`)
+
+        if (all) {
+          ux.action.start(`Rotating all credentials on ${color.datastore(addon.name)}`)
+        } else {
+          ux.action.start(`Rotating ${cred} on ${color.datastore(addon.name)}`)
+        }
       },
-      hostname: utils.pg.host(),
-    }
-    if (all) {
-      ux.action.start(`Rotating all credentials on ${color.datastore(db.name)}`)
-      await this.heroku.post(`/postgres/v0/databases/${db.name}/credentials_rotation`, options)
-    } else {
-      ux.action.start(`Rotating ${cred} on ${color.datastore(db.name)}`)
-      await this.heroku.post(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(cred)}/credentials_rotation`, options)
-    }
+    })
 
     ux.action.stop()
   }

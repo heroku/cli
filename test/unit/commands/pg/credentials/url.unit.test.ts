@@ -1,40 +1,49 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/credentials/url.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
+import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
 
+type FakeData = {
+  postgresDatabase: {getUrl: SinonStub}
+}
+
+function buildFakeData(): FakeData {
+  return {postgresDatabase: {getUrl: stub()}}
+}
+
 describe('pg:credentials:url', function () {
   const addon = fixtures.addons['dwh-db']
-  const attachments = [fixtures.attachments['acme-inc-dwh::DATABASE']]
+  let fakeData: FakeData
+  let sdkMock: MockSDK
+
+  beforeEach(function () {
+    fakeData = buildFakeData()
+    sdkMock = mockSDKData(fakeData)
+  })
 
   afterEach(function () {
-    nock.cleanAll()
+    sdkMock.restore()
   })
 
   it('shows the correct credentials', async function () {
-    const roleInfo = {
-      credentials: [
-        {
-          password: 'passw0rd', state: 'revoking', user: 'gandalf-rotating',
-        }, {
-          password: 'hunter2', state: 'active', user: 'gandalf',
-        },
-      ], database: 'd123', host: 'localhost', name: 'gandalf', port: 5442, state: 'created', uuid: 'aaaa',
-    }
-    nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve')
-      .reply(200, [{addon}])
-    nock('https://api.heroku.com')
-      .get(`/addons/${addon.name}/addon-attachments`)
-      .reply(200, attachments)
-    nock('https://api.data.heroku.com')
-      .get(`/postgres/v0/databases/${addon.name}/credentials/gandalf`)
-      .reply(200, roleInfo)
+    fakeData.postgresDatabase.getUrl.resolves({
+      addon,
+      credentialConnectionInfo: {
+        credName: 'gandalf',
+        database: 'd123',
+        host: 'localhost',
+        password: 'hunter2',
+        port: 5442,
+        url: 'postgres://gandalf:hunter2@localhost:5442/d123',
+        user: 'gandalf',
+      },
+    })
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -49,14 +58,12 @@ describe('pg:credentials:url', function () {
       Connection URL:
         postgres://gandalf:hunter2@localhost:5442/d123
     `))
+    expect(fakeData.postgresDatabase.getUrl.calledOnceWithExactly('myapp', 'gandalf', {addonIdentity: undefined})).to.equal(true)
   })
 
-  it('throws an error when the db is starter plan but the name is specified', async function () {
-    const hobbyAddon = fixtures.addons['www-db']
-    nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve')
-      .reply(200, [{addon: hobbyAddon}])
+  it('propagates errors from getUrl', async function () {
     const err = 'Legacy Essential-tier databases do not support named credentials.'
+    fakeData.postgresDatabase.getUrl.rejects(new Error(err))
 
     const {error} = await runCommand(Cmd, [
       '--app',
@@ -68,21 +75,18 @@ describe('pg:credentials:url', function () {
   })
 
   it('shows the credentials when the db is numbered essential plan', async function () {
-    const roleInfo = {
-      credentials: [
-        {
-          password: 'passw0rd', state: 'revoking', user: 'lucy-rotating',
-        }, {
-          password: 'hunter2', state: 'active', user: 'lucy',
-        },
-      ], database: 'd123', host: 'localhost', name: 'lucy', port: 5442, state: 'created', uuid: 'bbbb',
-    }
-    nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve')
-      .reply(200, [{addon}])
-    nock('https://api.data.heroku.com')
-      .get(`/postgres/v0/databases/${addon.name}/credentials/lucy`)
-      .reply(200, roleInfo)
+    fakeData.postgresDatabase.getUrl.resolves({
+      addon,
+      credentialConnectionInfo: {
+        credName: 'lucy',
+        database: 'd123',
+        host: 'localhost',
+        password: 'hunter2',
+        port: 5442,
+        url: 'postgres://lucy:hunter2@localhost:5442/d123',
+        user: 'lucy',
+      },
+    })
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -97,23 +101,22 @@ describe('pg:credentials:url', function () {
       Connection URL:
         postgres://lucy:hunter2@localhost:5442/d123
     `))
+    expect(fakeData.postgresDatabase.getUrl.calledOnceWithExactly('myapp', 'lucy', {addonIdentity: undefined})).to.equal(true)
   })
 
   it('shows the correct credentials with starter plan', async function () {
-    const hobbyAddon = fixtures.addons['www-db']
-    const roleInfo = {
-      credentials: [
-        {
-          password: 'hunter2', state: 'active', user: 'abcdef',
-        },
-      ], database: 'd123', host: 'localhost', name: 'default', port: 5442, state: 'created', uuid: null,
-    }
-    nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve')
-      .reply(200, [{addon: hobbyAddon}])
-    nock('https://api.data.heroku.com')
-      .get(`/postgres/v0/databases/${hobbyAddon.name}/credentials/default`)
-      .reply(200, roleInfo)
+    fakeData.postgresDatabase.getUrl.resolves({
+      addon,
+      credentialConnectionInfo: {
+        credName: 'default',
+        database: 'd123',
+        host: 'localhost',
+        password: 'hunter2',
+        port: 5442,
+        url: 'postgres://abcdef:hunter2@localhost:5442/d123',
+        user: 'abcdef',
+      },
+    })
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -126,5 +129,6 @@ describe('pg:credentials:url', function () {
       Connection URL:
         postgres://abcdef:hunter2@localhost:5442/d123
     `))
+    expect(fakeData.postgresDatabase.getUrl.calledOnceWithExactly('myapp', 'default', {addonIdentity: undefined})).to.equal(true)
   })
 })

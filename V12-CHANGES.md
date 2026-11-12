@@ -28,6 +28,14 @@ Commands now render tables, headers, and objects with `@heroku/heroku-cli-util` 
 - `apps:create` now provisions add-ons, config vars, and buildpacks through `@heroku/sdk` (`platform.app.createAndSetup`). Setup runs as a single step, so the previous per-item progress lines (`Adding <addon>... done`, `Setting config vars... done`, `Setting buildpack to <url>... done`) are consolidated into the one `Creating app... done` spinner. The final status line (app name, region, and stack) is unchanged.
 - `apps:errors` now queries router and formation error metrics through `@heroku/sdk` (`metrics.routerMetric.errors` / `metrics.formationMetric.errors`); the metrics host is now `api.metrics.heroku.com` (previously `api.metrics.herokai.com`).
 
+## Authorizations commands
+
+- `authorizations`, `authorizations:create`, `authorizations:info`, `authorizations:revoke` (alias `authorizations:destroy`), `authorizations:rotate`, and `authorizations:update` now use the CLI's standard `--json` flag. Setting `HEROKU_CONTENT_TYPE=json` also switches them to JSON output, and errors are printed as a JSON error document.
+- `authorizations:revoke`, `authorizations:rotate`, and `authorizations:update` gain `--json`. Each returns the revoked, rotated, or updated authorization as the API returns it. `--json` output includes token values exactly as the API returns them, as `authorizations:create --json` already did; for `authorizations:rotate`, that includes the new token.
+- **`-j` short flag removed (breaking)**: `authorizations`, `authorizations:create`, and `authorizations:info` no longer accept `-j`; use `--json`.
+- **`authorizations --json` output order changes (breaking)**: `--json` returns the SDK result unchanged, so authorizations are listed in the order the API returns them. Previously the JSON list was sorted by description. The table output is still sorted.
+- **`authorizations:create --short --json` is rejected (breaking)**: the two flags can't be combined, and the command fails with `--json=true cannot also be provided when using --short`. Previously `--short` won and only the token was printed. To print only the token, drop `--json`. To read it from the JSON output instead, use `heroku authorizations:create --json | jq -r .access_token.token`. `--short` still prints only the token when `HEROKU_CONTENT_TYPE=json` is set.
+
 ## Certs commands
 
 - `certs:add` matches wildcard certificates against your app's domains more strictly: a `*.example.com` certificate now matches only direct subdomains (e.g. `www.example.com`), no longer matching deeper or trailing-suffix domains

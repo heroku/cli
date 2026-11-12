@@ -1,7 +1,9 @@
-import {Command, flags} from '@heroku-cli/command'
+import type {OauthAuthorization} from '@heroku/types/3.sdk'
+
+import {Command} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 
-import {display} from '../../lib/authorizations/authorizations.js'
+import {format} from '../../lib/authorizations/authorizations.js'
 import {createSDK} from '../../lib/sdk.js'
 
 export default class AuthorizationsInfo extends Command {
@@ -9,20 +11,15 @@ export default class AuthorizationsInfo extends Command {
     id: Args.string({description: 'ID of the authorization', required: true}),
   }
   static description = 'show an existing OAuth authorization'
-  static flags = {
-    json: flags.boolean({char: 'j', description: 'output in json format'}),
-  }
+  static enableJsonFlag = true
 
-  async run() {
+  async run(): Promise<OauthAuthorization> {
     const {platform} = createSDK(this.heroku)
-    const {args, flags} = await this.parse(AuthorizationsInfo)
+    const {args} = await this.parse(AuthorizationsInfo)
 
     const authentication = await platform.oauthAuthorization.info(args.id)
 
-    if (flags.json) {
-      this.logJson(authentication)
-    } else {
-      display(authentication)
-    }
+    this.log(format(authentication))
+    return authentication
   }
 }
