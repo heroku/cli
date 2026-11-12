@@ -1,7 +1,8 @@
+import type {App, Domain as SdkDomain, SniEndpoint as SdkSniEndpoint} from '@heroku/types/3.sdk'
+
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {appExtensions} from '@heroku/sdk/extensions/platform'
-import type {App, Domain as SdkDomain, SniEndpoint as SdkSniEndpoint} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
@@ -13,8 +14,7 @@ import {SniEndpoint} from '../../../lib/types/sni-endpoint.js'
 
 const heredoc = tsheredoc
 
-/** The domains are listed only when ACM is enabled. */
-type AcmStatus = {app: App; domains?: SdkDomain[]; sniEndpoints: SdkSniEndpoint[]}
+type AcmStatus = {app: App; domains: SdkDomain[]; sniEndpoints: SdkSniEndpoint[]}
 
 function humanize(value: null | string) {
   if (!value) {
@@ -65,7 +65,7 @@ export default class Index extends Command {
 
     if (!app.acm) {
       this.log(hux.styledHeader(`Automatic Certificate Management is ${color.inactive('disabled')} on ${color.app(flags.app)}`))
-      return {app, sniEndpoints}
+      return {app, domains: await platform.domain.list(flags.app), sniEndpoints}
     }
 
     this.log(hux.styledHeader(`Automatic Certificate Management is ${color.success('enabled')} on ${color.app(flags.app)}`))
@@ -81,8 +81,9 @@ export default class Index extends Command {
       try {
         await platform.app.waitForACMCertificates(flags.app)
         ux.action.stop()
-      } catch {
+      } catch (error) {
         ux.action.stop(color.failure('!'))
+        throw error
       }
     }
 

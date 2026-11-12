@@ -1,53 +1,23 @@
-import {HerokuSDK} from '@heroku/sdk'
+import type {SniEndpoint} from '@heroku/types/3.sdk'
 
-import {Domain} from '../types/domain.js'
+/** The SDK's SNI endpoint selector for `--name` / `--endpoint` (a hostname associated with the certificate). */
+export function sniEndpointSelector(flags: {endpoint?: string; name?: string}): {hostname?: string; name?: string} {
+  return {
+    ...(flags.endpoint === undefined ? {} : {hostname: flags.endpoint}),
+    ...(flags.name === undefined ? {} : {name: flags.name}),
+  }
+}
 
-type Platform = HerokuSDK['platform']
-
-export default async function getEndpoint(flags: {app: string; endpoint: string | undefined; name: string | undefined}, platform: Platform) {
-  if (flags.endpoint && flags.name) {
-    throw new Error('Specified both --name and --endpoint, please use just one')
+/**
+ * Name the flag that resolves an ambiguous certificate selection. The SDK's message can't
+ * name CLI flags. Checked by name, not `instanceof`, so it doesn't depend on which copy of
+ * the SDK threw.
+ */
+export function withSelectorFlagHint(error: unknown): unknown {
+  if (error instanceof Error && error.name === 'SniEndpointAmbiguousError') {
+    const {appIdentity, matches} = error as Error & {appIdentity: string; matches: SniEndpoint[]}
+    return new Error(`${appIdentity} has ${matches.length} SSL certificates (${matches.map(e => e.name).join(', ')}). Pass --name to select one.`, {cause: error})
   }
 
-  let sniEndpoints = await platform.sniEndpoint.list(flags.app)
-
-  if (sniEndpoints.length === 0) {
-    throw new Error(`${flags.app} has no SSL certificates`)
-  }
-
-  if (flags.endpoint) {
-    const promises: Promise<Domain>[] = []
-    for (const endpoint of sniEndpoints) {
-      for (const domain of endpoint.domains) promises.push(platform.domain.info(flags.app, domain) as Promise<Domain>)
-    }
-
-    const domains = await Promise.all(promises)
-
-    sniEndpoints = sniEndpoints.filter(endpoint =>
-      // This was modified from `endpoint.cname === flags.endpoint` because `cname` doesn't exist anymore in the SniEndpoint serialization.
-      // We're making the assumption that the `--endpoint` flag was being used to search by hostname (internationalized domain name).
-      domains.some(domain => domain.hostname === flags.endpoint && domain.sni_endpoint?.name === endpoint.name))
-
-    if (sniEndpoints.length > 1) {
-      throw new Error('Must pass --name when more than one endpoint matches --endpoint')
-    }
-  }
-
-  if (flags.name) {
-    sniEndpoints = sniEndpoints.filter(endpoint => endpoint.name === flags.name)
-
-    if (sniEndpoints.length > 1) {
-      throw new Error(`More than one endpoint matches ${flags.name}, please file a support ticket`)
-    }
-  }
-
-  if (sniEndpoints.length > 1) {
-    throw new Error('Must pass --name when more than one endpoint')
-  }
-
-  if (sniEndpoints.length === 0) {
-    throw new Error('Record not found.')
-  }
-
-  return sniEndpoints[0]
+  return error
 }

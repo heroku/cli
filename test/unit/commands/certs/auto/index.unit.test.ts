@@ -6,9 +6,11 @@ import {createSandbox, SinonStub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/index.js'
+import {
+  acmDisabledApp, app, domainList, sniEndpointList,
+} from '../../../../fixtures/certs/fixtures.js'
+import {expectJsonError, expectJsonSnapshot} from '../../../../helpers/json-snapshot.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
-import {acmDisabledApp, app, domainList, sniEndpointList} from '../../../../fixtures/certs/fixtures.js'
-import {expectJsonSnapshot} from '../../../../helpers/json-snapshot.js'
 
 const heredoc = tsheredoc
 const sandbox = createSandbox()
@@ -401,7 +403,7 @@ describe('heroku certs:auto', function () {
     expect(stdout).to.equal('=== Automatic Certificate Management is disabled on ⬢ example\n\n')
     expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
     expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
-    expect(fakePlatform.domain.list.called).to.equal(false)
+    expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
   })
 
   it('displays message that there are no certificates', async function () {
@@ -485,7 +487,7 @@ describe('heroku certs:auto', function () {
     expect(stdout).to.equal('=== Automatic Certificate Management is disabled on ⬢ example\n\n')
     expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
     expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
-    expect(fakePlatform.domain.list.called).to.equal(false)
+    expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
   })
 
   it('displays message that there are no ACM certificates', async function () {
@@ -522,7 +524,7 @@ describe('heroku certs:auto', function () {
     expect(stdout).to.equal('=== Automatic Certificate Management is disabled on ⬢ example\n\n')
     expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
     expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
-    expect(fakePlatform.domain.list.called).to.equal(false)
+    expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
   })
 
   it('shows acm_status_reason', async function () {
@@ -653,29 +655,10 @@ describe('heroku certs:auto', function () {
       sinon.assert.callOrder(fakePlatform.app.waitForACMCertificates, fakePlatform.domain.list)
     })
 
-    it('waits until certs are issued or failed and displays the domains details ignoring errors while waiting', async function () {
-      const now = new Date().toISOString()
+    it('fails with the wait error, without listing domains, when the wait fails', async function () {
       fakePlatform.app.info.resolves({acm: true})
       fakePlatform.sniEndpoint.list.resolves([])
       fakePlatform.app.waitForACMCertificates.rejects(new Error('ACM not enabled for some domains'))
-      fakePlatform.domain.list.resolves([{
-        acm_status: null,
-        cname: null,
-        hostname: 'tokyo-1050.herokuapp.com',
-        kind: 'heroku',
-      }, {
-        acm_status: 'cert issued',
-        cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-acm.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: 'failed',
-        cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-failing.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }])
 
       const {error, stderr, stdout} = await runCommand(Cmd, [
         '--app',
@@ -683,26 +666,11 @@ describe('heroku certs:auto', function () {
         '--wait',
       ])
 
-      expect(error).to.equal(undefined)
-      expect(stderr).to.equal(heredoc`
-        Waiting until the certificate is issued to all domains... !
-      `)
+      expect(error?.message).to.equal('ACM not enabled for some domains')
+      expect(stderr).to.contain('Waiting until the certificate is issued to all domains... !')
       expect(stdout).to.include('=== Automatic Certificate Management is enabled on ⬢ example')
-      const actual = removeAllWhitespace(stdout)
-      const expectedHeader = removeAllWhitespace('Domain                                 Status      Last Updated')
-      const expected = removeAllWhitespace(heredoc(`
-        heroku-acm.heroku-cli-sni-test.com     Cert issued less than a minute
-        heroku-failing.heroku-cli-sni-test.com Failed      less than a minute
-
-        === Some domains failed validation after multiple attempts, retry by running: heroku certs:auto:refresh
-            See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons\n
-      `))
-      expect(actual).to.include(expectedHeader)
-      expect(actual).to.include(expected)
-      expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
-      expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
       expect(fakePlatform.app.waitForACMCertificates.calledOnceWithExactly('example')).to.equal(true)
-      expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
+      expect(fakePlatform.domain.list.called).to.equal(false)
     })
   })
 
@@ -717,14 +685,31 @@ describe('heroku certs:auto', function () {
       expect(json.domains.map(domain => domain.kind)).to.deep.equal(['heroku', 'custom', 'custom'])
     })
 
-    it('returns the app and its certificates when ACM is disabled', async function () {
+    it('returns the app, its certificates and all of its domains when ACM is disabled', async function () {
       fakePlatform.app.info.resolves(acmDisabledApp)
       fakePlatform.sniEndpoint.list.resolves(sniEndpointList)
+      fakePlatform.domain.list.resolves(domainList)
 
       const {json} = await expectJsonSnapshot<Record<string, unknown>>(this, Cmd, ['--app', 'example'])
 
-      expect(json).to.have.keys('app', 'sniEndpoints')
+      expect(json).to.have.keys('app', 'domains', 'sniEndpoints')
+    })
+
+    it('fails with an error document when --wait fails', async function () {
+      fakePlatform.app.info.resolves(app)
+      fakePlatform.sniEndpoint.list.resolves(sniEndpointList)
+      fakePlatform.app.waitForACMCertificates.rejects(new Error('ACM not enabled for some domains'))
+
+      await expectJsonError(Cmd, ['--app', 'example', '--wait'], 'ACM not enabled for some domains')
+
       expect(fakePlatform.domain.list.called).to.equal(false)
+    })
+
+    it('fails with an error document when the API rejects', async function () {
+      fakePlatform.app.info.rejects(new Error('Couldn\'t find that app.'))
+      fakePlatform.sniEndpoint.list.resolves([])
+
+      await expectJsonError(Cmd, ['--app', 'example'], 'Couldn\'t find that app.')
     })
   })
 })

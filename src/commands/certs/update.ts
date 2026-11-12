@@ -1,11 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {sniEndpointExtensions} from '@heroku/sdk/extensions/platform'
 import {SniEndpoint} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {formatCertificateDetails} from '../../lib/certs/certificate-details.js'
-import getEndpoint from '../../lib/certs/flags.js'
+import {sniEndpointSelector, withSelectorFlagHint} from '../../lib/certs/flags.js'
 import {CertAndKeyManager} from '../../lib/certs/get-cert-and-key.js'
 import ConfirmCommand from '../../lib/confirm-command.js'
 import {createSDK} from '../../lib/sdk.js'
@@ -22,49 +23,53 @@ export default class Update extends Command {
     update an SSL certificate on an app
     Note: certificates with PEM encoding are also valid
   `
+  static enableJsonFlag = true
   static examples = [heredoc`
     ${color.command('heroku certs:update example.com.crt example.com.key')}
 
         If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
         https://help.salesforce.com/s/articleView?id=000333504&type=1
   `]
-  static enableJsonFlag = true
   static flags = {
     app: flags.app({required: true}),
-    confirm: flags.string({hidden: true}),
-    endpoint: flags.string({description: 'endpoint to update'}),
-    name: flags.string({description: 'name to update'}),
+    confirm: flags.string({description: 'set to app name to bypass confirm prompt'}),
+    endpoint: flags.string({description: 'endpoint to update', exclusive: ['name']}),
+    name: flags.string({description: 'name to update', exclusive: ['endpoint']}),
     remote: flags.remote(),
   }
   static topic = 'certs'
 
   public async run(): Promise<SniEndpoint> {
-    const {platform} = createSDK(this.heroku)
+    const {platform} = createSDK(this.heroku, {extensions: [sniEndpointExtensions]})
     const {args, flags} = await this.parse(Update)
     const {app, confirm} = flags
-    let sniEndpoint = await getEndpoint(flags, platform)
     const files = await new CertAndKeyManager().getCertAndKey(args)
 
-    await new ConfirmCommand().confirm(
-      app,
-      confirm,
-      heredoc`
-        Potentially Destructive Action
-        This command will change the certificate of endpoint ${sniEndpoint.name} from ${color.app(app)}.
-      `,
-      {json: this.jsonEnabled()},
-    )
-
-    ux.action.start(`Updating SSL certificate ${sniEndpoint.name} for ${color.app(app)}`)
+    let updating = false
+    let sniEndpoint: SniEndpoint
     try {
-      sniEndpoint = await platform.sniEndpoint.update(app, sniEndpoint.name, {
+      sniEndpoint = await platform.sniEndpoint.resolveAndUpdate(app, sniEndpointSelector(flags), {
         certificate_chain: files.crt,
         private_key: files.key,
+      }, {
+        beforeUpdate: async current => {
+          await new ConfirmCommand().confirm(
+            app,
+            confirm,
+            heredoc`
+              Potentially Destructive Action
+              This command will change the certificate of endpoint ${current.name} from ${color.app(app)}.
+            `,
+            {json: this.jsonEnabled()},
+          )
+          ux.action.start(`Updating SSL certificate ${current.name} for ${color.app(app)}`)
+          updating = true
+        },
       })
     } catch (error) {
       // Under --json, oclif's catch() leaves the spinner running and it swallows the error output.
-      ux.action.stop(color.failure('!'))
-      throw error
+      if (updating) ux.action.stop(color.failure('!'))
+      throw withSelectorFlagHint(error)
     }
 
     ux.action.stop()

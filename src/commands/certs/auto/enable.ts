@@ -1,8 +1,8 @@
+import type {App, Domain as SdkDomain} from '@heroku/types/3.sdk'
+
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {appExtensions, domainExtensions} from '@heroku/sdk/extensions/platform'
-import type {App, Domain as SdkDomain} from '@heroku/types/3.sdk'
-
 import {ux} from '@oclif/core/ux'
 
 import {dnsRecordType, formatDomains} from '../../../lib/domains/domains.js'
@@ -10,8 +10,20 @@ import notify from '../../../lib/notify.js'
 import {createSDK} from '../../../lib/sdk.js'
 import {Domain} from '../../../lib/types/domain.js'
 
-/** `dns_record_type` is the record type the DNS table shows for a custom domain; null for Heroku domains. */
+/**
+ * `dns_record_type` is the record type the DNS table shows for a custom domain; null for Heroku
+ * domains and for hostnames it can't classify.
+ */
 type AcmEnabled = {app: App; domains: (SdkDomain & {dns_record_type: null | string})[]}
+
+// ACM is already enabled by the time this runs, so a hostname dnsRecordType can't parse mustn't fail the command.
+function recordTypeOrNull(domain: SdkDomain): null | string {
+  try {
+    return dnsRecordType(domain)
+  } catch {
+    return null
+  }
+}
 
 export default class Enable extends Command {
   static description = 'enable ACM status for an app'
@@ -102,7 +114,7 @@ export default class Enable extends Command {
       app: enabledApp,
       domains: (domains as SdkDomain[]).map(domain => ({
         ...domain,
-        dns_record_type: domain.kind === 'custom' ? dnsRecordType(domain) : null,
+        dns_record_type: domain.kind === 'custom' ? recordTypeOrNull(domain) : null,
       })),
     }
   }

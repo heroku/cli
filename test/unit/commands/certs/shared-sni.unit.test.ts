@@ -1,11 +1,11 @@
-// shouldHandleArgs(commandText, command, getFakePlatform, {args?, flags?, stderr?, stdout?})
+// shouldHandleArgs(commandText, command, getResolveStub, {args?, flags?, stderr?, stdout?})
 //
-// `getFakePlatform` is a getter the caller supplies that returns the fake platform its own
-// `beforeEach` already built and wired onto `HerokuSDK.prototype` (via
-// `sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)`). This harness only
-// configures the command-specific stubs (`sniEndpoint.list`, `domain.info`, and — when present —
-// `sniEndpoint.info`) inside each `it` to reproduce the scenario under test. It stubs nothing on
-// `HerokuSDK.prototype` itself.
+// Shared --name / --endpoint coverage for the commands that select one of an app's SSL
+// certificates through the SDK's resolver (`sniEndpoint.resolve`, `resolveAndDelete`,
+// `resolveAndUpdate`). `getResolveStub` returns the caller's stub for that method, already set up
+// in its own `beforeEach` to succeed with `endpoint` (see `resolvesThroughHook`). The resolver's
+// matching rules are tested in the SDK; this harness checks the flags-to-selector mapping and how
+// the command reports resolver errors.
 import type {SinonStub} from 'sinon'
 
 import {expectOutput, type GenericCmd, runCommand} from '@heroku-cli/test-utils'
@@ -13,28 +13,27 @@ import {expect} from 'chai'
 import tsheredoc from 'tsheredoc'
 
 import {SniEndpoint} from '../../../../src/lib/types/sni-endpoint.js'
-import {
-  certificateDetails,
-  endpoint,
-  endpoint2,
-  endpoint2Domain,
-  endpointCname,
-  endpointCnameDomain,
-  endpointDomain,
-  endpointHeroku,
-} from '../../../helpers/stubs/sni-endpoints.js'
+import {certificateDetails, endpoint, endpoint2} from '../../../helpers/stubs/sni-endpoints.js'
 
 const heredoc = tsheredoc
 
-export type FakePlatform = {
-  domain: {info: SinonStub},
-  sniEndpoint: {info?: SinonStub, list: SinonStub},
+/**
+ * Make a `resolveAndDelete` / `resolveAndUpdate` stub behave like the SDK: run the command's
+ * before-hook (its last argument's `beforeDelete` / `beforeUpdate`) with the resolved endpoint,
+ * then resolve with `result`.
+ */
+export function resolvesThroughHook(stub: SinonStub, hook: 'beforeDelete' | 'beforeUpdate', resolved: unknown, result: unknown = resolved): void {
+  stub.callsFake(async (...args: unknown[]) => {
+    const options = args.at(-1) as Partial<Record<typeof hook, (sniEndpoint: unknown) => Promise<void> | void>>
+    await options[hook]?.(resolved)
+    return result
+  })
 }
 
 export const shouldHandleArgs = (
   commandText: string,
   command: GenericCmd,
-  getFakePlatform: () => FakePlatform,
+  getResolveStub: () => SinonStub,
   options: {
     args?: string[],
     flags?: {[key: string]: string},
@@ -52,70 +51,46 @@ export const shouldHandleArgs = (
 
   const additionalFlags = Object.entries(options?.flags || {}).map(([k, v]) => `--${k}=${v}`)
   const additionalArgs: string[] = options.args || []
+  const run = (...flags: string[]) => runCommand(command, [...additionalArgs, '--app', 'example', ...flags, ...additionalFlags])
 
   describe(`${commandText}`, function () {
-    it('allows an --endpoint to be specified using --name', async function () {
-      const fakePlatform = getFakePlatform()
-      fakePlatform.sniEndpoint.list.resolves([endpoint])
-      const {stderr, stdout} = await runCommand(command, [...additionalArgs,
-        '--app',
-        'example',
-        '--name',
-        'tokyo-1050'].concat(additionalFlags))
+    it('selects the certificate by name with --name', async function () {
+      const {stderr, stdout} = await run('--name', 'tokyo-1050')
+      expect(getResolveStub().firstCall.args.slice(0, 2)).to.deep.equal(['example', {name: 'tokyo-1050'}])
       expectOutput(stderr, stderrOutput(endpoint))
       expectOutput(stdout, stdoutOutput(heredoc(certificateDetails), endpoint))
     })
 
-    it('errors out for --endpoint when there are multiple', async function () {
-      const fakePlatform = getFakePlatform()
-      fakePlatform.sniEndpoint.list.resolves([endpoint, endpointCname])
-      fakePlatform.domain.info.withArgs('example', '456789ab-cdef-0123-4567-89abcdef0123').resolves(endpointDomain)
-      fakePlatform.domain.info.withArgs('example', '01234567-89ab-cdef-0123-456789abcdef').resolves(endpointCnameDomain)
-      const {error} = await runCommand(command, [...additionalArgs,
-        '--app',
-        'example',
-        '--endpoint',
-        'tokyo-1050.herokussl.com'].concat(additionalFlags))
-      expect(error).to.exist
-      expect(error!.message).to.equal('Must pass --name when more than one endpoint matches --endpoint')
-    })
-
-    it('allows an endpoint to be specified using --endpoint', async function () {
-      const fakePlatform = getFakePlatform()
-      fakePlatform.sniEndpoint.list.resolves([endpoint])
-      fakePlatform.domain.info.withArgs('example', '456789ab-cdef-0123-4567-89abcdef0123').resolves(endpointDomain)
-      const {stderr, stdout} = await runCommand(command, [...additionalArgs,
-        '--app',
-        'example',
-        '--endpoint',
-        'tokyo-1050.herokussl.com'].concat(additionalFlags))
+    it('selects the certificate by an associated hostname with --endpoint', async function () {
+      const {stderr, stdout} = await run('--endpoint', 'www.example.com')
+      expect(getResolveStub().firstCall.args.slice(0, 2)).to.deep.equal(['example', {hostname: 'www.example.com'}])
       expectOutput(stderr, stderrOutput(endpoint))
       expectOutput(stdout, stdoutOutput(heredoc(certificateDetails), endpoint))
     })
 
-    it('errors out if there is no match for --endpoint', async function () {
-      const fakePlatform = getFakePlatform()
-      fakePlatform.sniEndpoint.list.resolves([endpoint2])
-      fakePlatform.domain.info.withArgs('example', '89abcdef-0123-4567-89ab-cdef01234567').resolves(endpoint2Domain)
-      const {error} = await runCommand(command, [...additionalArgs,
-        '--app',
-        'example',
-        '--endpoint',
-        'tokyo-1050.herokussl.com'].concat(additionalFlags))
-      expect(error).to.exist
-      expect(error!.message).to.equal('Record not found.')
+    it('selects the app\'s only certificate without --name or --endpoint', async function () {
+      await run()
+      expect(getResolveStub().firstCall.args.slice(0, 2)).to.deep.equal(['example', {}])
     })
 
-    it('errors out if more than one matches --name', async function () {
-      const fakePlatform = getFakePlatform()
-      fakePlatform.sniEndpoint.list.resolves([endpoint, endpointHeroku])
-      const {error} = await runCommand(command, [...additionalArgs,
-        '--app',
-        'example',
-        '--name',
-        'tokyo-1050'].concat(additionalFlags))
-      expect(error).to.exist
-      expect(error!.message).to.equal('More than one endpoint matches tokyo-1050, please file a support ticket')
+    it('rejects --name with --endpoint before any request', async function () {
+      const {error} = await run('--name', 'tokyo-1050', '--endpoint', 'www.example.com')
+      expect(error?.message).to.match(/cannot also be provided when using/)
+      expect(getResolveStub().called).to.equal(false)
+    })
+
+    it('names --name when the app has several certificates', async function () {
+      getResolveStub().rejects(Object.assign(new Error('example has 2 SSL certificates (tokyo-1050, akita-7777); select one by name.'), {
+        appIdentity: 'example', matches: [endpoint, endpoint2], name: 'SniEndpointAmbiguousError',
+      }))
+      const {error} = await run()
+      expect(error?.message).to.equal('example has 2 SSL certificates (tokyo-1050, akita-7777). Pass --name to select one.')
+    })
+
+    it('reports the SDK\'s message when nothing matches', async function () {
+      getResolveStub().rejects(Object.assign(new Error('www.example.com isn\'t a domain on example.'), {name: 'SniEndpointNotFoundError', statusCode: 404}))
+      const {error} = await run('--endpoint', 'www.example.com')
+      expect(error?.message).to.equal('www.example.com isn\'t a domain on example.')
     })
   })
 }

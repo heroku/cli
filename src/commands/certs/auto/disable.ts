@@ -14,7 +14,7 @@ export default class Disable extends Command {
   static enableJsonFlag = true
   static flags = {
     app: flags.app({required: true}),
-    confirm: flags.string({char: 'c', hidden: true}),
+    confirm: flags.string({char: 'c', description: 'set to app name to bypass confirm prompt'}),
     remote: flags.remote(),
   }
   static topic = 'certs'

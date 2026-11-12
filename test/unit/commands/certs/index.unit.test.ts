@@ -5,6 +5,8 @@ import * as sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/certs/index.js'
+import {sniEndpointList} from '../../../fixtures/certs/fixtures.js'
+import {expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
 import {
   endpointAcm,
   endpointStables,
@@ -12,8 +14,6 @@ import {
   endpointWildcardBug,
 } from '../../../helpers/stubs/sni-endpoints.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
-import {sniEndpointList} from '../../../fixtures/certs/fixtures.js'
-import {expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
 
 const heredoc = tsheredoc
 

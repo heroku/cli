@@ -1,12 +1,12 @@
 {
-  "heroku certs:generate --json returns the key and CSR file names": {
-    "csr": "example.com.csr",
+  "heroku certs:generate --json with a fixed working directory returns the absolute paths of the key and CSR": {
+    "csr": "/work/certs/example.com.csr",
     "domain": "example.com",
-    "key": "example.com.key"
+    "key": "/work/certs/example.com.key"
   },
-  "heroku certs:generate --json returns the key and certificate file names with --selfsigned": {
-    "certificate": "example.com.crt",
+  "heroku certs:generate --json with a fixed working directory returns the absolute paths of the key and certificate with --selfsigned": {
+    "certificate": "/work/certs/example.com.crt",
     "domain": "example.com",
-    "key": "example.com.key"
+    "key": "/work/certs/example.com.key"
   }
 }

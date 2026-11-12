@@ -6,9 +6,9 @@ import {SinonStub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/enable.js'
+import {app, customDomain, domainList} from '../../../../fixtures/certs/fixtures.js'
+import {expectJsonError, expectJsonSnapshot, runCommandJson} from '../../../../helpers/json-snapshot.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
-import {app, domainList} from '../../../../fixtures/certs/fixtures.js'
-import {expectJsonError, expectJsonSnapshot} from '../../../../helpers/json-snapshot.js'
 
 const heredoc = tsheredoc
 const sandbox = sinon.createSandbox()
@@ -277,6 +277,17 @@ describe('heroku certs:auto:enable', function () {
         ['www.example.com', 'CNAME'],
         ['example.com', 'ALIAS/ANAME'],
       ])
+    })
+
+    it('returns a null dns_record_type for a custom hostname it can\'t classify, instead of failing', async function () {
+      const unclassifiable = {...customDomain, hostname: 'localhost', id: '6c7d8e9f-0a1b-4c2d-8e3f-4a5b6c7d8e9f'}
+      fakePlatform.domain.list.resolves([unclassifiable])
+      fakePlatform.app.enableACM.resolves(app)
+
+      const {exitCode, json} = await runCommandJson<{domains: {dns_record_type: null | string}[]}>(Cmd, ['--app', 'example'])
+
+      expect(exitCode).to.equal(undefined)
+      expect(json.domains.map(d => d.dns_record_type)).to.deep.equal([null])
     })
 
     it('renders an API error as a JSON error document', async function () {
