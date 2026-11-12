@@ -396,11 +396,13 @@ describe('pg:promote when argument is a credential attachment', function () {
           namespace: 'credential:hello',
         },
         {
-          addon: {name: addon.name},
+          addon: {id: addon.id, name: addon.name},
           name: 'DATABASE',
           namespace: 'credential:goodbye',
         },
       ])
+      .get(`/addons/${addon.id}`)
+      .reply(200, addon)
       .post('/addon-attachments', {
         addon: {name: addon.name},
         app: {name: 'myapp'},
@@ -905,14 +907,14 @@ function resolveToAdvanced(namespace: null | string) {
     .reply(200, [{addon: advancedAddon, name: 'ADVANCED', namespace}])
 }
 
-function promoteAdvanced(namespace: null | string) {
+function promoteAdvanced(namespaceParams: {namespace: null} | {namespace_config: Record<string, string>}) {
   return nock('https://api.heroku.com')
     .post('/addon-attachments', {
       addon: {name: advancedAddon.name},
       app: {name: 'myapp'},
       confirm: 'myapp',
       name: 'DATABASE',
-      namespace,
+      ...namespaceParams,
     })
     .reply(201)
 }
@@ -936,7 +938,7 @@ describe('pg:promote when database is Advanced-tier', function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [currentLeader, currentLeaderAlias])
-    promoteAdvanced(null)
+    promoteAdvanced({namespace: null})
     const dataApi = nock('https://api.data.heroku.com')
       .get(`/data/postgres/v1/${advancedAddon.id}/wait_status`)
       .reply(200, {message: null, waiting: false})
@@ -975,7 +977,7 @@ describe('pg:promote when database is Advanced-tier', function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [currentLeader, currentLeaderAlias])
-    const promoted = promoteAdvanced(null)
+    const promoted = promoteAdvanced({namespace: null})
 
     const {stderr} = await runCommand(Cmd, ['--app', 'myapp', '--force', 'DATABASE'])
 
@@ -984,35 +986,70 @@ describe('pg:promote when database is Advanced-tier', function () {
   })
 
   it('warns when the promoted attachment uses a follower pool', async function () {
-    const namespace = 'pool:analytics|proxy:false|role:owner'
-    resolveToAdvanced(namespace)
+    resolveToAdvanced('pool:analytics|proxy:false|role:owner')
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [currentLeader, currentLeaderAlias])
-    promoteAdvanced(namespace)
+    const promoted = promoteAdvanced({namespace_config: {pool: 'analytics', proxy: 'false', role: 'owner'}})
     nock('https://api.data.heroku.com')
       .get(`/data/postgres/v1/${advancedAddon.id}/wait_status`)
       .reply(200, {message: null, waiting: false})
 
     const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
+    promoted.done()
     expect(ansis.strip(stderr)).to.include('analytics follower pool')
   })
 
   it('does not warn when the promoted attachment uses the leader pool', async function () {
-    const namespace = 'pool:leader|proxy:false|role:owner'
-    resolveToAdvanced(namespace)
+    resolveToAdvanced('pool:leader|proxy:false|role:owner')
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [currentLeader, currentLeaderAlias])
-    promoteAdvanced(namespace)
+    const promoted = promoteAdvanced({namespace_config: {pool: 'leader', proxy: 'false', role: 'owner'}})
     nock('https://api.data.heroku.com')
       .get(`/data/postgres/v1/${advancedAddon.id}/wait_status`)
       .reply(200, {message: null, waiting: false})
 
     const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
+    promoted.done()
     expect(stderr).not.to.include('Warning')
+  })
+
+  it('creates the alternate alias with namespace_config when the current DATABASE is a namespaced Advanced attachment', async function () {
+    nock('https://api.heroku.com')
+      .post('/actions/addon-attachments/resolve')
+      .reply(200, [{addon: essentialAddon, name: 'ESSENTIAL', namespace: null}])
+      .get('/apps/myapp/addon-attachments')
+      .reply(200, [{
+        addon: {id: advancedAddon.id, name: advancedAddon.name}, name: 'DATABASE', namespace: 'pool:analytics|proxy:false|role:owner',
+      }])
+      .get(`/addons/${advancedAddon.id}`)
+      .reply(200, advancedAddon)
+      .post('/addon-attachments', {
+        addon: {name: advancedAddon.name},
+        app: {name: 'myapp'},
+        confirm: 'myapp',
+        namespace_config: {pool: 'analytics', proxy: 'false', role: 'owner'},
+      })
+      .reply(201, {name: 'GOLD'})
+      .post('/addon-attachments', {
+        addon: {name: essentialAddon.name}, app: {name: 'myapp'}, confirm: 'myapp', name: 'DATABASE', namespace: null,
+      })
+      .reply(201)
+    nock('https://api.data.heroku.com')
+      .get(`/client/v11/databases/${essentialAddon.id}/wait_status`)
+      .reply(200, {message: 'available', 'waiting?': false})
+      .get(`/client/v11/databases/${essentialAddon.id}`)
+      .reply(200, {following: null})
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expectOutput(stderr, heredoc(`
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... GOLD_URL
+      Promoting ⛁ ${essentialAddon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
+    `))
   })
 
   it('does not reattach the connection pooler to an Advanced database', async function () {
@@ -1024,7 +1061,7 @@ describe('pg:promote when database is Advanced-tier', function () {
         currentLeaderAlias,
         {...currentLeader, name: 'DATABASE_CONNECTION_POOL', namespace: 'connection-pooling:default'},
       ])
-    promoteAdvanced(null)
+    promoteAdvanced({namespace: null})
     nock('https://api.data.heroku.com')
       .get(`/data/postgres/v1/${advancedAddon.id}/wait_status`)
       .reply(200, {message: null, waiting: false})

@@ -1,4 +1,6 @@
 /* eslint-disable complexity */
+import type {pg} from '@heroku/heroku-cli-util'
+
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, utils} from '@heroku/heroku-cli-util'
@@ -12,6 +14,18 @@ import {PgDatabase, PgStatus} from '../../lib/pg/types.js'
 import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc
+
+// Platform API is deprecating the raw namespace param, so Advanced-tier namespaces go out as namespace_config. Platform
+// only returns the namespace it built from that config (sorted key:value pairs joined by `|`), so splitting it back
+// apart, keeping every value a string, resolves to the same existing namespace.
+function namespaceParams(namespace: null | string | undefined, isAdvanced: boolean) {
+  if (!isAdvanced || !namespace) return {namespace}
+  const factors = namespace.split('|').map(factor => {
+    const separator = factor.indexOf(':')
+    return [factor.slice(0, separator), factor.slice(separator + 1)]
+  })
+  return {namespace_config: Object.fromEntries(factors)}
+}
 
 export default class Promote extends Command {
   static aliases = ['data:pg:promote']
@@ -56,12 +70,19 @@ export default class Promote extends Command {
         // The current add-on occupying the DATABASE attachment has no
         // other attachments. In order to promote this database without
         // error, we can create a secondary attachment, just-in-time.
+        let currentIsAdvanced = false
+        if (current.namespace) {
+          // The attachment list doesn't include the add-on's plan, which tells us its tier
+          const {body: currentAddon} = await this.heroku.get<pg.ExtendedAddon>(`/addons/${current.addon?.id}`)
+          currentIsAdvanced = utils.pg.isAdvancedDatabase(currentAddon)
+        }
+
         const {body: backup} = await this.heroku.post<Heroku.AddOnAttachment>('/addon-attachments', {
           body: {
             addon: {name: current.addon?.name},
             app: {name: app},
             confirm: app,
-            namespace: current.namespace,
+            ...namespaceParams(current.namespace, currentIsAdvanced),
           },
         })
         ux.action.stop(color.attachment(backup.name + '_URL'))
@@ -104,7 +125,7 @@ export default class Promote extends Command {
         app: {name: app},
         confirm: app,
         name: as || 'DATABASE',
-        namespace: attachment.namespace || null,
+        ...namespaceParams(attachment.namespace || null, isAdvanced),
       },
     })
     ux.action.stop()
