@@ -1,9 +1,13 @@
+import type {OauthAuthorization} from '@heroku/types/3.sdk'
+
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 
 import Authorizations from '../../../../src/commands/authorizations/index.js'
+import {authorizationList} from '../../../fixtures/authorizations/fixtures.js'
+import {expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 type FakePlatform = {
@@ -51,16 +55,16 @@ describe('authorizations', function () {
     expect(actual).to.include(expected)
   })
 
-  context('with json flag', function () {
-    it('lists the authorizations alphabetically as json', async function () {
-      fakePlatform.oauthAuthorization.list.resolves([exampleAuthorization1, exampleAuthorization2])
+  it('sorts numbers in descriptions in natural order', async function () {
+    fakePlatform.oauthAuthorization.list.resolves([
+      {...exampleAuthorization1, description: 'token 10'},
+      {...exampleAuthorization2, description: 'token 9'},
+    ])
 
-      const {stdout} = await runCommand(Authorizations, ['--json'])
+    const {stdout} = await runCommand(Authorizations, [])
 
-      const authJSON = JSON.parse(stdout)
-      expect(authJSON[0]).to.eql(exampleAuthorization2)
-      expect(authJSON[1]).to.eql(exampleAuthorization1)
-    })
+    expect(stdout.indexOf('token 9')).to.be.greaterThan(-1)
+    expect(stdout.indexOf('token 9')).to.be.lessThan(stdout.indexOf('token 10'))
   })
 
   context('without authorizations', function () {
@@ -87,22 +91,37 @@ describe('authorizations', function () {
       expect(fakePlatform.oauthAuthorization.teamList.calledOnceWithExactly('my-team')).to.equal(true)
     })
 
-    it('lists the named team\'s authorizations as json', async function () {
-      fakePlatform.oauthAuthorization.teamList.resolves([exampleAuthorization1, exampleAuthorization2])
-
-      const {stdout} = await runCommand(Authorizations, ['--team', 'my-team', '--json'])
-
-      const authJSON = JSON.parse(stdout)
-      expect(authJSON[0]).to.eql(exampleAuthorization2)
-      expect(authJSON[1]).to.eql(exampleAuthorization1)
-    })
-
     it('shows no authorizations message for a team with none', async function () {
       fakePlatform.oauthAuthorization.teamList.resolves([])
 
       const {stdout} = await runCommand(Authorizations, ['--team', 'my-team'])
 
       expect(stdout).to.equal('No OAuth authorizations.\n')
+    })
+  })
+
+  describe('--json', function () {
+    it('returns the SDK authorization list in API order', async function () {
+      fakePlatform.oauthAuthorization.list.resolves(authorizationList)
+
+      const {json} = await expectJsonSnapshot<OauthAuthorization[]>(this, Authorizations)
+
+      expect(json.map(a => a.description)).to.deep.equal(['b description', 'awesome'])
+    })
+
+    it('returns the team\'s authorization list in API order', async function () {
+      fakePlatform.oauthAuthorization.teamList.resolves(authorizationList)
+
+      const {json} = await expectJsonSnapshot<OauthAuthorization[]>(this, Authorizations, ['--team', 'my-team'])
+
+      expect(json.map(a => a.description)).to.deep.equal(['b description', 'awesome'])
+      expect(fakePlatform.oauthAuthorization.teamList.alwaysCalledWithExactly('my-team')).to.equal(true)
+    })
+
+    it('returns an empty list without the empty-state message', async function () {
+      fakePlatform.oauthAuthorization.list.resolves([])
+
+      await expectJsonSnapshot<OauthAuthorization[]>(this, Authorizations)
     })
   })
 })

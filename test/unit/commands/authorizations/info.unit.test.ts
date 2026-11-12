@@ -1,3 +1,5 @@
+import type {OauthAuthorization} from '@heroku/types/3.sdk'
+
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
@@ -5,6 +7,8 @@ import {formatDistanceToNow} from 'date-fns'
 import * as sinon from 'sinon'
 
 import AuthorizationsInfo from '../../../../src/commands/authorizations/info.js'
+import {clientAuthorization} from '../../../fixtures/authorizations/fixtures.js'
+import {expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
 
 type FakePlatform = {
   oauthAuthorization: {info: sinon.SinonStub}
@@ -63,15 +67,11 @@ describe('authorizations:info', function () {
     expect(stdout).to.contain('(in 1 day)')
   })
 
-  describe('with json flag', function () {
-    it('shows the authorization as json', async function () {
-      fakePlatform.oauthAuthorization.info.resolves(authorization)
+  describe('--json', function () {
+    it('returns the SDK authorization', async function () {
+      fakePlatform.oauthAuthorization.info.resolves(clientAuthorization)
 
-      const {stdout} = await runCommand(AuthorizationsInfo, [authorizationID, '--json'])
-
-      const authJSON = JSON.parse(stdout)
-      expect(authJSON.id).to.eql(authorization.id)
-      expect(authJSON.description).to.eql(authorization.description)
+      await expectJsonSnapshot<OauthAuthorization>(this, AuthorizationsInfo, [clientAuthorization.id])
     })
   })
 })

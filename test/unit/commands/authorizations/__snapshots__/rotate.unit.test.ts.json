@@ -1,0 +1,26 @@
+{
+  "authorizations:rotate --json returns the rotated authorization": {
+    "access_token": {
+      "expires_in": null,
+      "id": "2b6a4d3c-5f8e-4a1b-9c7d-0e1f2a3b4c5d",
+      "token": "HRKU-fake-access-token-0000",
+      "version": 1
+    },
+    "client": null,
+    "created_at": "2026-01-02T03:04:05Z",
+    "description": "b description",
+    "grant": null,
+    "id": "abcd1234-129f-42d2-854b-def123abc123",
+    "refresh_token": null,
+    "scope": [
+      "global"
+    ],
+    "session": null,
+    "updated_at": "2026-01-03T03:04:05Z",
+    "user": {
+      "email": "developer@example.com",
+      "full_name": "Example Developer",
+      "id": "d7760946-8565-43f7-b4c0-7abf654c3a3c"
+    }
+  }
+}
