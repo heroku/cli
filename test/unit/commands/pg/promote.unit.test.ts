@@ -11,6 +11,7 @@ import {
   type PromoteDatabasePreview,
   type PromoteDatabaseResult,
 } from '@heroku/sdk/extensions/data'
+import {ux} from '@oclif/core'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
@@ -270,6 +271,40 @@ describe('pg:promote', function () {
     expect(stderr).to.contain('postgresql-leader')
   })
 
+  it('waits for release-phase polling before warning that the promoted database remains a follower', async function () {
+    let resolvePromotion!: (promotionResult: PromoteDatabaseResult) => void
+    let promoteStarted!: () => void
+    const promotionStarted = new Promise<void>(resolve => {
+      promoteStarted = resolve
+    })
+    const promotionResult = result({
+      database: {following: 'postgres://leader', leader: 'postgresql-leader'},
+      releasePhase: {status: 'succeeded'} as PromoteDatabaseResult['releasePhase'],
+    })
+    const pendingPromotion = new Promise<PromoteDatabaseResult>(resolve => {
+      resolvePromotion = resolve
+    })
+    const followerWarning = stub(ux, 'warn').callThrough()
+    fakeData.database.promote.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+      await options.beforePromote?.(preview())
+      promoteStarted()
+      return pendingPromotion
+    })
+
+    const command = runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+    await promotionStarted
+    expect(fakeData.database.promote.calledOnce).to.equal(true)
+    expect(followerWarning.called).to.equal(false)
+
+    resolvePromotion(promotionResult)
+    const {stderr} = await command
+
+    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
+    expect(stderr).to.contain('Your database has been promoted but it is currently a follower')
+    expect(stderr.indexOf('Your database has been promoted')).to.be.lessThan(stderr.indexOf('Checking release phase... pg:promote succeeded.'))
+    expect(followerWarning.calledOnce).to.equal(true)
+  })
+
   it('checks release phase and preserves detach-failure messaging', async function () {
     const promotionResult = result({
       releasePhase: {
@@ -326,13 +361,23 @@ describe('pg:promote', function () {
     expect(stderr).to.contain('Checking release phase... timeout. Check your Attach DATABASE release for failures.')
   })
 
-  it('errors when SDK cannot find the Attach DATABASE release', async function () {
+  it('uses generic CLI text when SDK rejects for a missing Attach DATABASE release', async function () {
     const cause = new DatabaseReleasePhaseError('myapp')
     fakeData.database.promote.rejects(new DatabasePromotionError(result({releasePhase: {status: 'unknown'} as PromoteDatabaseResult['releasePhase']}), cause))
+
+    expect(cause.message).to.equal('Unable to check release phase for myapp. Check your Attach DATABASE release for failures.')
 
     const {error} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
     expect(ansis.strip(error!.message)).to.equal('Unable to check release phase. Check your Attach DATABASE release for failures.')
+  })
+
+  it('reports the app name for a fulfilled result with unknown release-phase status', async function () {
+    fakeData.database.promote.callsFake(promoteWith(result({releasePhase: {status: 'unknown'} as PromoteDatabaseResult['releasePhase']})))
+
+    const {error} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(ansis.strip(error!.message)).to.equal('Unable to check release phase for myapp. Check your Attach DATABASE release for failures.')
   })
 
   it('creates backup alias before rejecting a database that is not ready', async function () {

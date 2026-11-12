@@ -81,6 +81,24 @@ describe('pg:wait', function () {
     expect(stderr).to.contain('Waiting for database postgres-1... available')
   })
 
+  it('starts and completes the spinner for each waiting database', async function () {
+    fakeData.database.waitForReady.callsFake(waitThrough([
+      [
+        {addon, status: {message: 'pending', 'waiting?': true}},
+        {addon, status: {message: 'available', 'waiting?': false}},
+      ],
+      [
+        {addon: otherAddon, status: {message: 'pending', 'waiting?': true}},
+        {addon: otherAddon, status: {message: 'available', 'waiting?': false}},
+      ],
+    ]))
+
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp'])
+
+    expect(stdout).to.equal('')
+    expect(stderr).to.equal('Waiting for database postgres-1... available\nWaiting for database postgres-2... available\n')
+  })
+
   it('waits for all databases sequentially without emitting output when immediately available', async function () {
     fakeData.database.waitForReady.callsFake(waitThrough([
       [{addon, status: {'waiting?': false}}],

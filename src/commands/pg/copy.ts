@@ -18,20 +18,26 @@ const heredoc = tsheredoc
 function dataApiBaseUrl(): string {
   const configuredHost = utils.pg.host()
   if (/[?#]/.test(configuredHost)) {
-    throw new Error(`Invalid data API host ${configuredHost}`)
+    throw new Error('Invalid data API host')
   }
 
-  const url = new URL(configuredHost.includes('://') ? configuredHost : `https://${configuredHost}`)
+  let url: URL
+  try {
+    url = new URL(configuredHost.includes('://') ? configuredHost : `https://${configuredHost}`)
+  } catch {
+    throw new Error('Invalid data API host')
+  }
+
   const isLocalhost = LOCALHOST_DOMAINS.includes(url.hostname as (typeof LOCALHOST_DOMAINS)[number])
   const trustedHost = ALLOWED_HEROKU_DOMAINS.some(domain => url.hostname === domain || url.hostname.endsWith(`.${domain}`))
     || isLocalhost
 
   if (!trustedHost || (isLocalhost ? !['http:', 'https:'].includes(url.protocol) : url.protocol !== 'https:')) {
-    throw new Error(`Refusing to send Heroku credentials to untrusted data API host ${url.host}`)
+    throw new Error('Refusing to send Heroku credentials to untrusted data API host')
   }
 
   if (url.username || url.password || url.pathname !== '/' || url.search || url.hash) {
-    throw new Error(`Invalid data API host ${configuredHost}`)
+    throw new Error('Invalid data API host')
   }
 
   return url.origin
@@ -72,10 +78,11 @@ export default class Copy extends Command {
   static topic = 'pg'
 
   public async run(): Promise<DatabaseCopyResult> {
-    const {args, flags} = await this.parse(Copy)
-    const {app, confirm, verbose, 'wait-interval': waitInterval} = flags
+    const {args, flags: commandFlags} = await this.parse(Copy)
+    const {app, confirm, verbose, 'wait-interval': waitInterval} = commandFlags
+    const {heroku} = this
     const interval = Math.max(3, Number.parseInt(waitInterval || '0', 10)) || 3
-    const {data} = createSDK(this.heroku, {
+    const {data} = createSDK(heroku, {
       clientOptionsByService: {data: {baseUrl: dataApiBaseUrl()}},
       extensions: [databaseCopyExtensions],
     })
@@ -84,6 +91,14 @@ export default class Copy extends Command {
     let copyTransfer: TransferCreateResult | undefined
     let hasAdditionalCredentials = false
     let actionStarted = false
+    let additionalCredentialsWarningShown = false
+
+    const warnAboutAdditionalCredentials = () => {
+      if (hasAdditionalCredentials && !additionalCredentialsWarningShown) {
+        ux.warn('pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.')
+        additionalCredentialsWarningShown = true
+      }
+    }
 
     try {
       result = await data.database.copy(app, args.source, args.target, {
@@ -92,6 +107,25 @@ export default class Copy extends Command {
           const message = `WARNING: Destructive action\nThis command will remove all data from ${color.yellow(target.name)}\n`
             + `Data from ${color.yellow(source.name)} will then be transferred to ${color.yellow(target.name)}`
           await new ConfirmCommand().confirm(targetConfirm, confirm, message)
+
+          if (source.database) {
+            try {
+              const {data: credentialsData} = createSDK(heroku, {
+                clientOptionsByService: {
+                  data: {
+                    baseUrl: dataApiBaseUrl(),
+                    headers: {Authorization: `Basic ${Buffer.from(`:${heroku.auth}`).toString('base64')}`},
+                    token: () => '',
+                  },
+                },
+              })
+              const credentials = await credentialsData.postgresDatabase.listCredentials(source.database.addon.name)
+              hasAdditionalCredentials ||= Array.isArray(credentials) && credentials.length > 1
+              warnAboutAdditionalCredentials()
+            } catch {
+              // Credential lookup is advisory; the SDK's later lookup remains a fallback.
+            }
+          }
         },
         copyPoller: {
           onStart({source, target}: {source: DatabaseCopyEndpoint; target: DatabaseCopyEndpoint}) {
@@ -107,9 +141,10 @@ export default class Copy extends Command {
             }
           },
         },
-        credentialToken: this.heroku.auth,
+        credentialToken: heroku.auth,
         onCredentialsChecked({hasAdditionalCredentials: hasAdditionalCredentialsFound}) {
-          hasAdditionalCredentials = hasAdditionalCredentialsFound
+          hasAdditionalCredentials ||= hasAdditionalCredentialsFound
+          warnAboutAdditionalCredentials()
         },
         verbose,
         ...waitOptions,
@@ -125,18 +160,15 @@ export default class Copy extends Command {
         },
       })
     } catch (error) {
-      if (hasAdditionalCredentials) {
-        ux.warn('pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.')
-      }
+      warnAboutAdditionalCredentials()
 
       if (error instanceof TransferFailedError) return showCopyFailure(error)
       if (actionStarted) ux.action.stop('!')
       throw error
     }
 
-    if (hasAdditionalCredentials || result.hasAdditionalCredentials) {
-      ux.warn('pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.')
-    }
+    hasAdditionalCredentials ||= result.hasAdditionalCredentials
+    warnAboutAdditionalCredentials()
 
     for (const warning of result.warnings) ux.warn(warning)
     return result
