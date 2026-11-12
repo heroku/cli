@@ -14,6 +14,7 @@ import {
 import {ux} from '@oclif/core'
 import ansis from 'ansis'
 import {expect} from 'chai'
+import nock from 'nock'
 import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
@@ -140,6 +141,47 @@ describe('pg:promote', function () {
     const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'dwh-db'])
 
     expect(stderr).to.contain('Ensuring an alternate alias for existing ⛁ DATABASE_URL... Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
+  })
+
+  it('uses the real SDK extension and rejects an unready database before mutation when no DATABASE attachment exists', async function () {
+    restore()
+
+    const resolvedAttachment = {
+      addon: {
+        app: {id: 'app-1', name: 'myapp'},
+        id: 'db-1',
+        name: 'dwh-db',
+        plan: {name: 'heroku-postgresql:standard-2'},
+      },
+      app: {id: 'app-1', name: 'myapp'},
+      config_vars: ['DATABASE_URL'],
+      created_at: '2026-01-01T00:00:00Z',
+      id: 'attachment-1',
+      log_input_url: null,
+      name: 'DATABASE',
+      namespace: null,
+      updated_at: '2026-01-01T00:00:00Z',
+      web_url: 'https://addons-sso.heroku.com/',
+    }
+    const platformApi = nock('https://api.heroku.com')
+      .post('/actions/addon-attachments/resolve', {addon_attachment: 'dwh-db', app: 'myapp'})
+      .reply(200, [resolvedAttachment])
+      .get('/apps/myapp/addon-attachments')
+      .reply(200, [])
+    const promotionMutation = nock('https://api.heroku.com')
+      .post('/addon-attachments')
+      .reply(201, resolvedAttachment)
+    const dataApi = nock('https://postgres-api.heroku.com')
+      .get('/client/v11/databases/db-1/wait_status')
+      .reply(200, {message: 'pending', 'waiting?': true})
+
+    const {error} = await runCommand(Cmd, ['--app', 'myapp', 'dwh-db'])
+
+    expect(ansis.strip((error as Error).message)).to.contain('Database cannot be promoted while in state: pending')
+    expect(platformApi.isDone()).to.equal(true)
+    expect(dataApi.isDone()).to.equal(true)
+    expect(promotionMutation.isDone()).to.equal(false)
+    nock.cleanAll()
   })
 
   it('uses an existing alias for the current DATABASE without creating a backup', async function () {
