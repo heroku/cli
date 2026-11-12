@@ -29,7 +29,7 @@ export default class Remove extends Command {
     const {app, confirm} = flags
     let removing = false
     try {
-      const deletedEndpoint = await platform.sniEndpoint.resolveAndDelete(app, sniEndpointSelector(flags), {
+      const deletedEndpoint = await platform.sniEndpoint.deleteByApp(app, sniEndpointSelector(flags), {
         beforeDelete: async ({sniEndpoint}) => {
           await new ConfirmCommand().confirm(
             app,

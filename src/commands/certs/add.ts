@@ -93,12 +93,12 @@ export default class Add extends Command {
     ux.action.start(`Adding SSL certificate to ${color.app(app)}`)
     let sniEndpoint: SniEndpoint
     try {
-      sniEndpoint = await platform.sniEndpoint.createAndAssociate(app, certificate, this.chooseDomains(domains, domainPoller, inquirer)) as SniEndpoint
+      sniEndpoint = await platform.sniEndpoint.createAndAssociate(app, certificate, this.associateOptions(domains, domainPoller, inquirer)) as SniEndpoint
       ux.action.stop()
     } catch (error) {
       // Stop with a failure marker instead of the default 'done' so a failed
       // create/wait doesn't print a success spinner right before the error.
-      // No-op if resolveDomains already stopped the spinner.
+      // No-op if chooseDomains already stopped the spinner.
       ux.action.stop(color.failure('!'))
       throw withFlagHints(error, app)
     }
@@ -120,17 +120,17 @@ export default class Add extends Command {
    * `--domains` as given; otherwise a prompt, except under --json, which never prompts: the SDK
    * then uploads only if the certificate covers none of the app's domains.
    */
-  private chooseDomains(domains: string[] | undefined, domainPoller: {onStart(): void; onStop(): void}, inquirer: any) {
+  private associateOptions(domains: string[] | undefined, domainPoller: {onStart(): void; onStop(): void}, inquirer: any) {
     if (domains !== undefined) return {domainPoller, domains}
     if (this.jsonEnabled()) return {domainPoller}
     return {
-      domainPoller,
-      resolveDomains: async (candidates: string[]) => {
+      chooseDomains: async (candidates: string[]) => {
         ux.action.stop()
         this.log(hux.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?'))
         const {domains: selected} = await this.selectDomains(candidates, inquirer)
         return selected
       },
+      domainPoller,
     }
   }
 }

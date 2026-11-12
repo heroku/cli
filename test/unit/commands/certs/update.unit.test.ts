@@ -18,12 +18,12 @@ import * as sharedSni from './shared-sni.unit.test.js'
 const heredoc = tsheredoc
 
 type FakePlatform = {
-  sniEndpoint: {resolveAndUpdate: SinonStub},
+  sniEndpoint: {updateByApp: SinonStub},
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
-    sniEndpoint: {resolveAndUpdate: sinon.stub()},
+    sniEndpoint: {updateByApp: sinon.stub()},
   }
 }
 
@@ -59,7 +59,7 @@ describe('heroku certs:update', function () {
   })
 
   it('# requires confirmation', async function () {
-    const updated = updatesThroughHook(fakePlatform.sniEndpoint.resolveAndUpdate, endpoint)
+    const updated = updatesThroughHook(fakePlatform.sniEndpoint.updateByApp, endpoint)
 
     const {error, stdout} = await runCommand(Cmd, [
       '--app',
@@ -91,7 +91,7 @@ describe('heroku certs:update', function () {
   })
 
   it('# can run', async function () {
-    updatesThroughHook(fakePlatform.sniEndpoint.resolveAndUpdate, endpoint)
+    updatesThroughHook(fakePlatform.sniEndpoint.updateByApp, endpoint)
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -102,7 +102,7 @@ describe('heroku certs:update', function () {
       'key_file',
     ])
 
-    expect(fakePlatform.sniEndpoint.resolveAndUpdate.firstCall.args.slice(0, 3)).to.deep.equal(['example', {}, {
+    expect(fakePlatform.sniEndpoint.updateByApp.firstCall.args.slice(0, 3)).to.deep.equal(['example', {}, {
       certificateChain: 'pem content', privateKey: 'key content',
     }])
     expect(stderr).to.equal(heredoc`
@@ -129,20 +129,20 @@ describe('heroku certs:update', function () {
 
   describe('--json', function () {
     it('returns the updated certificate', async function () {
-      updatesThroughHook(fakePlatform.sniEndpoint.resolveAndUpdate, sniEndpointA)
+      updatesThroughHook(fakePlatform.sniEndpoint.updateByApp, sniEndpointA)
 
       await expectJsonSnapshot(this, Cmd, ['--app', 'example', '--confirm', 'example', 'pem_file', 'key_file'])
     })
 
     it('requires --confirm instead of prompting', async function () {
-      const updated = updatesThroughHook(fakePlatform.sniEndpoint.resolveAndUpdate, sniEndpointA)
+      const updated = updatesThroughHook(fakePlatform.sniEndpoint.updateByApp, sniEndpointA)
       await expectJsonError(Cmd, ['--app', 'example', 'pem_file', 'key_file'], 'To proceed, re-run this command with --confirm example. Commands don\'t prompt for confirmation with --json.')
 
       expect(updated.called).to.equal(false)
     })
 
     it('renders an API error as a JSON error document', async function () {
-      updatesThroughHook(fakePlatform.sniEndpoint.resolveAndUpdate, sniEndpointA, new Error('The certificate is invalid.'))
+      updatesThroughHook(fakePlatform.sniEndpoint.updateByApp, sniEndpointA, new Error('The certificate is invalid.'))
 
       await expectJsonError(Cmd, ['--app', 'example', '--confirm', 'example', 'pem_file', 'key_file'], 'The certificate is invalid.')
     })
@@ -161,7 +161,7 @@ describe('shared', function () {
     }))
 
     fakePlatform = buildFakePlatform()
-    sharedSni.resolvesThroughHook(fakePlatform.sniEndpoint.resolveAndUpdate, 'beforeUpdate', endpoint)
+    sharedSni.resolvesThroughHook(fakePlatform.sniEndpoint.updateByApp, 'beforeUpdate', endpoint)
     sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
@@ -179,7 +179,7 @@ describe('shared', function () {
     return `Updated certificate details:\n${heredoc(certificateDetails)}\n`
   }
 
-  sharedSni.shouldHandleArgs('certs:update', Cmd, () => fakePlatform.sniEndpoint.resolveAndUpdate, {
+  sharedSni.shouldHandleArgs('certs:update', Cmd, () => fakePlatform.sniEndpoint.updateByApp, {
     args: ['pem_file', 'key_file'],
     flags: {confirm: 'example'},
     stderr,

@@ -15,12 +15,12 @@ import * as sharedSni from './shared-sni.unit.test.js'
 const heredoc = tsheredoc
 
 type FakePlatform = {
-  sniEndpoint: {resolveAndDelete: SinonStub},
+  sniEndpoint: {deleteByApp: SinonStub},
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
-    sniEndpoint: {resolveAndDelete: sinon.stub()},
+    sniEndpoint: {deleteByApp: sinon.stub()},
   }
 }
 
@@ -37,7 +37,7 @@ describe('heroku certs:remove', function () {
   })
 
   it('# deletes the endpoint', async function () {
-    sharedSni.resolvesThroughHook(fakePlatform.sniEndpoint.resolveAndDelete, 'beforeDelete', endpoint)
+    sharedSni.resolvesThroughHook(fakePlatform.sniEndpoint.deleteByApp, 'beforeDelete', endpoint)
 
     const {stderr} = await runCommand(Cmd, [
       '--app',
@@ -49,12 +49,12 @@ describe('heroku certs:remove', function () {
     expect(stderr).to.equal(heredoc`
       Removing SSL certificate tokyo-1050 from ⬢ example... done
     `)
-    expect(fakePlatform.sniEndpoint.resolveAndDelete.calledOnceWith('example', {})).to.equal(true)
+    expect(fakePlatform.sniEndpoint.deleteByApp.calledOnceWith('example', {})).to.equal(true)
   })
 
   it('# requires confirmation if wrong endpoint on app', async function () {
     const deleted = sinon.stub()
-    fakePlatform.sniEndpoint.resolveAndDelete.callsFake(async (_app, _selector, options) => {
+    fakePlatform.sniEndpoint.deleteByApp.callsFake(async (_app, _selector, options) => {
       await options.beforeDelete({sniEndpoint: endpoint})
       deleted()
       return endpoint
@@ -78,7 +78,7 @@ describe('heroku certs:remove', function () {
 
     beforeEach(function () {
       deleted.reset()
-      fakePlatform.sniEndpoint.resolveAndDelete.callsFake(async (_app, _selector, options) => {
+      fakePlatform.sniEndpoint.deleteByApp.callsFake(async (_app, _selector, options) => {
         await options.beforeDelete({sniEndpoint: sniEndpointA})
         deleted()
         return sniEndpointA
@@ -96,7 +96,7 @@ describe('heroku certs:remove', function () {
     })
 
     it('renders an API error as a JSON error document', async function () {
-      fakePlatform.sniEndpoint.resolveAndDelete.callsFake(async (_app, _selector, options) => {
+      fakePlatform.sniEndpoint.deleteByApp.callsFake(async (_app, _selector, options) => {
         await options.beforeDelete({sniEndpoint: sniEndpointA})
         throw new Error('Couldn\'t find that SNI endpoint.')
       })
@@ -111,7 +111,7 @@ describe('heroku shared', function () {
 
   beforeEach(function () {
     fakePlatform = buildFakePlatform()
-    sharedSni.resolvesThroughHook(fakePlatform.sniEndpoint.resolveAndDelete, 'beforeDelete', endpoint)
+    sharedSni.resolvesThroughHook(fakePlatform.sniEndpoint.deleteByApp, 'beforeDelete', endpoint)
     sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
@@ -125,5 +125,5 @@ describe('heroku shared', function () {
     `)
   }
 
-  sharedSni.shouldHandleArgs('certs:remove', Cmd, () => fakePlatform.sniEndpoint.resolveAndDelete, {flags: {confirm: 'example'}, stderr})
+  sharedSni.shouldHandleArgs('certs:remove', Cmd, () => fakePlatform.sniEndpoint.deleteByApp, {flags: {confirm: 'example'}, stderr})
 })

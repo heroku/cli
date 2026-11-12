@@ -66,15 +66,15 @@ describe('heroku certs:add', function () {
     const {args} = fakePlatform.sniEndpoint.createAndAssociate.firstCall
     expect(args[0]).to.equal('example')
     expect(args[1]).to.deep.equal({certificateChain: 'pem content', privateKey: 'key content'})
-    expect(args[2]).to.have.property('resolveDomains').that.is.a('function')
+    expect(args[2]).to.have.property('chooseDomains').that.is.a('function')
     expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done\n')
     expect(stdout).to.equal(`Certificate details:\n${heredoc(certificateDetails)}`)
   })
 
-  it('# resolveDomains callback drives the prompt and selectDomains', async function () {
+  it('# chooseDomains callback drives the prompt and selectDomains', async function () {
     stubbedSelectDomainsReturnValue = {domains: ['biz.example.com']}
     fakePlatform.sniEndpoint.createAndAssociate.callsFake(async (_app, _certificate, opts) => {
-      await opts.resolveDomains(['biz.example.com'])
+      await opts.chooseDomains(['biz.example.com'])
       return endpointStables
     })
 
@@ -103,7 +103,7 @@ describe('heroku certs:add', function () {
       return stubbedSelectDomainsReturnValue
     })
     fakePlatform.sniEndpoint.createAndAssociate.callsFake(async (_app, _certificate, opts) => {
-      await opts.resolveDomains(['biz.example.com'])
+      await opts.chooseDomains(['biz.example.com'])
       return endpointStables
     })
 
@@ -210,7 +210,7 @@ describe('heroku certs:add', function () {
 
       const options = fakePlatform.sniEndpoint.createAndAssociate.firstCall.args[2]
       expect(options.domains).to.deep.equal(['www.example.com', 'api.example.com'])
-      expect(options).to.not.have.property('resolveDomains')
+      expect(options).to.not.have.property('chooseDomains')
       expect(options.domainPoller).to.be.an('object')
       expect(stubbedSelectDomains.called).to.equal(false)
       expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done')
@@ -243,7 +243,7 @@ describe('heroku certs:add', function () {
 
       for (const call of fakePlatform.sniEndpoint.createAndAssociate.getCalls()) {
         expect(call.args[2]).to.not.have.property('domains')
-        expect(call.args[2]).to.not.have.property('resolveDomains')
+        expect(call.args[2]).to.not.have.property('chooseDomains')
       }
 
       expect(stubbedSelectDomains.called).to.equal(false)

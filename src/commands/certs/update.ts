@@ -48,7 +48,7 @@ export default class Update extends Command {
     let updating = false
     let sniEndpoint: SniEndpoint
     try {
-      sniEndpoint = await platform.sniEndpoint.resolveAndUpdate(app, sniEndpointSelector(flags), {
+      sniEndpoint = await platform.sniEndpoint.updateByApp(app, sniEndpointSelector(flags), {
         certificateChain: files.crt,
         privateKey: files.key,
       }, {
