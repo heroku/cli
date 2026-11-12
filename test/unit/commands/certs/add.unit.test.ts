@@ -20,12 +20,12 @@ import {
 const heredoc = tsheredoc
 
 type FakePlatform = {
-  sniEndpoint: {createAndAssociate: SinonStub, matchCertificateDomains: SinonStub},
+  sniEndpoint: {createAndAssociate: SinonStub},
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
-    sniEndpoint: {createAndAssociate: sinon.stub(), matchCertificateDomains: sinon.stub()},
+    sniEndpoint: {createAndAssociate: sinon.stub()},
   }
 }
 
@@ -65,16 +65,15 @@ describe('heroku certs:add', function () {
     expect(fakePlatform.sniEndpoint.createAndAssociate.calledOnce).to.equal(true)
     const {args} = fakePlatform.sniEndpoint.createAndAssociate.firstCall
     expect(args[0]).to.equal('example')
-    expect(args[1]).to.equal('pem content')
-    expect(args[2]).to.equal('key content')
-    expect(args[3]).to.have.property('resolveDomains').that.is.a('function')
+    expect(args[1]).to.deep.equal({certificateChain: 'pem content', privateKey: 'key content'})
+    expect(args[2]).to.have.property('resolveDomains').that.is.a('function')
     expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done\n')
     expect(stdout).to.equal(`Certificate details:\n${heredoc(certificateDetails)}`)
   })
 
   it('# resolveDomains callback drives the prompt and selectDomains', async function () {
     stubbedSelectDomainsReturnValue = {domains: ['biz.example.com']}
-    fakePlatform.sniEndpoint.createAndAssociate.callsFake(async (_app, _crt, _key, opts) => {
+    fakePlatform.sniEndpoint.createAndAssociate.callsFake(async (_app, _certificate, opts) => {
       await opts.resolveDomains(['biz.example.com'])
       return endpointStables
     })
@@ -103,7 +102,7 @@ describe('heroku certs:add', function () {
       stopCallCountWhenPrompted = uxActionStop.callCount
       return stubbedSelectDomainsReturnValue
     })
-    fakePlatform.sniEndpoint.createAndAssociate.callsFake(async (_app, _crt, _key, opts) => {
+    fakePlatform.sniEndpoint.createAndAssociate.callsFake(async (_app, _certificate, opts) => {
       await opts.resolveDomains(['biz.example.com'])
       return endpointStables
     })
@@ -184,7 +183,7 @@ describe('heroku certs:add', function () {
   })
 
   it('# waits for domains to be ready', async function () {
-    fakePlatform.sniEndpoint.createAndAssociate.callsFake(async (_app: string, _crt: string, _key: string, opts: CreateAndAssociateOptions) => {
+    fakePlatform.sniEndpoint.createAndAssociate.callsFake(async (_app: string, _certificate: unknown, opts: CreateAndAssociateOptions) => {
       opts?.domainPoller?.onStart?.()
       opts?.domainPoller?.onStop?.()
       return endpointStables
@@ -209,12 +208,11 @@ describe('heroku certs:add', function () {
 
       const {stderr} = await runCommand(Cmd, ['--app', 'example', '--domains', 'www.example.com, api.example.com', 'pem_file', 'key_file'])
 
-      const options = fakePlatform.sniEndpoint.createAndAssociate.firstCall.args[3]
+      const options = fakePlatform.sniEndpoint.createAndAssociate.firstCall.args[2]
       expect(options.domains).to.deep.equal(['www.example.com', 'api.example.com'])
       expect(options).to.not.have.property('resolveDomains')
       expect(options.domainPoller).to.be.an('object')
       expect(stubbedSelectDomains.called).to.equal(false)
-      expect(fakePlatform.sniEndpoint.matchCertificateDomains.called).to.equal(false)
       expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done')
     })
 
@@ -223,7 +221,7 @@ describe('heroku certs:add', function () {
 
       await runCommand(Cmd, ['--app', 'example', '--domains', '', 'pem_file', 'key_file'])
 
-      expect(fakePlatform.sniEndpoint.createAndAssociate.firstCall.args[3].domains).to.deep.equal([])
+      expect(fakePlatform.sniEndpoint.createAndAssociate.firstCall.args[2].domains).to.deep.equal([])
       expect(stubbedSelectDomains.called).to.equal(false)
     })
 
@@ -238,23 +236,24 @@ describe('heroku certs:add', function () {
   })
 
   describe('--json', function () {
-    it('returns the created certificate when it covers none of the app\'s domains', async function () {
-      fakePlatform.sniEndpoint.matchCertificateDomains.resolves([])
+    it('leaves choosing domains to the SDK, without a prompt, when --domains isn\'t passed', async function () {
       fakePlatform.sniEndpoint.createAndAssociate.resolves(sniEndpointA)
 
       await expectJsonSnapshot(this, Cmd, ['--app', 'example', 'pem_file', 'key_file'])
 
-      expect(fakePlatform.sniEndpoint.matchCertificateDomains.alwaysCalledWithExactly('example', 'pem content')).to.equal(true)
       for (const call of fakePlatform.sniEndpoint.createAndAssociate.getCalls()) {
-        expect(call.args[3].domains).to.deep.equal([])
-        expect(call.args[3]).to.not.have.property('resolveDomains')
+        expect(call.args[2]).to.not.have.property('domains')
+        expect(call.args[2]).to.not.have.property('resolveDomains')
       }
 
       expect(stubbedSelectDomains.called).to.equal(false)
     })
 
-    it('fails before upload, naming --domains, when the certificate covers app domains', async function () {
-      fakePlatform.sniEndpoint.matchCertificateDomains.resolves(['www.example.com', 'api.example.com'])
+    it('names --domains when the SDK says the certificate covers app domains', async function () {
+      fakePlatform.sniEndpoint.createAndAssociate.rejects(Object.assign(
+        new Error('The certificate covers www.example.com, api.example.com on example. Pass the hostnames to associate, or none. Nothing was uploaded.'),
+        {matches: ['www.example.com', 'api.example.com'], name: 'CertificateDomainsRequiredError'},
+      ))
 
       await expectJsonError(
         Cmd,
@@ -263,7 +262,6 @@ describe('heroku certs:add', function () {
         + 'Commands don\'t prompt for domains with --json. Nothing was uploaded.',
       )
 
-      expect(fakePlatform.sniEndpoint.createAndAssociate.called).to.equal(false)
       expect(stubbedSelectDomains.called).to.equal(false)
     })
 
@@ -273,8 +271,7 @@ describe('heroku certs:add', function () {
       const {json} = await expectJsonSnapshot<typeof sniEndpointA>(this, Cmd, ['--app', 'example', '--domains', 'www.example.com', 'pem_file', 'key_file'])
 
       expect(json.domains).to.deep.equal(sniEndpointA.domains)
-      expect(fakePlatform.sniEndpoint.matchCertificateDomains.called).to.equal(false)
-      expect(fakePlatform.sniEndpoint.createAndAssociate.firstCall.args[3].domains).to.deep.equal(['www.example.com'])
+      expect(fakePlatform.sniEndpoint.createAndAssociate.firstCall.args[2].domains).to.deep.equal(['www.example.com'])
     })
   })
 })

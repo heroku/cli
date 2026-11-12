@@ -31,7 +31,7 @@ function buildFakePlatform(): FakePlatform {
 function updatesThroughHook(stub: SinonStub, resolved: unknown, result: Error | unknown = resolved): SinonStub {
   const updated = sinon.stub()
   stub.callsFake(async (_app, _selector, _certificate, options) => {
-    await options.beforeUpdate(resolved)
+    await options.beforeUpdate({sniEndpoint: resolved})
     updated()
     if (result instanceof Error) throw result
     return result
@@ -103,7 +103,7 @@ describe('heroku certs:update', function () {
     ])
 
     expect(fakePlatform.sniEndpoint.resolveAndUpdate.firstCall.args.slice(0, 3)).to.deep.equal(['example', {}, {
-      certificate_chain: 'pem content', private_key: 'key content',
+      certificateChain: 'pem content', privateKey: 'key content',
     }])
     expect(stderr).to.equal(heredoc`
       Updating SSL certificate tokyo-1050 for ⬢ example... done

@@ -49,10 +49,10 @@ export default class Update extends Command {
     let sniEndpoint: SniEndpoint
     try {
       sniEndpoint = await platform.sniEndpoint.resolveAndUpdate(app, sniEndpointSelector(flags), {
-        certificate_chain: files.crt,
-        private_key: files.key,
+        certificateChain: files.crt,
+        privateKey: files.key,
       }, {
-        beforeUpdate: async current => {
+        beforeUpdate: async ({sniEndpoint: current}) => {
           await new ConfirmCommand().confirm(
             app,
             confirm,

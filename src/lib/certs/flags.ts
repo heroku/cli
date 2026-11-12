@@ -1,11 +1,16 @@
 import type {SniEndpoint} from '@heroku/types/3.sdk'
 
-/** The SDK's SNI endpoint selector for `--name` / `--endpoint` (a hostname associated with the certificate). */
-export function sniEndpointSelector(flags: {endpoint?: string; name?: string}): {hostname?: string; name?: string} {
-  return {
-    ...(flags.endpoint === undefined ? {} : {hostname: flags.endpoint}),
-    ...(flags.name === undefined ? {} : {name: flags.name}),
-  }
+/** The SDK's `SniEndpointSelector`: by name, by an associated hostname, or neither. */
+type SniEndpointSelector = {hostname: string; name?: never} | {hostname?: never; name: string} | {hostname?: never; name?: never}
+
+/**
+ * The SDK's SNI endpoint selector for `--name` / `--endpoint` (a hostname associated with the
+ * certificate). The flags are exclusive, so at most one is set.
+ */
+export function sniEndpointSelector(flags: {endpoint?: string; name?: string}): SniEndpointSelector {
+  if (flags.name !== undefined) return {name: flags.name}
+  if (flags.endpoint !== undefined) return {hostname: flags.endpoint}
+  return {}
 }
 
 /**

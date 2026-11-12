@@ -19,13 +19,13 @@ const heredoc = tsheredoc
 
 /**
  * Make a `resolveAndDelete` / `resolveAndUpdate` stub behave like the SDK: run the command's
- * before-hook (its last argument's `beforeDelete` / `beforeUpdate`) with the resolved endpoint,
+ * before-hook (its last argument's `beforeDelete` / `beforeUpdate`) with `{sniEndpoint: resolved}`,
  * then resolve with `result`.
  */
 export function resolvesThroughHook(stub: SinonStub, hook: 'beforeDelete' | 'beforeUpdate', resolved: unknown, result: unknown = resolved): void {
   stub.callsFake(async (...args: unknown[]) => {
-    const options = args.at(-1) as Partial<Record<typeof hook, (sniEndpoint: unknown) => Promise<void> | void>>
-    await options[hook]?.(resolved)
+    const options = args.at(-1) as Partial<Record<typeof hook, (preview: {sniEndpoint: unknown}) => Promise<void> | void>>
+    await options[hook]?.({sniEndpoint: resolved})
     return result
   })
 }

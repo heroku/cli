@@ -38,7 +38,7 @@ Commands now render tables, headers, and objects with `@heroku/heroku-cli-util` 
 
 ## Certs commands
 
-- `certs:add` matches wildcard certificates against your app's domains more strictly: a `*.example.com` certificate now matches only direct subdomains (e.g. `www.example.com`), no longer matching deeper or trailing-suffix domains
+- `certs:add` matches a certificate's names against your app's domains exactly, ignoring case. Previously, when a certificate had a wildcard name, its names also matched domains that merely contained them: a `*.example.com` certificate matched `www.example.com.evil.org`, and a `www.example.com` name on the same certificate matched `shop.www.example.com`. A wildcard still matches one label (`www.example.com`, not `example.com` or `a.b.example.com`). The names come from the certificate file itself, read before upload.
 - `certs`, `certs:add`, `certs:generate`, `certs:info`, `certs:remove`, `certs:update`, `certs:auto`, `certs:auto:disable`, `certs:auto:enable`, and `certs:auto:refresh` gain `--json`. Setting `HEROKU_CONTENT_TYPE=json` also switches them to JSON output, and errors are printed as a JSON error document. Each returns the API's records unchanged:
   - `certs` returns the SNI endpoint list in the order the API returns it (`[]` when there are none). The table output is still sorted by name.
   - `certs:info` returns the SNI endpoint. With `--show-domains`, it adds `domain_hostnames`, the hostnames of the endpoint's domains.
@@ -67,6 +67,8 @@ Commands now render tables, headers, and objects with `@heroku/heroku-cli-util` 
   - It refuses to overwrite an existing key, CSR, or certificate file. The new `--force` flag overwrites them.
   - It makes the key file readable only by its owner (mode 0600). LibreSSL, macOS's built-in `openssl`, otherwise leaves it readable by everyone.
 - If `certs:add` uploads the certificate but associating domains fails, the error names the uploaded certificate and the `certs:remove` command that removes it.
+- `certs:add` fails before uploading anything when the certificate file isn't a PEM certificate: `Couldn't read the certificate: expected a PEM-encoded certificate chain. Nothing was uploaded.`
+- `certs:add` with `--domains` waits only for the named domains to be ready, not for every pending domain on the app, and `--domains ''` doesn't wait at all.
 - With `--json`, the certs commands never prompt:
   - `certs:remove`, `certs:update`, and `certs:auto:disable` require `--confirm <app>`. Without it they fail with `To proceed, re-run this command with --confirm <app>.`
   - `certs:generate` requires `--now`, `--subject`, or at least one of `--owner`, `--country`, `--area`, or `--city`.

@@ -55,7 +55,7 @@ describe('heroku certs:remove', function () {
   it('# requires confirmation if wrong endpoint on app', async function () {
     const deleted = sinon.stub()
     fakePlatform.sniEndpoint.resolveAndDelete.callsFake(async (_app, _selector, options) => {
-      await options.beforeDelete(endpoint)
+      await options.beforeDelete({sniEndpoint: endpoint})
       deleted()
       return endpoint
     })
@@ -79,7 +79,7 @@ describe('heroku certs:remove', function () {
     beforeEach(function () {
       deleted.reset()
       fakePlatform.sniEndpoint.resolveAndDelete.callsFake(async (_app, _selector, options) => {
-        await options.beforeDelete(sniEndpointA)
+        await options.beforeDelete({sniEndpoint: sniEndpointA})
         deleted()
         return sniEndpointA
       })
@@ -97,7 +97,7 @@ describe('heroku certs:remove', function () {
 
     it('renders an API error as a JSON error document', async function () {
       fakePlatform.sniEndpoint.resolveAndDelete.callsFake(async (_app, _selector, options) => {
-        await options.beforeDelete(sniEndpointA)
+        await options.beforeDelete({sniEndpoint: sniEndpointA})
         throw new Error('Couldn\'t find that SNI endpoint.')
       })
 
