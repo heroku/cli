@@ -26,7 +26,10 @@ export default class Info extends Command {
     const {flags} = await this.parse(Info)
     const {app} = flags
     const selector = sniEndpointSelector(flags)
-    ux.action.start(`Fetching SSL certificate info for ${color.app(app)}`)
+    // Only --name gives the certificate's name before the SDK call returns.
+    ux.action.start(flags.name === undefined
+      ? `Fetching SSL certificate info for ${color.app(app)}`
+      : `Fetching SSL certificate ${flags.name} info for ${color.app(app)}`)
     let cert: SniEndpoint | SniEndpointWithDomainHostnames
     try {
       cert = flags['show-domains']

@@ -1,4 +1,5 @@
 // shouldHandleArgs(commandText, command, getSelectStub, {args?, flags?, stderr?, stdout?})
+// `stderr` gets the endpoint and the selector the flags map to.
 //
 // Shared --name / --endpoint coverage for the commands that select one of an app's SSL
 // certificates through the SDK (`sniEndpoint.infoByApp`, `deleteByApp`,
@@ -37,7 +38,7 @@ export const shouldHandleArgs = (
   options: {
     args?: string[],
     flags?: {[key: string]: string},
-    stderr?: (endpoint: Partial<SniEndpoint>) => string,
+    stderr?: (endpoint: Partial<SniEndpoint>, selector: {hostname?: string, name?: string}) => string,
     stdout?: (certificateDetails: string, endpoint: Partial<SniEndpoint>) => string,
   },
 ) => {
@@ -57,14 +58,14 @@ export const shouldHandleArgs = (
     it('selects the certificate by name with --name', async function () {
       const {stderr, stdout} = await run('--name', 'tokyo-1050')
       expect(getSelectStub().firstCall.args.slice(0, 2)).to.deep.equal(['example', {name: 'tokyo-1050'}])
-      expectOutput(stderr, stderrOutput(endpoint))
+      expectOutput(stderr, stderrOutput(endpoint, {name: 'tokyo-1050'}))
       expectOutput(stdout, stdoutOutput(heredoc(certificateDetails), endpoint))
     })
 
     it('selects the certificate by an associated hostname with --endpoint', async function () {
       const {stderr, stdout} = await run('--endpoint', 'www.example.com')
       expect(getSelectStub().firstCall.args.slice(0, 2)).to.deep.equal(['example', {hostname: 'www.example.com'}])
-      expectOutput(stderr, stderrOutput(endpoint))
+      expectOutput(stderr, stderrOutput(endpoint, {hostname: 'www.example.com'}))
       expectOutput(stdout, stdoutOutput(heredoc(certificateDetails), endpoint))
     })
 

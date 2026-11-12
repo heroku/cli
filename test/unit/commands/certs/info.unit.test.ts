@@ -56,6 +56,15 @@ describe('heroku certs:info', function () {
     `))
   })
 
+  it('names the certificate in the progress message when --name is passed', async function () {
+    fakePlatform.sniEndpoint.infoByApp.resolves(structuredClone(endpoint))
+    const {stderr} = await runCommand(Cmd, ['--app', 'example', '--name', 'tokyo-1050'])
+    expect(fakePlatform.sniEndpoint.infoByApp.calledOnceWithExactly('example', {name: 'tokyo-1050'})).to.equal(true)
+    expectOutput(stderr, heredoc(`
+      Fetching SSL certificate tokyo-1050 info for ⬢ example... done
+    `))
+  })
+
   it('returns domains when show-domains flag is passed', async function () {
     fakePlatform.sniEndpoint.infoByApp.resolves({...structuredClone(endpointWithDomains), domain_hostnames: ['subdomain.example.com']})
     const {stdout} = await runCommand(Cmd, [
@@ -139,9 +148,9 @@ describe('heroku shared', function () {
     sinon.restore()
   })
 
-  const stderr = function () {
+  const stderr = function (_endpoint: unknown, {name}: {name?: string}) {
     return heredoc(`
-      Fetching SSL certificate info for ⬢ example... done
+      Fetching SSL certificate ${name === undefined ? '' : `${name} `}info for ⬢ example... done
     `)
   }
 
