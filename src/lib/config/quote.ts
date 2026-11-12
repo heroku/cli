@@ -17,7 +17,11 @@ export function quote(s: string): string {
 
 export function parse(a: string): string {
   if (a.startsWith('"')) {
-    a = a.replaceAll(String.raw`\n`, '\n')
+    // Undo quote's escapes in one pass, left to right, so an escaped backslash (\\) is taken whole and its
+    // second half never starts a \n. shell-quote unescapes the backslashes, quotes and dollar signs left, but
+    // not the backticks and exclamation marks quote escapes too.
+    const unescaped: Record<string, string> = {'!': '!', '`': '`', n: '\n'}
+    a = a.replaceAll(/\\([\\n`!])/g, (escape, c: string) => unescaped[c] ?? escape)
   } else if (a.startsWith("'")) {
     // single-quoted strings are literal in POSIX sh — no unescaping needed
   }
