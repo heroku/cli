@@ -171,6 +171,38 @@ describe('pg:copy', function () {
     }
   })
 
+  it('allows the explicit default HTTPS port for a remote data API host', async function () {
+    const previousDataHost = process.env.HEROKU_DATA_HOST
+    process.env.HEROKU_DATA_HOST = 'https://api.data.heroku.com:443'
+    fakeData.database.copy.callsFake(copyWith({transfer, warnings: []}))
+
+    try {
+      const {error} = await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'RED', 'DATABASE_URL', 'RED_URL'])
+
+      expect(error).to.be.undefined
+      expect(fakeData.database.copy.calledOnce).to.equal(true)
+    } finally {
+      if (previousDataHost === undefined) delete process.env.HEROKU_DATA_HOST
+      else process.env.HEROKU_DATA_HOST = previousDataHost
+    }
+  })
+
+  it('preserves localhost data API port support', async function () {
+    const previousDataHost = process.env.HEROKU_DATA_HOST
+    process.env.HEROKU_DATA_HOST = 'http://localhost:8080'
+    fakeData.database.copy.callsFake(copyWith({transfer, warnings: []}))
+
+    try {
+      const {error} = await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'RED', 'DATABASE_URL', 'RED_URL'])
+
+      expect(error).to.be.undefined
+      expect(fakeData.database.copy.calledOnce).to.equal(true)
+    } finally {
+      if (previousDataHost === undefined) delete process.env.HEROKU_DATA_HOST
+      else process.env.HEROKU_DATA_HOST = previousDataHost
+    }
+  })
+
   it('refuses non-HTTP schemes even for localhost', async function () {
     const previousDataHost = process.env.HEROKU_DATA_HOST
     process.env.HEROKU_DATA_HOST = 'ftp://localhost'
@@ -188,6 +220,7 @@ describe('pg:copy', function () {
 
   for (const {description, host, secret} of [
     {description: 'userinfo credentials', host: 'https://copy-user:copy-password@api.data.heroku.com', secret: 'copy-password'},
+    {description: 'non-default ports', host: 'https://api.data.heroku.com:8443', secret: 'api.data.heroku.com:8443'},
     {description: 'non-root paths', host: 'https://api.data.heroku.com/custom/path', secret: 'https://api.data.heroku.com/custom/path'},
     {description: 'query strings', host: 'api.data.heroku.com?', secret: 'api.data.heroku.com?'},
     {description: 'fragments', host: 'api.data.heroku.com#copy-secret', secret: 'copy-secret'},

@@ -132,8 +132,15 @@ export default class Promote extends Command {
   }
 
   private displayPartialPromotion(result: PromoteDatabasePartialResult, preview: PromoteDatabasePreview | undefined, app: string, cause: unknown) {
-    if (result.mutationStatus.attachment.status === 'created') {
-      ux.action.stop()
+    const {attachment, backupAttachment} = result.mutationStatus
+    if (attachment.attempted) {
+      if (attachment.status === 'created') {
+        ux.action.stop()
+      } else {
+        ux.action.stop(color.red('!'))
+      }
+    } else if (backupAttachment.attempted && backupAttachment.status !== 'created') {
+      ux.action.stop(color.red('!'))
     }
 
     this.displayPoolerResult(result)
@@ -152,7 +159,11 @@ export default class Promote extends Command {
     if (!result.mutationStatus.poolerAttachment.attempted) return
 
     ux.action.start('Reattaching pooler to new leader')
-    if (result.mutationStatus.poolerAttachment.status === 'created') ux.action.stop()
+    if (result.mutationStatus.poolerAttachment.status === 'created') {
+      ux.action.stop()
+    } else {
+      ux.action.stop(color.red('!'))
+    }
   }
 
   private displayPromotionResult(result: PromoteDatabaseResult, preview: PromoteDatabasePreview | undefined, app: string) {

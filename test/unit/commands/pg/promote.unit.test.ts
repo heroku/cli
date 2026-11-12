@@ -219,7 +219,7 @@ describe('pg:promote', function () {
     expect(stderr).to.contain('Reattaching pooler to new leader... done')
   })
 
-  it('does not reattach a non-default pooler or a pooler on the promoted database', async function () {
+  it('does not reattach a pooler when SDK result has no pooler attachment', async function () {
     const promotionResult = result()
     fakeData.database.promote.callsFake(promoteWith(promotionResult))
 
@@ -441,7 +441,48 @@ describe('pg:promote', function () {
 
     expect(error).to.equal(cause)
     expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp...')
-    expect(stderr).to.not.contain('... done')
+    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... !')
+    expect(stderr).to.not.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
+  })
+
+  it('stops the pooler spinner with failure indication when its mutation status is unknown', async function () {
+    const cause = new Error('pooler attachment status unknown')
+    const partial = result({
+      mutationStatus: {
+        attachment: {attempted: true, status: 'created'},
+        backupAttachment: {attempted: false, status: 'not_attempted'},
+        poolerAttachment: {attempted: true, status: 'unknown'},
+      },
+      poolerAttachment: pooler,
+    })
+    fakeData.database.promote.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+      await options.beforePromote?.(preview({existingAlias: alias}))
+      throw new DatabasePromotionError(partial, cause)
+    })
+
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(error).to.equal(cause)
+    expect(stderr).to.contain('Reattaching pooler to new leader... !')
+    expect(stderr).to.not.contain('Reattaching pooler to new leader... done')
+  })
+
+  it('stops the backup alias spinner with failure indication when its mutation status is unknown', async function () {
+    const cause = new Error('backup attachment status unknown')
+    const partial = result({
+      mutationStatus: {
+        attachment: {attempted: false, status: 'not_attempted'},
+        backupAttachment: {attempted: true, status: 'unknown'},
+        poolerAttachment: {attempted: false, status: 'not_attempted'},
+      },
+    })
+    fakeData.database.promote.rejects(new DatabasePromotionError(partial, cause))
+
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(error).to.equal(cause)
+    expect(stderr).to.contain('Ensuring an alternate alias for existing ⛁ DATABASE_URL... !')
+    expect(stderr).to.not.contain('Ensuring an alternate alias for existing ⛁ DATABASE_URL... done')
   })
 
   it('retains namespace-sensitive credential promotion behavior', async function () {

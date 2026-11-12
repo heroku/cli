@@ -36,7 +36,7 @@ function dataApiBaseUrl(): string {
     throw new Error('Refusing to send Heroku credentials to untrusted data API host')
   }
 
-  if (url.username || url.password || url.pathname !== '/' || url.search || url.hash) {
+  if (url.username || url.password || url.pathname !== '/' || url.search || url.hash || (!isLocalhost && url.port)) {
     throw new Error('Invalid data API host')
   }
 
@@ -104,7 +104,8 @@ export default class Copy extends Command {
       result = await data.database.copy(app, args.source, args.target, {
         async beforeCopy({source, target}) {
           const targetConfirm = rawUrlConfirmationValue(args.target) ?? target.confirm
-          const message = `WARNING: Destructive action\nThis command will remove all data from ${color.yellow(target.name)}\n`
+          const message = 'WARNING: Destructive action\n'
+            + `This command will remove all data from ${color.yellow(target.name)}\n`
             + `Data from ${color.yellow(source.name)} will then be transferred to ${color.yellow(target.name)}`
           await new ConfirmCommand().confirm(targetConfirm, confirm, message)
 
