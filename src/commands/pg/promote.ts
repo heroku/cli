@@ -3,12 +3,12 @@ import {color} from '@heroku/heroku-cli-util'
 import {
   DatabaseAlreadyPromotedError,
   databaseCommandExtensions,
-  DatabaseNotReadyError,
   DatabasePromotionError,
   DatabaseReleasePhaseError,
   type PromoteDatabaseOptions,
   type PromoteDatabasePartialResult,
   type PromoteDatabasePreview,
+  type PromoteDatabaseProgressEvent,
   type PromoteDatabaseResult,
 } from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
@@ -38,19 +38,92 @@ export default class Promote extends Command {
     const {data} = createSDK(this.heroku, {extensions: [databaseCommandExtensions]})
     let preview: PromoteDatabasePreview | undefined
     let promotionMessage = ''
+    let progressEventsSeen = false
+    let aliasSpinnerActive = false
+    let promotionSpinnerActive = false
+    let poolerSpinnerActive = false
+    let releasePhaseSpinnerActive = false
+    let followerWarningShown = false
 
-    const checkReadiness = async (addon: PromoteDatabasePreview['addon']) => {
-      if (force) return
+    const alternateAliasMessage = `Ensuring an alternate alias for existing ${color.datastore('DATABASE_URL')}`
+    const startPromotion = () => {
+      ux.action.start(promotionMessage)
+      promotionSpinnerActive = true
+    }
 
-      const status = await data.database.waitStatus(addon.id)
-      if (status['waiting?']) {
-        ux.error(heredoc(`
-          Database cannot be promoted while in state: ${status.message}
+    const displayFollowerWarning = (database: PromoteDatabasePartialResult['database']) => {
+      if (!followerWarningShown && preview && database?.following) {
+        this.displayFollowerWarning({addon: preview.addon, database})
+        followerWarningShown = true
+      }
+    }
 
-          Promoting this database can lead to application errors and outage. Please run ${color.code('heroku pg:wait')} to wait for database to become available.
+    // eslint-disable-next-line complexity -- process the SDK's progress union in operation order
+    const onProgress = (event: PromoteDatabaseProgressEvent) => {
+      progressEventsSeen = true
 
-          To ignore this error, you can pass the --force flag to promote the database and risk application issues.
-        `))
+      if (event.type === 'attachment') {
+        if (event.stage === 'backup') {
+          if (event.status === 'started' && !aliasSpinnerActive) {
+            ux.action.start(alternateAliasMessage)
+            aliasSpinnerActive = true
+          } else if (event.status === 'succeeded' && aliasSpinnerActive) {
+            ux.action.stop(event.attachment ? color.attachment(`${event.attachment.name}_URL`) : undefined)
+            aliasSpinnerActive = false
+          } else if (event.status === 'unknown' && aliasSpinnerActive) {
+            ux.action.stop(color.red('!'))
+            aliasSpinnerActive = false
+          }
+        }
+
+        if (event.stage === 'promotion') {
+          if (event.status === 'started') {
+            startPromotion()
+          } else if (event.status === 'succeeded' && promotionSpinnerActive) {
+            ux.action.stop()
+            promotionSpinnerActive = false
+          } else if (event.status === 'unknown' && promotionSpinnerActive) {
+            ux.action.stop(color.red('!'))
+            promotionSpinnerActive = false
+          }
+        }
+
+        return
+      }
+
+      if (event.type === 'database') {
+        displayFollowerWarning(event.database)
+        return
+      }
+
+      if (event.type === 'pooler-reattachment') {
+        if (event.status === 'started') {
+          ux.action.start('Reattaching pooler to new leader')
+          poolerSpinnerActive = true
+        } else if (poolerSpinnerActive) {
+          ux.action.stop(event.status === 'succeeded' ? undefined : color.red('!'))
+          poolerSpinnerActive = false
+        }
+
+        return
+      }
+
+      if (event.stage === 'started') {
+        ux.action.start('Checking release phase')
+        releasePhaseSpinnerActive = true
+      } else if (event.stage === 'poll') {
+        if (!releasePhaseSpinnerActive) {
+          ux.action.start('Checking release phase')
+          releasePhaseSpinnerActive = true
+        }
+
+        ux.action.status = event.status
+      } else if (event.status === 'not_required') {
+        if (releasePhaseSpinnerActive) ux.action.stop()
+        releasePhaseSpinnerActive = false
+      } else {
+        this.displayReleasePhaseProgress(event, preview)
+        releasePhaseSpinnerActive = false
       }
     }
 
@@ -63,32 +136,36 @@ export default class Promote extends Command {
           ? `Promoting ${color.attachment(attachment.name)} to ${color.datastore('DATABASE_URL')} on ${color.app(app)}`
           : `Promoting ${color.datastore(addon.name)} to ${color.datastore('DATABASE_URL')} on ${color.app(app)}`
 
-        if (currentPreview.existingAlias) {
-          ux.action.stop(color.attachment(`${currentPreview.existingAlias.name}_URL`))
-        }
-
-        if (!currentPreview.currentAttachment || currentPreview.existingAlias) {
-          await checkReadiness(addon)
-          ux.action.start(promotionMessage)
-        }
-      },
-      // The SDK's built-in readiness check runs before its callbacks. Skip it so
-      // the legacy alias-first order can be retained with our callback check.
-      force: true,
-      async onBackupAttachment(backup) {
-        ux.action.stop(color.attachment(`${backup.name}_URL`))
-        if (preview) {
-          await checkReadiness(preview.addon)
-          ux.action.start(promotionMessage)
+        if (currentPreview.currentAttachment) {
+          ux.action.start(alternateAliasMessage)
+          aliasSpinnerActive = true
+          if (currentPreview.existingAlias) {
+            ux.action.stop(color.attachment(`${currentPreview.existingAlias.name}_URL`))
+            aliasSpinnerActive = false
+          }
         }
       },
+      force: Boolean(force),
+      onProgress,
     }
 
-    ux.action.start(`Ensuring an alternate alias for existing ${color.datastore('DATABASE_URL')}`)
-
     try {
-      const result = await data.database.promote(app, args.database, options)
-      this.displayPromotionResult(result, preview, app)
+      const result = await data.database.promoteForApp(app, args.database, options)
+      if (progressEventsSeen) displayFollowerWarning(result.database)
+      else {
+        if (aliasSpinnerActive) {
+          ux.action.stop(result.backupAttachment ? color.attachment(`${result.backupAttachment.name}_URL`) : undefined)
+          aliasSpinnerActive = false
+        }
+
+        if (!promotionSpinnerActive && promotionMessage) ux.action.start(promotionMessage)
+        this.displayPromotionResult(result, preview)
+      }
+
+      if (result.releasePhase?.status === 'unknown') {
+        ux.error(`Unable to check release phase for ${app}. Check your Attach DATABASE release for failures.`)
+      }
+
       return result
     } catch (error) {
       if (error instanceof DatabaseAlreadyPromotedError) {
@@ -100,10 +177,14 @@ export default class Promote extends Command {
       }
 
       if (error instanceof DatabasePromotionError) {
-        this.displayPartialPromotion(error.result, preview, app, error.cause)
-        if (error.cause instanceof DatabaseNotReadyError) {
-          this.errorIfNotReady(error.cause)
-        }
+        displayFollowerWarning(error.result.database)
+        if (!progressEventsSeen) this.displayPartialPromotion(error.result, {
+          aliasSpinnerActive,
+          cause: error.cause,
+          preview,
+          promotionMessage,
+          promotionSpinnerActive,
+        })
 
         if (error.cause instanceof DatabaseReleasePhaseError) {
           ux.error('Unable to check release phase. Check your Attach DATABASE release for failures.')
@@ -111,8 +192,6 @@ export default class Promote extends Command {
 
         throw error.cause
       }
-
-      if (error instanceof DatabaseNotReadyError) this.errorIfNotReady(error)
 
       throw error
     }
@@ -131,15 +210,28 @@ export default class Promote extends Command {
     `))
   }
 
-  private displayPartialPromotion(result: PromoteDatabasePartialResult, preview: PromoteDatabasePreview | undefined, app: string, cause: unknown) {
+  private displayPartialPromotion(
+    result: PromoteDatabasePartialResult,
+    context: {
+      aliasSpinnerActive: boolean
+      cause: unknown
+      preview: PromoteDatabasePreview | undefined
+      promotionMessage: string
+      promotionSpinnerActive: boolean
+    },
+  ) {
+    const {aliasSpinnerActive, cause, preview, promotionMessage, promotionSpinnerActive} = context
     const {attachment, backupAttachment} = result.mutationStatus
     if (attachment.attempted) {
+      if (!promotionSpinnerActive) ux.action.start(promotionMessage)
+
       if (attachment.status === 'created') {
         ux.action.stop()
       } else {
         ux.action.stop(color.red('!'))
       }
     } else if (backupAttachment.attempted && backupAttachment.status !== 'created') {
+      if (!aliasSpinnerActive) ux.action.start(`Ensuring an alternate alias for existing ${color.datastore('DATABASE_URL')}`)
       ux.action.stop(color.red('!'))
     }
 
@@ -151,7 +243,13 @@ export default class Promote extends Command {
     }
 
     if (result.releasePhase && result.releasePhase.status !== 'unknown') {
-      this.displayReleasePhase(result, preview, app)
+      this.displayReleasePhaseProgress({
+        attach: result.releasePhase.attach,
+        detach: result.releasePhase.detach,
+        stage: 'completed',
+        status: result.releasePhase.status,
+        type: 'release-phase',
+      }, preview)
     }
   }
 
@@ -166,31 +264,39 @@ export default class Promote extends Command {
     }
   }
 
-  private displayPromotionResult(result: PromoteDatabaseResult, preview: PromoteDatabasePreview | undefined, app: string) {
+  private displayPromotionResult(result: PromoteDatabaseResult, preview: PromoteDatabasePreview | undefined) {
     ux.action.stop()
     this.displayPoolerResult(result)
     this.displayFollowerWarning(result)
-    this.displayReleasePhase(result, preview, app)
+    if (result.releasePhase) {
+      ux.action.start('Checking release phase')
+      this.displayReleasePhaseProgress({
+        attach: result.releasePhase.attach,
+        detach: result.releasePhase.detach,
+        stage: 'completed',
+        status: result.releasePhase.status,
+        type: 'release-phase',
+      }, preview)
+    }
   }
 
-  private displayReleasePhase(result: Pick<PromoteDatabasePartialResult, 'releasePhase'>, preview: PromoteDatabasePreview | undefined, app: string) {
-    const {releasePhase} = result
-    if (!releasePhase) return
-
-    ux.action.start('Checking release phase')
-    if (releasePhase.status === 'succeeded') {
+  private displayReleasePhaseProgress(
+    event: Extract<PromoteDatabaseProgressEvent, {type: 'release-phase'}>,
+    preview: PromoteDatabasePreview | undefined,
+  ) {
+    if (event.status === 'succeeded') {
       let message = 'pg:promote succeeded.'
-      if (releasePhase.detach?.status === 'failed') {
-        message += ` It is safe to ignore the failed ${releasePhase.detach.description} release.`
+      if (event.detach?.status === 'failed') {
+        message += ` It is safe to ignore the failed ${event.detach.description} release.`
       }
 
       ux.action.stop(message)
       return
     }
 
-    if (releasePhase.status === 'failed') {
-      let message = `pg:promote failed because ${releasePhase.attach?.description} release was unsuccessful. Your application is currently running `
-      const detachSucceeded = releasePhase.detach?.status === 'succeeded'
+    if (event.status === 'failed') {
+      let message = `pg:promote failed because ${event.attach?.description} release was unsuccessful. Your application is currently running `
+      const detachSucceeded = event.detach?.status === 'succeeded'
       message += detachSucceeded
         ? 'without an attached DATABASE_URL.'
         : `with ${preview?.currentAttachment?.addon.name} attached as DATABASE_URL.`
@@ -200,21 +306,11 @@ export default class Promote extends Command {
       return
     }
 
-    if (releasePhase.status === 'timed_out') {
+    if (event.status === 'timed_out') {
       ux.action.stop('timeout. Check your Attach DATABASE release for failures.')
       return
     }
 
-    ux.error(`Unable to check release phase for ${app}. Check your Attach DATABASE release for failures.`)
-  }
-
-  private errorIfNotReady(error: DatabaseNotReadyError): never {
-    ux.error(heredoc(`
-      Database cannot be promoted while in state: ${error.status.message}
-
-      Promoting this database can lead to application errors and outage. Please run ${color.code('heroku pg:wait')} to wait for database to become available.
-
-      To ignore this error, you can pass the --force flag to promote the database and risk application issues.
-    `))
+    ux.action.stop(color.red('!'))
   }
 }

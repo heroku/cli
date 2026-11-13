@@ -70,7 +70,7 @@ describe('pg:reset', function () {
     expectOutput(stderr, 'Resetting postgres-1... done')
   })
 
-  it('passes the database identity and normalized pre-installed extensions to the SDK', async function () {
+  it('passes the database identity and pre-installed extensions to the SDK', async function () {
     fakeData.database.resetForApp.callsFake(resetWith(resetResult))
 
     const {result, stderr} = await runCommand(Cmd, [
@@ -80,7 +80,7 @@ describe('pg:reset', function () {
     expect(fakeData.database.resetForApp.calledOnce).to.equal(true)
     expect(fakeData.database.resetForApp.firstCall.args[0]).to.equal('myapp')
     expect(fakeData.database.resetForApp.firstCall.args[1]).to.equal('DATABASE_URL')
-    expect(fakeData.database.resetForApp.firstCall.args[2].extensions).to.deep.equal(['postgis', 'uuid-ossp'])
+    expect(fakeData.database.resetForApp.firstCall.args[2].extensions).to.equal('uuid-ossp, Postgis')
     expect(result).to.deep.equal({addon, result: resetResult})
     expectOutput(stderr, 'Resetting postgres-1... done')
   })

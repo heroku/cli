@@ -23,14 +23,14 @@ const unfollowResult = {
   addon,
   database: {following: 'postgres://db1'},
   following: 'postgres://db1',
-  origin: 'postgres-1',
+  origin: {name: 'postgres-1', rawName: 'postgres-1_URL', type: 'config_var' as const},
   result: {message: 'unfollowed'},
 }
 
 interface UnfollowPreview {
   addon: typeof addon
   following: string
-  origin: string
+  origin: {defaultPort: string, hostname: string, pathname: string, port: string, protocol: string, type: 'url'} | {name: string; rawName: string; type: 'config_var'}
 }
 
 interface UnfollowOptions {
@@ -42,7 +42,11 @@ interface FakeData {
 }
 
 const unfollowWith = (result: unknown, onUnfollow = () => {}, preview?: UnfollowPreview) => async (_app: string, _database?: string, options: UnfollowOptions = {}) => {
-  await options.beforeUnfollow?.(preview ?? {addon, following: 'postgres://db1', origin: 'postgres-1'})
+  await options.beforeUnfollow?.(preview ?? {
+    addon,
+    following: 'postgres://db1',
+    origin: {name: 'postgres-1', rawName: 'postgres-1_URL', type: 'config_var'},
+  })
   onUnfollow()
 
   return result
@@ -130,13 +134,14 @@ describe('pg:unfollow', function () {
     fakeData.database.unfollowForApp.callsFake(unfollowWith(unfollowResult, () => {}, {
       addon,
       following: 'postgres://db1:5432/database',
-      origin: 'FOLLOWING',
+      origin: {name: 'FOLLOWING', rawName: 'FOLLOWING_URL', type: 'config_var'},
     }))
     const confirm = stub(ConfirmCommand.prototype, 'confirm').resolves()
 
     await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'myapp', 'DATABASE'])
 
     expect(confirm.firstCall.args[2]).to.contain(color.name('FOLLOWING'))
+    expect(ansis.strip(confirm.firstCall.args[2] as string)).not.to.contain('FOLLOWING_URL')
   })
 
   it('uses PGPORT when formatting an origin URL without an explicit port', async function () {
@@ -145,13 +150,60 @@ describe('pg:unfollow', function () {
     fakeData.database.unfollowForApp.callsFake(unfollowWith(unfollowResult, () => {}, {
       addon,
       following: 'postgres://db1/database',
-      origin: 'db1:5432/database',
+      origin: {
+        defaultPort: '5432', hostname: 'db1', pathname: '/database', port: '', protocol: 'postgres:', type: 'url',
+      },
     }))
     const confirm = stub(ConfirmCommand.prototype, 'confirm').resolves()
 
     try {
       await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'myapp', 'DATABASE'])
       expect(confirm.firstCall.args[2]).to.contain('db1:6432/database')
+    } finally {
+      if (previousPgPort === undefined) delete process.env.PGPORT
+      else process.env.PGPORT = previousPgPort
+    }
+  })
+
+  it('uses an explicit URL port instead of local PGPORT', async function () {
+    const previousPgPort = process.env.PGPORT
+    process.env.PGPORT = '6432'
+    fakeData.database.unfollowForApp.callsFake(unfollowWith(unfollowResult, () => {}, {
+      addon,
+      following: 'postgres://db1:6543/database',
+      origin: {
+        defaultPort: '5432', hostname: 'db1', pathname: '/database', port: '6543', protocol: 'postgres:', type: 'url',
+      },
+    }))
+    const confirm = stub(ConfirmCommand.prototype, 'confirm').resolves()
+
+    try {
+      await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'myapp', 'DATABASE'])
+      expect(ansis.strip(confirm.firstCall.args[2] as string)).to.contain('db1:6543/database')
+      expect(ansis.strip(confirm.firstCall.args[2] as string)).not.to.contain('db1:6432/database')
+    } finally {
+      if (previousPgPort === undefined) delete process.env.PGPORT
+      else process.env.PGPORT = previousPgPort
+    }
+  })
+
+  it('uses the SDK default port when URL and local PGPORT have no port', async function () {
+    const previousPgPort = process.env.PGPORT
+    delete process.env.PGPORT
+    fakeData.database.unfollowForApp.callsFake(unfollowWith(unfollowResult, () => {}, {
+      addon,
+      following: 'postgres://db1/database',
+      origin: {
+        defaultPort: '5432', hostname: 'db2', pathname: '/database', port: '', protocol: 'postgres:', type: 'url',
+      },
+    }))
+    const confirm = stub(ConfirmCommand.prototype, 'confirm').resolves()
+
+    try {
+      await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'myapp', 'DATABASE'])
+
+      expect(ansis.strip(confirm.firstCall.args[2] as string)).to.contain('db2:5432/database')
+      expect(ansis.strip(confirm.firstCall.args[2] as string)).to.not.contain('legacy-host')
     } finally {
       if (previousPgPort === undefined) delete process.env.PGPORT
       else process.env.PGPORT = previousPgPort
@@ -172,7 +224,11 @@ describe('pg:unfollow', function () {
   it('does not complete the spinner when the SDK rejects', async function () {
     const error = new Error('unfollow failed')
     fakeData.database.unfollowForApp.callsFake(async (_app: string, _database: string | undefined, options: UnfollowOptions = {}) => {
-      await options.beforeUnfollow?.({addon, following: 'postgres://db1', origin: 'postgres-1'})
+      await options.beforeUnfollow?.({
+        addon,
+        following: 'postgres://db1',
+        origin: {name: 'postgres-1', rawName: 'postgres-1_URL', type: 'config_var'},
+      })
       throw error
     })
 

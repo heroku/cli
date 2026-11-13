@@ -1,6 +1,7 @@
 import type {RestoreAndWaitOptions} from '@heroku/sdk/extensions/data'
 
 import {runCommand} from '@heroku-cli/test-utils'
+import {TransferFailedError} from '@heroku/sdk/extensions/data'
 import {expect} from 'chai'
 import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
@@ -249,5 +250,23 @@ describe('pg:backups:restore', function () {
       `))
       expect(fakeData.restore.restoreAndWait.firstCall.args[3]).to.deep.include({extensions: ['postgis', 'uuid-ossp']})
     })
+  })
+
+  it('reports ancillary warnings when restore fails', async function () {
+    fakeData.transfer.listByApp.resolves([
+      {
+        from_type: 'pg_dump', num: 5, succeeded: true, to_type: 'gof3r', to_url: 'https://myurl',
+      },
+    ])
+    const failure = new TransferFailedError({
+      from_type: 'pg_restore', logs: [], num: 6, to_type: 'postgres',
+    } as never)
+    failure.ancillaryErrors = ['target credential lookup failed']
+    fakeData.restore.restoreAndWait.rejects(failure)
+
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'myapp', 'b005'])
+
+    expect(error?.message).to.include('An error occurred and the restore did not finish.')
+    expect(stderr).to.include('Warning: target credential lookup failed')
   })
 })

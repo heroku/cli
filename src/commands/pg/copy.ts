@@ -1,65 +1,14 @@
-import type {DatabaseCopyEndpoint, DatabaseCopyResult} from '@heroku/sdk/extensions/data'
+import type {DatabaseCopyEndpoint, DatabaseCopyOptions, DatabaseCopyResult} from '@heroku/sdk/extensions/data'
 import type {TransferCreateResult} from '@heroku/types/data'
 
-import {
-  ALLOWED_HEROKU_DOMAINS, Command, flags, LOCALHOST_DOMAINS,
-} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {Command, flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
 import {databaseCopyExtensions, TransferFailedError} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
-import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../lib/confirm-command.js'
 import * as pgBackups from '../../lib/pg/backups.js'
 import {createSDK} from '../../lib/sdk.js'
-
-const heredoc = tsheredoc
-
-function dataApiBaseUrl(): string {
-  const configuredHost = utils.pg.host()
-  if (/[?#]/.test(configuredHost)) {
-    throw new Error('Invalid data API host')
-  }
-
-  let url: URL
-  try {
-    url = new URL(configuredHost.includes('://') ? configuredHost : `https://${configuredHost}`)
-  } catch {
-    throw new Error('Invalid data API host')
-  }
-
-  const isLocalhost = LOCALHOST_DOMAINS.includes(url.hostname as (typeof LOCALHOST_DOMAINS)[number])
-  const trustedHost = ALLOWED_HEROKU_DOMAINS.some(domain => url.hostname === domain || url.hostname.endsWith(`.${domain}`))
-    || isLocalhost
-
-  if (!trustedHost || (isLocalhost ? !['http:', 'https:'].includes(url.protocol) : url.protocol !== 'https:')) {
-    throw new Error('Refusing to send Heroku credentials to untrusted data API host')
-  }
-
-  if (url.username || url.password || url.pathname !== '/' || url.search || url.hash || (!isLocalhost && url.port)) {
-    throw new Error('Invalid data API host')
-  }
-
-  return url.origin
-}
-
-function rawUrlConfirmationValue(identity: string): string | undefined {
-  if (!/^postgres:\/\//.test(identity)) return undefined
-  const url = new URL(identity)
-  return url.pathname.slice(1) || url.hostname
-}
-
-function showCopyFailure(error: TransferFailedError): never {
-  ux.action.stop('!')
-  for (const warning of error.ancillaryErrors ?? []) ux.warn(warning)
-
-  ux.error(new Error(heredoc(`
-    An error occurred and the backup did not finish.
-
-    ${(error.transfer.logs || []).slice(-5).map(log => log.message).join('\n')}
-
-    Run ${color.code(`heroku pg:backups:info ${pgBackups.name(error.transfer)}`)} for more details.`)))
-}
 
 export default class Copy extends Command {
   static args = {
@@ -82,51 +31,39 @@ export default class Copy extends Command {
     const {app, confirm, verbose, 'wait-interval': waitInterval} = commandFlags
     const {heroku} = this
     const interval = Math.max(3, Number.parseInt(waitInterval || '0', 10)) || 3
-    const {data} = createSDK(heroku, {
-      clientOptionsByService: {data: {baseUrl: dataApiBaseUrl()}},
-      extensions: [databaseCopyExtensions],
-    })
+    const {data} = createSDK(heroku, {extensions: [databaseCopyExtensions]})
     const waitOptions = pgBackups.constructWaitOptions(interval, verbose, () => 'Copying')
     let result: DatabaseCopyResult
     let copyTransfer: TransferCreateResult | undefined
     let hasAdditionalCredentials = false
     let actionStarted = false
     let additionalCredentialsWarningShown = false
+    const warningsShown = new Set<string>()
+
+    const warnOnce = (warning: string) => {
+      if (warningsShown.has(warning)) return
+      ux.warn(warning)
+      warningsShown.add(warning)
+    }
 
     const warnAboutAdditionalCredentials = () => {
       if (hasAdditionalCredentials && !additionalCredentialsWarningShown) {
-        ux.warn('pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.')
+        warnOnce('pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.')
         additionalCredentialsWarningShown = true
       }
     }
 
     try {
-      result = await data.database.copy(app, args.source, args.target, {
+      // copyForApp is the public SDK API; keep a local shape for older installed SDK declarations.
+      const database = data.database as unknown as {
+        copyForApp: (app: string, source: string, target: string, options: DatabaseCopyOptions) => Promise<DatabaseCopyResult>
+      }
+      result = await database.copyForApp(app, args.source, args.target, {
         async beforeCopy({source, target}) {
-          const targetConfirm = rawUrlConfirmationValue(args.target) ?? target.confirm
           const message = 'WARNING: Destructive action\n'
             + `This command will remove all data from ${color.yellow(target.name)}\n`
             + `Data from ${color.yellow(source.name)} will then be transferred to ${color.yellow(target.name)}`
-          await new ConfirmCommand().confirm(targetConfirm, confirm, message)
-
-          if (source.database) {
-            try {
-              const {data: credentialsData} = createSDK(heroku, {
-                clientOptionsByService: {
-                  data: {
-                    baseUrl: dataApiBaseUrl(),
-                    headers: {Authorization: `Basic ${Buffer.from(`:${heroku.auth}`).toString('base64')}`},
-                    token: () => '',
-                  },
-                },
-              })
-              const credentials = await credentialsData.postgresDatabase.listCredentials(source.database.addon.name)
-              hasAdditionalCredentials ||= Array.isArray(credentials) && credentials.length > 1
-              warnAboutAdditionalCredentials()
-            } catch {
-              // Credential lookup is advisory; the SDK's later lookup remains a fallback.
-            }
-          }
+          await new ConfirmCommand().confirm(target.confirm, confirm, message)
         },
         copyPoller: {
           onStart({source, target}: {source: DatabaseCopyEndpoint; target: DatabaseCopyEndpoint}) {
@@ -137,15 +74,21 @@ export default class Copy extends Command {
             ux.action.stop()
             actionStarted = false
             if (copyTransfer) {
+              // waitPoller.onStart runs first and populates copyTransfer before this restart.
               waitOptions.waitPoller?.onStart?.(copyTransfer)
               actionStarted = true
             }
           },
         },
         credentialToken: heroku.auth,
-        onCredentialsChecked({hasAdditionalCredentials: hasAdditionalCredentialsFound}) {
+        onCredentialsChecked({hasAdditionalCredentials: hasAdditionalCredentialsFound, warning}: {
+          credentialCount?: number
+          hasAdditionalCredentials: boolean
+          warning?: string
+        }) {
           hasAdditionalCredentials ||= hasAdditionalCredentialsFound
           warnAboutAdditionalCredentials()
+          if (warning) warnOnce(warning)
         },
         verbose,
         ...waitOptions,
@@ -163,7 +106,10 @@ export default class Copy extends Command {
     } catch (error) {
       warnAboutAdditionalCredentials()
 
-      if (error instanceof TransferFailedError) return showCopyFailure(error)
+      if (error instanceof TransferFailedError) {
+        pgBackups.reportTransferFailure(error, 'copy', warningsShown)
+      }
+
       if (actionStarted) ux.action.stop('!')
       throw error
     }
@@ -171,7 +117,7 @@ export default class Copy extends Command {
     hasAdditionalCredentials ||= result.hasAdditionalCredentials
     warnAboutAdditionalCredentials()
 
-    for (const warning of result.warnings) ux.warn(warning)
+    for (const warning of result.warnings) warnOnce(warning)
     return result
   }
 }

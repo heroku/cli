@@ -1,4 +1,4 @@
-import type {AddOnAttachment} from '@heroku/types/3.sdk'
+import type {AddOnAttachment, Release} from '@heroku/types/3.sdk'
 
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
@@ -9,18 +9,16 @@ import {
   DatabaseReleasePhaseError,
   type PromoteDatabaseOptions,
   type PromoteDatabasePreview,
+  type PromoteDatabaseProgressEvent,
   type PromoteDatabaseResult,
 } from '@heroku/sdk/extensions/data'
 import {ux} from '@oclif/core'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
 import {restore, SinonStub, stub} from 'sinon'
-import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/promote.js'
 
-const heredoc = tsheredoc
 const addon = {
   app: {id: 'app-1', name: 'myapp'},
   id: 'db-1',
@@ -77,9 +75,54 @@ const result = (overrides: Partial<PromoteDatabaseResult> = {}): PromoteDatabase
 
 interface FakeData {
   database: {
-    promote: SinonStub
-    waitStatus: SinonStub
+    info: SinonStub
+    promoteForApp: SinonStub
   }
+}
+
+const emitProgressForResult = async (options: PromoteDatabaseOptions, promotionResult: PromoteDatabaseResult) => {
+  const {mutationStatus, releasePhase} = promotionResult
+  const progress: PromoteDatabaseProgressEvent[] = []
+
+  if (mutationStatus.backupAttachment.attempted) {
+    progress.push({stage: 'backup', status: 'started', type: 'attachment'}, {
+      attachment: promotionResult.backupAttachment,
+      stage: 'backup',
+      status: mutationStatus.backupAttachment.status === 'created' ? 'succeeded' : 'unknown',
+      type: 'attachment',
+    })
+  }
+
+  if (mutationStatus.attachment.attempted) {
+    progress.push({stage: 'promotion', status: 'started', type: 'attachment'}, {
+      attachment: promotionResult.attachment,
+      stage: 'promotion',
+      status: mutationStatus.attachment.status === 'created' ? 'succeeded' : 'unknown',
+      type: 'attachment',
+    })
+  }
+
+  if (mutationStatus.poolerAttachment.attempted) {
+    progress.push({stage: 'reattachment', status: 'started', type: 'pooler-reattachment'}, {
+      attachment: promotionResult.poolerAttachment,
+      stage: 'reattachment',
+      status: mutationStatus.poolerAttachment.status === 'created' ? 'succeeded' : 'unknown',
+      type: 'pooler-reattachment',
+    })
+  }
+
+  if (releasePhase) {
+    progress.push({stage: 'started', status: 'started', type: 'release-phase'}, {
+      attach: releasePhase.attach,
+      detach: releasePhase.detach,
+      stage: 'completed',
+      status: releasePhase.status,
+      type: 'release-phase',
+    })
+  }
+
+  // eslint-disable-next-line no-await-in-loop -- preserve the SDK progress order
+  for (const event of progress) await options.onProgress?.(event)
 }
 
 const promoteWith = (
@@ -90,7 +133,7 @@ const promoteWith = (
   async (_app: string, _database?: string, options: PromoteDatabaseOptions = {}) => {
     customizeOptions?.(options)
     await options.beforePromote?.(promotionPreview)
-    if (promotionResult.backupAttachment) await options.onBackupAttachment?.(promotionResult.backupAttachment)
+    await emitProgressForResult(options, promotionResult)
 
     return promotionResult
   }
@@ -99,7 +142,7 @@ describe('pg:promote', function () {
   let fakeData: FakeData
 
   beforeEach(function () {
-    fakeData = {database: {promote: stub(), waitStatus: stub().resolves({message: 'available', 'waiting?': false})}}
+    fakeData = {database: {info: stub().resolves({}), promoteForApp: stub()}}
     stub(HerokuSDK.prototype, 'data').get(() => fakeData)
   })
 
@@ -109,23 +152,22 @@ describe('pg:promote', function () {
 
   it('promotes a database and returns the SDK result', async function () {
     const promotionResult = result()
-    fakeData.database.promote.callsFake(promoteWith(promotionResult, undefined, options => {
-      expect(options.force).to.equal(true)
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult, undefined, options => {
+      expect(options.force).to.equal(false)
     }))
 
     const {result: commandResult, stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
-    expect(fakeData.database.promote.calledOnce).to.equal(true)
-    expect(fakeData.database.promote.firstCall.args[0]).to.equal('myapp')
-    expect(fakeData.database.promote.firstCall.args[1]).to.equal('DATABASE')
-    expect(fakeData.database.waitStatus.calledOnceWithExactly(addon.id)).to.equal(true)
+    expect(fakeData.database.promoteForApp.calledOnce).to.equal(true)
+    expect(fakeData.database.promoteForApp.firstCall.args[0]).to.equal('myapp')
+    expect(fakeData.database.promoteForApp.firstCall.args[1]).to.equal('DATABASE')
     expect(commandResult).to.equal(promotionResult)
     expect(stdout).to.equal('')
     expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
   })
 
   it('preserves custom attachment names', async function () {
-    fakeData.database.promote.callsFake(promoteWith(result(), undefined, options => {
+    fakeData.database.promoteForApp.callsFake(promoteWith(result(), undefined, options => {
       expect(options.as).to.equal('CUSTOM_DB')
     }))
 
@@ -136,56 +178,61 @@ describe('pg:promote', function () {
 
   it('promotes when the app has no DATABASE attachment', async function () {
     const promotionResult = result()
-    fakeData.database.promote.callsFake(promoteWith(promotionResult, preview()))
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult, preview()))
 
     const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'dwh-db'])
 
-    expect(stderr).to.contain('Ensuring an alternate alias for existing ⛁ DATABASE_URL... Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
+    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
+    expect(stderr).to.not.contain('Ensuring an alternate alias')
   })
 
-  it('uses the real SDK extension and rejects an unready database before mutation when no DATABASE attachment exists', async function () {
-    restore()
+  it('rejects an unready database before creating an alias for the existing DATABASE', async function () {
+    const notReady = new DatabaseNotReadyError({message: 'pending', 'waiting?': true})
+    fakeData.database.promoteForApp.rejects(notReady)
 
-    const resolvedAttachment = {
-      addon: {
-        app: {id: 'app-1', name: 'myapp'},
-        id: 'db-1',
-        name: 'dwh-db',
-        plan: {name: 'heroku-postgresql:standard-2'},
-      },
-      app: {id: 'app-1', name: 'myapp'},
-      config_vars: ['DATABASE_URL'],
-      created_at: '2026-01-01T00:00:00Z',
-      id: 'attachment-1',
-      log_input_url: null,
-      name: 'DATABASE',
-      namespace: null,
-      updated_at: '2026-01-01T00:00:00Z',
-      web_url: 'https://addons-sso.heroku.com/',
-    }
-    const platformApi = nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve', {addon_attachment: 'dwh-db', app: 'myapp'})
-      .reply(200, [resolvedAttachment])
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [])
-    const promotionMutation = nock('https://api.heroku.com')
-      .post('/addon-attachments')
-      .reply(201, resolvedAttachment)
-    const dataApi = nock('https://postgres-api.heroku.com')
-      .get('/client/v11/databases/db-1/wait_status')
-      .reply(200, {message: 'pending', 'waiting?': true})
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
-    const {error} = await runCommand(Cmd, ['--app', 'myapp', 'dwh-db'])
+    expect(error).to.equal(notReady)
+    expect(fakeData.database.promoteForApp.firstCall.args[2].force).to.equal(false)
+    expect(stderr).to.not.contain('Ensuring an alternate alias')
+    expect(stderr).to.not.contain('Promoting ⛁ dwh-db')
+  })
 
-    expect(ansis.strip((error as Error).message)).to.contain('Database cannot be promoted while in state: pending')
-    expect(platformApi.isDone()).to.equal(true)
-    expect(dataApi.isDone()).to.equal(true)
-    expect(promotionMutation.isDone()).to.equal(false)
-    nock.cleanAll()
+  it('uses --force to proceed through backup and promotion progress', async function () {
+    const promotionResult = result({backupAttachment: backup})
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+      expect(options.force).to.equal(true)
+      await options.beforePromote?.(preview({currentAttachment: {...alias, name: 'DATABASE'}}))
+      await options.onProgress?.({stage: 'backup', status: 'started', type: 'attachment'})
+      await options.onProgress?.({
+        attachment: backup, stage: 'backup', status: 'succeeded', type: 'attachment',
+      })
+      await options.onProgress?.({stage: 'promotion', status: 'started', type: 'attachment'})
+      await options.onProgress?.({
+        attachment, stage: 'promotion', status: 'succeeded', type: 'attachment',
+      })
+      return promotionResult
+    })
+
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', '--force', 'DATABASE'])
+
+    expect(error).to.be.undefined
+    expect(stderr).to.contain('Ensuring an alternate alias for existing ⛁ DATABASE_URL... GREEN_URL')
+    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
+  })
+
+  it('does not show an alias spinner when database resolution fails', async function () {
+    fakeData.database.promoteForApp.rejects(new Error('Database not found'))
+
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'missing-database'])
+
+    expect(error!.message).to.equal('Database not found')
+    expect(stderr).to.not.contain('Ensuring an alternate alias')
+    expect(stderr).to.not.contain('Promoting ⛁ dwh-db')
   })
 
   it('uses an existing alias for the current DATABASE without creating a backup', async function () {
-    fakeData.database.promote.callsFake(promoteWith(result(), preview({
+    fakeData.database.promoteForApp.callsFake(promoteWith(result(), preview({
       currentAttachment: {...alias, name: 'DATABASE'},
       existingAlias: alias,
     })))
@@ -196,7 +243,7 @@ describe('pg:promote', function () {
     expect(stderr).to.not.contain('GREEN_URL')
   })
 
-  it('preserves the backup alias before checking readiness', async function () {
+  it('renders backup alias and promotion updates from live SDK progress', async function () {
     const events: string[] = []
     const promotionResult = result({
       backupAttachment: backup,
@@ -206,20 +253,23 @@ describe('pg:promote', function () {
         poolerAttachment: {attempted: false, status: 'not_attempted'},
       },
     })
-    fakeData.database.waitStatus.callsFake(async () => {
-      events.push('ready')
-      return {message: 'available', 'waiting?': false}
-    })
-    fakeData.database.promote.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
       await options.beforePromote?.(preview({currentAttachment: {...alias, name: 'DATABASE'}}))
       events.push('backup-created')
-      await options.onBackupAttachment?.(backup)
+      await options.onProgress?.({stage: 'backup', status: 'started', type: 'attachment'})
+      await options.onProgress?.({
+        attachment: backup, stage: 'backup', status: 'succeeded', type: 'attachment',
+      })
+      await options.onProgress?.({stage: 'promotion', status: 'started', type: 'attachment'})
+      await options.onProgress?.({
+        attachment, stage: 'promotion', status: 'succeeded', type: 'attachment',
+      })
       return promotionResult
     })
 
     const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
-    expect(events).to.deep.equal(['backup-created', 'ready'])
+    expect(events).to.deep.equal(['backup-created'])
     expect(stderr).to.contain('Ensuring an alternate alias for existing ⛁ DATABASE_URL... GREEN_URL')
     expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
   })
@@ -233,9 +283,16 @@ describe('pg:promote', function () {
         poolerAttachment: {attempted: false, status: 'not_attempted'},
       },
     })
-    fakeData.database.promote.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
       await options.beforePromote?.(preview({currentAttachment: {...alias, name: 'DATABASE'}}))
-      await options.onBackupAttachment?.(backup)
+      await options.onProgress?.({stage: 'backup', status: 'started', type: 'attachment'})
+      await options.onProgress?.({
+        attachment: backup, stage: 'backup', status: 'succeeded', type: 'attachment',
+      })
+      await options.onProgress?.({stage: 'promotion', status: 'started', type: 'attachment'})
+      await options.onProgress?.({
+        attachment, stage: 'promotion', status: 'succeeded', type: 'attachment',
+      })
       return promotionResult
     })
 
@@ -254,7 +311,7 @@ describe('pg:promote', function () {
       },
       poolerAttachment: pooler,
     })
-    fakeData.database.promote.callsFake(promoteWith(promotionResult))
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult))
 
     const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
@@ -263,7 +320,7 @@ describe('pg:promote', function () {
 
   it('does not reattach a pooler when SDK result has no pooler attachment', async function () {
     const promotionResult = result()
-    fakeData.database.promote.callsFake(promoteWith(promotionResult))
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult))
 
     const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
@@ -272,7 +329,7 @@ describe('pg:promote', function () {
 
   it('does not promote a database that is already DATABASE', async function () {
     const alreadyPromoted = new DatabaseAlreadyPromotedError('myapp', addon, attachment)
-    fakeData.database.promote.rejects(alreadyPromoted)
+    fakeData.database.promoteForApp.rejects(alreadyPromoted)
 
     const {error} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
@@ -282,7 +339,7 @@ describe('pg:promote', function () {
   it('preserves already-promoted credential attachment output', async function () {
     const credential = {...attachment, name: 'PURPLE', namespace: 'credential:hello'}
     const alreadyPromoted = new DatabaseAlreadyPromotedError('myapp', addon, credential)
-    fakeData.database.promote.rejects(alreadyPromoted)
+    fakeData.database.promoteForApp.rejects(alreadyPromoted)
 
     const {error} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
@@ -292,7 +349,7 @@ describe('pg:promote', function () {
   it('promotes credential attachments without changing their namespace', async function () {
     const credential = {...attachment, name: 'PURPLE', namespace: 'credential:hello'}
     const promotionResult = result({attachment: credential})
-    fakeData.database.promote.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
       await options.beforePromote?.(preview({attachment: credential, existingAlias: alias}))
       return promotionResult
     })
@@ -304,7 +361,7 @@ describe('pg:promote', function () {
 
   it('warns when the promoted database remains a follower', async function () {
     const promotionResult = result({database: {following: 'postgres://leader', leader: 'postgresql-leader'}})
-    fakeData.database.promote.callsFake(promoteWith(promotionResult))
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult))
 
     const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
@@ -313,7 +370,7 @@ describe('pg:promote', function () {
     expect(stderr).to.contain('postgresql-leader')
   })
 
-  it('waits for release-phase polling before warning that the promoted database remains a follower', async function () {
+  it('shows follower warning when promotion progress reports attachment success before release polling', async function () {
     let resolvePromotion!: (promotionResult: PromoteDatabaseResult) => void
     let promoteStarted!: () => void
     const promotionStarted = new Promise<void>(resolve => {
@@ -327,23 +384,38 @@ describe('pg:promote', function () {
       resolvePromotion = resolve
     })
     const followerWarning = stub(ux, 'warn').callThrough()
-    fakeData.database.promote.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+    fakeData.database.info.resolves({following: 'postgres://leader', leader: 'postgresql-leader'})
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
       await options.beforePromote?.(preview())
+      await options.onProgress?.({stage: 'promotion', status: 'started', type: 'attachment'})
+      await options.onProgress?.({
+        attachment, stage: 'promotion', status: 'succeeded', type: 'attachment',
+      })
+      await options.onProgress?.({stage: 'started', status: 'started', type: 'release-phase'})
+      await options.onProgress?.({
+        attach: {id: 'release-1', status: 'pending'} as Release,
+        stage: 'poll', status: 'pending', type: 'release-phase',
+      })
+      await options.onProgress?.({
+        attach: {id: 'release-1', status: 'succeeded'} as Release,
+        stage: 'completed', status: 'succeeded', type: 'release-phase',
+      })
       promoteStarted()
       return pendingPromotion
     })
 
     const command = runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
     await promotionStarted
-    expect(fakeData.database.promote.calledOnce).to.equal(true)
-    expect(followerWarning.called).to.equal(false)
+    expect(fakeData.database.promoteForApp.calledOnce).to.equal(true)
+    expect(followerWarning.calledOnce).to.equal(true)
 
     resolvePromotion(promotionResult)
     const {stderr} = await command
 
-    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
     expect(stderr).to.contain('Your database has been promoted but it is currently a follower')
-    expect(stderr.indexOf('Your database has been promoted')).to.be.lessThan(stderr.indexOf('Checking release phase... pg:promote succeeded.'))
+    expect(stderr).to.contain('Checking release phase')
+    expect(stderr).to.contain('pg:promote succeeded.')
+    expect(stderr.split('pg:promote succeeded.')).to.have.length(2)
     expect(followerWarning.calledOnce).to.equal(true)
   })
 
@@ -355,7 +427,7 @@ describe('pg:promote', function () {
         status: 'succeeded',
       } as PromoteDatabaseResult['releasePhase'],
     })
-    fakeData.database.promote.callsFake(promoteWith(promotionResult))
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult))
 
     const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
@@ -370,7 +442,7 @@ describe('pg:promote', function () {
         status: 'failed',
       } as PromoteDatabaseResult['releasePhase'],
     })
-    fakeData.database.promote.callsFake(promoteWith(promotionResult))
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult))
 
     const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
@@ -386,7 +458,7 @@ describe('pg:promote', function () {
         status: 'failed',
       } as PromoteDatabaseResult['releasePhase'],
     })
-    fakeData.database.promote.callsFake(promoteWith(promotionResult))
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult))
 
     const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
@@ -395,7 +467,7 @@ describe('pg:promote', function () {
 
   it('preserves release-phase timeout as a successful message', async function () {
     const promotionResult = result({releasePhase: {status: 'timed_out'} as PromoteDatabaseResult['releasePhase']})
-    fakeData.database.promote.callsFake(promoteWith(promotionResult))
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult))
 
     const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
@@ -405,7 +477,7 @@ describe('pg:promote', function () {
 
   it('uses generic CLI text when SDK rejects for a missing Attach DATABASE release', async function () {
     const cause = new DatabaseReleasePhaseError('myapp')
-    fakeData.database.promote.rejects(new DatabasePromotionError(result({releasePhase: {status: 'unknown'} as PromoteDatabaseResult['releasePhase']}), cause))
+    fakeData.database.promoteForApp.rejects(new DatabasePromotionError(result({releasePhase: {status: 'unknown'} as PromoteDatabaseResult['releasePhase']}), cause))
 
     expect(cause.message).to.equal('Unable to check release phase for myapp. Check your Attach DATABASE release for failures.')
 
@@ -415,53 +487,22 @@ describe('pg:promote', function () {
   })
 
   it('reports the app name for a fulfilled result with unknown release-phase status', async function () {
-    fakeData.database.promote.callsFake(promoteWith(result({releasePhase: {status: 'unknown'} as PromoteDatabaseResult['releasePhase']})))
+    fakeData.database.promoteForApp.callsFake(promoteWith(result({releasePhase: {status: 'unknown'} as PromoteDatabaseResult['releasePhase']})))
 
     const {error} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
     expect(ansis.strip(error!.message)).to.equal('Unable to check release phase for myapp. Check your Attach DATABASE release for failures.')
   })
 
-  it('creates backup alias before rejecting a database that is not ready', async function () {
-    const events: string[] = []
-    const notReady = new DatabaseNotReadyError({message: 'pending', 'waiting?': true})
-    fakeData.database.waitStatus.callsFake(async () => {
-      events.push('readiness')
-      throw notReady
-    })
-    fakeData.database.promote.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
-      await options.beforePromote?.(preview({currentAttachment: {...alias, name: 'DATABASE'}}))
-      events.push('backup')
-      try {
-        await options.onBackupAttachment?.(backup)
-      } catch (error) {
-        throw new DatabasePromotionError(result({backupAttachment: backup}), error)
-      }
-
-      return result()
-    })
-
-    const {error} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
-
-    expect(events).to.deep.equal(['backup', 'readiness'])
-    expect(ansis.strip(error!.message)).to.equal(heredoc(`
-      Database cannot be promoted while in state: pending
-
-      Promoting this database can lead to application errors and outage. Please run heroku pg:wait to wait for database to become available.
-
-      To ignore this error, you can pass the --force flag to promote the database and risk application issues.
-    `))
-  })
-
   it('skips readiness checks with --force', async function () {
     const promotionResult = result()
-    fakeData.database.promote.callsFake(promoteWith(promotionResult, undefined, options => {
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult, undefined, options => {
       expect(options.force).to.equal(true)
     }))
 
     const {stderr} = await runCommand(Cmd, ['--app', 'myapp', '--force', 'DATABASE'])
 
-    expect(fakeData.database.waitStatus.called).to.equal(false)
+    expect(fakeData.database.promoteForApp.firstCall.args[2].force).to.equal(true)
     expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
   })
 
@@ -474,7 +515,7 @@ describe('pg:promote', function () {
         poolerAttachment: {attempted: false, status: 'not_attempted'},
       },
     })
-    fakeData.database.promote.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
       await options.beforePromote?.(preview({existingAlias: alias}))
       throw new DatabasePromotionError(partial, cause)
     })
@@ -497,7 +538,7 @@ describe('pg:promote', function () {
       },
       poolerAttachment: pooler,
     })
-    fakeData.database.promote.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
       await options.beforePromote?.(preview({existingAlias: alias}))
       throw new DatabasePromotionError(partial, cause)
     })
@@ -518,7 +559,10 @@ describe('pg:promote', function () {
         poolerAttachment: {attempted: false, status: 'not_attempted'},
       },
     })
-    fakeData.database.promote.rejects(new DatabasePromotionError(partial, cause))
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+      await options.beforePromote?.(preview({currentAttachment: {...alias, name: 'DATABASE'}}))
+      throw new DatabasePromotionError(partial, cause)
+    })
 
     const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
@@ -531,7 +575,7 @@ describe('pg:promote', function () {
     const currentCredential = {...attachment, name: 'DATABASE', namespace: 'credential:goodbye'}
     const promotedCredential = {...attachment, name: 'PURPLE', namespace: 'credential:hello'}
     const promotionResult = result({attachment: promotedCredential})
-    fakeData.database.promote.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
       await options.beforePromote?.(preview({attachment: promotedCredential, currentAttachment: currentCredential, existingAlias: alias}))
       return promotionResult
     })
@@ -546,7 +590,7 @@ describe('pg:promote', function () {
       addon, id: 'default-alias', name: 'RED', namespace: null,
     })
     const credential = {...attachment, name: 'PURPLE', namespace: 'credential:hello'}
-    fakeData.database.promote.callsFake(promoteWith(result({attachment: credential}), preview({
+    fakeData.database.promoteForApp.callsFake(promoteWith(result({attachment: credential}), preview({
       attachment: credential,
       currentAttachment: attachment,
       existingAlias: defaultAlias,
@@ -564,7 +608,7 @@ describe('pg:promote', function () {
     })
     const currentCredential = {...attachment, name: 'DATABASE', namespace: 'credential:goodbye'}
     const credential = {...attachment, name: 'PURPLE', namespace: 'credential:hello'}
-    fakeData.database.promote.callsFake(promoteWith(result({attachment: credential}), preview({
+    fakeData.database.promoteForApp.callsFake(promoteWith(result({attachment: credential}), preview({
       attachment: credential,
       currentAttachment: currentCredential,
       existingAlias: credentialAlias,

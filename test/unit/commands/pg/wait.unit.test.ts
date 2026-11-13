@@ -38,7 +38,7 @@ interface WaitForReadyOptions {
 }
 
 interface FakeData {
-  database: {waitForReady: SinonStub}
+  database: {waitForReadyForApp: SinonStub}
 }
 
 const waitThrough = (databases: Array<{addon: typeof addon, status: WaitStatus}[]>) =>
@@ -57,7 +57,7 @@ describe('pg:wait', function () {
 
   beforeEach(function () {
     sandbox = createSandbox()
-    fakeData = {database: {waitForReady: stub()}}
+    fakeData = {database: {waitForReadyForApp: stub()}}
     sdkMock = mockSDKData(fakeData)
   })
 
@@ -67,7 +67,7 @@ describe('pg:wait', function () {
   })
 
   it('waits for a database to be available', async function () {
-    fakeData.database.waitForReady.callsFake(waitThrough([[
+    fakeData.database.waitForReadyForApp.callsFake(waitThrough([[
       {addon, status: {message: 'pending', 'waiting?': true}},
       {addon, status: {message: 'available', 'waiting?': false}},
     ]]))
@@ -76,13 +76,13 @@ describe('pg:wait', function () {
       '--app', 'myapp', '--wait-interval', '1', 'DATABASE_URL',
     ])
 
-    expect(fakeData.database.waitForReady.calledOnceWithExactly('myapp', 'DATABASE_URL', match({waitIntervalMs: 1000}))).to.equal(true)
+    expect(fakeData.database.waitForReadyForApp.calledOnceWithExactly('myapp', 'DATABASE_URL', match({waitIntervalMs: 1000}))).to.equal(true)
     expect(stdout).to.equal('')
     expect(stderr).to.contain('Waiting for database postgres-1... available')
   })
 
   it('starts and completes the spinner for each waiting database', async function () {
-    fakeData.database.waitForReady.callsFake(waitThrough([
+    fakeData.database.waitForReadyForApp.callsFake(waitThrough([
       [
         {addon, status: {message: 'pending', 'waiting?': true}},
         {addon, status: {message: 'available', 'waiting?': false}},
@@ -100,14 +100,14 @@ describe('pg:wait', function () {
   })
 
   it('waits for all databases sequentially without emitting output when immediately available', async function () {
-    fakeData.database.waitForReady.callsFake(waitThrough([
+    fakeData.database.waitForReadyForApp.callsFake(waitThrough([
       [{addon, status: {'waiting?': false}}],
       [{addon: otherAddon, status: {'waiting?': false}}],
     ]))
 
     const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp'])
 
-    expect(fakeData.database.waitForReady.calledOnceWithExactly('myapp', undefined, match.object)).to.equal(true)
+    expect(fakeData.database.waitForReadyForApp.calledOnceWithExactly('myapp', undefined, match.object)).to.equal(true)
     expect(stdout).to.equal('')
     expect(stderr).to.equal('')
   })
@@ -115,7 +115,7 @@ describe('pg:wait', function () {
   it('displays errors and notifies even when --no-notify is passed', async function () {
     const notifyStub = sandbox.stub(Cmd, 'notifier')
     const error = new LegacyDatabaseWaitError(addon, {'error?': true, message: 'this is an error message', 'waiting?': false})
-    fakeData.database.waitForReady.rejects(error)
+    fakeData.database.waitForReadyForApp.rejects(error)
 
     const {error: commandError} = await runCommand(Cmd, ['--app', 'myapp', '--no-notify'])
     const {message, oclif} = commandError as Errors.CLIError
@@ -126,7 +126,7 @@ describe('pg:wait', function () {
   })
 
   it('receives steps but does not display them', async function () {
-    fakeData.database.waitForReady.callsFake(waitThrough([[
+    fakeData.database.waitForReadyForApp.callsFake(waitThrough([[
       {addon, status: {message: 'upgrading', step: '1/3', 'waiting?': true}},
       {addon, status: {message: 'available', 'waiting?': false}},
     ]]))
@@ -141,15 +141,15 @@ describe('pg:wait', function () {
   })
 
   it('defaults invalid, zero, and negative wait intervals to five seconds', async function () {
-    fakeData.database.waitForReady.resolves({databases: []})
+    fakeData.database.waitForReadyForApp.resolves({databases: []})
 
     await runCommand(Cmd, ['--app', 'myapp', '--wait-interval', 'invalid', 'DATABASE_URL'])
-    expect(fakeData.database.waitForReady.firstCall.args[2].waitIntervalMs).to.equal(5000)
+    expect(fakeData.database.waitForReadyForApp.firstCall.args[2].waitIntervalMs).to.equal(5000)
 
     await runCommand(Cmd, ['--app', 'myapp', '--wait-interval', '0', 'DATABASE_URL'])
-    expect(fakeData.database.waitForReady.secondCall.args[2].waitIntervalMs).to.equal(5000)
+    expect(fakeData.database.waitForReadyForApp.secondCall.args[2].waitIntervalMs).to.equal(5000)
 
     await runCommand(Cmd, ['--app', 'myapp', '--wait-interval', '-1', 'DATABASE_URL'])
-    expect(fakeData.database.waitForReady.thirdCall.args[2].waitIntervalMs).to.equal(5000)
+    expect(fakeData.database.waitForReadyForApp.thirdCall.args[2].waitIntervalMs).to.equal(5000)
   })
 })

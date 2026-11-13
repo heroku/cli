@@ -27,14 +27,6 @@ export default class Reset extends Command {
     const {args, flags} = await this.parse(Reset)
     const {app, confirm, extensions} = flags
 
-    let extensionsArray: string[] | undefined
-    if (extensions) {
-      extensionsArray = extensions.split(',')
-        .map((ext: string) => ext.trim()
-          .toLowerCase())
-        .sort()
-    }
-
     const {data} = createSDK(this.heroku, {extensions: [databaseCommandExtensions]})
     const result = await data.database.resetForApp(app, args.database, {
       async beforeReset({addon}) {
@@ -45,7 +37,7 @@ export default class Reset extends Command {
         `))
         ux.action.start(`Resetting ${color.addon(addon.name)}`)
       },
-      extensions: extensionsArray,
+      extensions,
     })
     ux.action.stop()
 

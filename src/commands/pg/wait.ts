@@ -33,7 +33,7 @@ export default class Wait extends Command {
     let waiting = false
 
     try {
-      const result = await data.database.waitForReady(app, dbName, {
+      const result = await data.database.waitForReadyForApp(app, dbName, {
         onPoll({addon, status}) {
           if (status['error?']) return
 

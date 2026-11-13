@@ -10,14 +10,18 @@ import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc
 
-const formatOrigin = (origin: string, following: string) => {
-  const url = new URL(following)
-  const fallbackOrigin = `${url.hostname}:${url.port || '5432'}${url.pathname}`
-  if (origin === fallbackOrigin && !url.port && process.env.PGPORT) {
-    return `${url.hostname}:${process.env.PGPORT}${url.pathname}`
+type UnfollowOrigin
+  = | {defaultPort: string, hostname: string, pathname: string, port: string, protocol: string, type: 'url'}
+  | {name: string; rawName: string; type: 'config_var',}
+
+const formatOrigin = (origin: UnfollowOrigin) => {
+  if (origin.type === 'config_var') {
+    return color.name(origin.name)
   }
 
-  return origin === fallbackOrigin || origin.includes(':') ? origin : color.name(origin)
+  const {defaultPort, hostname, pathname, port} = origin
+  const displayPort = port || process.env.PGPORT || defaultPort
+  return `${hostname}:${displayPort}${pathname}`
 }
 
 export default class Unfollow extends Command {
@@ -37,12 +41,22 @@ export default class Unfollow extends Command {
     const {app, confirm} = flags
 
     const {data} = createSDK(this.heroku, {extensions: [databaseCommandExtensions]})
+    // The published SDK declarations still type origin as a string; newer
+    // extension builds pass structured origin details to this callback.
+    const database = data.database as unknown as {
+      unfollowForApp: (
+        app: string,
+        identity: string,
+        options: {beforeUnfollow?: (preview: {addon: {name: string}; origin: UnfollowOrigin}) => Promise<void> | void},
+      ) => ReturnType<typeof data.database.unfollowForApp>
+    }
+
     try {
-      const result = await data.database.unfollowForApp(app, args.database, {
-        async beforeUnfollow({addon, following, origin}) {
+      const result = await database.unfollowForApp(app, args.database, {
+        async beforeUnfollow({addon, origin}) {
           await new ConfirmCommand().confirm(app, confirm, heredoc(`
             Destructive action
-            ${color.addon(addon.name)} will become writeable and no longer follow ${formatOrigin(origin, following)}. This cannot be undone.
+            ${color.addon(addon.name)} will become writeable and no longer follow ${formatOrigin(origin)}. This cannot be undone.
           `))
           ux.action.start(`${color.addon(addon.name)} unfollowing`)
         },
