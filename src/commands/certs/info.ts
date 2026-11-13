@@ -36,8 +36,6 @@ export default class Info extends Command {
         ? await platform.sniEndpoint.infoByApp(app, selector, {includeDomainHostnames: true})
         : await platform.sniEndpoint.infoByApp(app, selector)
     } catch (error) {
-      // Under --json, oclif's catch() leaves the spinner running and it swallows the error output.
-      ux.action.stop(color.failure('!'))
       throw withSelectorFlagHint(error)
     }
 

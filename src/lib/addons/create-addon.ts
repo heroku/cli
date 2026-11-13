@@ -1,11 +1,10 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
 import {AddonConfirmationRequiredError} from '@heroku/sdk/resources/platform/add-on'
 import {ux} from '@oclif/core/ux'
 
-import ConfirmCommand from '../confirm-command.js'
 import {createSDK} from '../sdk.js'
 import * as util from './util.js'
 
@@ -76,7 +75,7 @@ export default async function createAddon(
     } catch (error) {
       if (error instanceof AddonConfirmationRequiredError) {
         ux.action.stop(color.red('!'))
-        await new ConfirmCommand().confirm(app, confirm, error.message)
+        await hux.confirmCommand({comparison: app, confirmation: confirm, warningMessage: error.message})
         ux.action.start(options.actionStartMessage || `Creating ${plan} on ${color.app(app)}`)
         addon = await callCreateAndWait(app)
       } else {

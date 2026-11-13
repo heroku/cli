@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
+import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../../lib/confirm-command.js'
 import {createSDK} from '../../../lib/sdk.js'
 
 const heredoc = tsheredoc
@@ -42,10 +42,14 @@ export default class Destroy extends Command {
       `)
     }
 
-    await new ConfirmCommand().confirm(pcxID as string, flags.confirm, heredoc(`
-      Destructive Action
-      This command will attempt to destroy the peering connection ${color.warning(pcxID)}
-    `))
+    await hux.confirmCommand({
+      comparison: pcxID as string,
+      confirmation: flags.confirm,
+      warningMessage: heredoc(`
+        Destructive Action
+        This command will attempt to destroy the peering connection ${color.warning(pcxID)}
+      `),
+    })
     ux.action.start(`Tearing down peering connection ${color.name(pcxID)}`)
     await platform.peering.destroy(flags.space, pcxID)
     ux.action.stop()

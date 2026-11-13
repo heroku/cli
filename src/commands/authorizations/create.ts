@@ -40,25 +40,18 @@ export default class AuthorizationsCreate extends Command {
     ux.action.start('Creating OAuth Authorization')
 
     const scope = flags.scope ? flags.scope.split(',') : undefined
-    let auth: OauthAuthorization
-    try {
-      auth = flags.team
-        ? await platform.oauthAuthorization.teamCreate(flags.team, {
-          description: flags.description,
-          expires_in: flags['expires-in'],
-          scope,
-        })
-        : await platform.oauthAuthorization.create({
-          description: flags.description,
-          expires_in: flags['expires-in'],
-          // scope is optional server-side (omitted ⇒ global); @heroku/types types it as required, so cast the absent case
-          scope: scope as string[],
-        })
-    } catch (error) {
-      // Under --json, oclif's catch() leaves the spinner running and it swallows the error output.
-      ux.action.stop(color.red('!'))
-      throw error
-    }
+    const auth = flags.team
+      ? await platform.oauthAuthorization.teamCreate(flags.team, {
+        description: flags.description,
+        expires_in: flags['expires-in'],
+        scope,
+      })
+      : await platform.oauthAuthorization.create({
+        description: flags.description,
+        expires_in: flags['expires-in'],
+        // scope is optional server-side (omitted ⇒ global); @heroku/types types it as required, so cast the absent case
+        scope: scope as string[],
+      })
 
     ux.action.stop()
 

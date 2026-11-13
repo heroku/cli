@@ -1,9 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {postgresDatabaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 
-import ConfirmCommand from '../../../lib/confirm-command.js'
 import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
 
@@ -27,7 +26,7 @@ export default class Destroy extends Command {
     const {app, confirm, name} = flags
     const {data} = createSDK(this.heroku, {extensions: [postgresDatabaseExtensions]})
 
-    await new ConfirmCommand().confirm(app, confirm)
+    await hux.confirmCommand({comparison: app, confirmation: confirm})
 
     ux.action.start(`Destroying credential ${color.name(name)}`)
     const {addon: db} = await data.postgresDatabase.deleteCredential(app, name, {addonIdentity: database})

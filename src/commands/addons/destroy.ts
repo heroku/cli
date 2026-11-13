@@ -1,14 +1,15 @@
 import type {AddOn} from '@heroku/types/3.sdk'
 
 import {Command, flags} from '@heroku-cli/command'
-import {color, pg, utils} from '@heroku/heroku-cli-util'
+import {
+  color, hux, pg, utils,
+} from '@heroku/heroku-cli-util'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
 import {AddonProvisioningFailedError, type DeprovisioningAddOn} from '@heroku/sdk/resources/platform/add-on'
 import {Args} from '@oclif/core'
 import {ux} from '@oclif/core/ux'
 import _ from 'lodash'
 
-import ConfirmCommand from '../../lib/confirm-command.js'
 import notify from '../../lib/notify.js'
 import {createSDK} from '../../lib/sdk.js'
 
@@ -50,7 +51,7 @@ export default class Destroy extends Command {
     for (const addonApps of Object.entries(_.groupBy(addons, 'app.name'))) {
       const currentAddons = addonApps[1]
       const appName = addonApps[0]
-      await new ConfirmCommand().confirm(appName, confirm)
+      await hux.confirmCommand({comparison: appName, confirmation: confirm})
       for (const addon of currentAddons) {
         const addonName = addon.name ?? ''
         const appIdentity = addon.app?.name ?? ''

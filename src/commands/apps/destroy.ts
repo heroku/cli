@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
+import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {gitService} from '../../lib/ci/git.js'
-import ConfirmCommand from '../../lib/confirm-command.js'
 import {createSDK} from '../../lib/sdk.js'
 
 export default class Destroy extends Command {
@@ -28,7 +28,11 @@ export default class Destroy extends Command {
 
     // this appears to report errors if app not found
     await platform.app.info(app)
-    await new ConfirmCommand().confirm(app, flags.confirm, `This will delete ${color.app(app)} including all add-ons.`)
+    await hux.confirmCommand({
+      comparison: app,
+      confirmation: flags.confirm,
+      warningMessage: `This will delete ${color.app(app)} including all add-ons.`,
+    })
     ux.action.start(`Destroying ${color.app(app)} (including all add-ons)`)
     const deletedApp = await platform.app.delete(app)
 

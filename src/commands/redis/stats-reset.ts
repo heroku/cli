@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
+import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../lib/confirm-command.js'
 import {createSDK} from '../../lib/sdk.js'
 
 const heredoc = tsheredoc
@@ -32,8 +32,7 @@ export default class StatsReset extends Command {
       WARNING: Irreversible action.
       All stats covered by RESETSTAT will be reset on ${color.addon(addon.name || '')}.`)
 
-    const confirmCommand = new ConfirmCommand()
-    await confirmCommand.confirm(app, confirm, warning)
+    await hux.confirmCommand({comparison: app, confirmation: confirm, warningMessage: warning})
 
     ux.action.start(`Resetting stats on ${color.addon(addon.name || '')}`)
     const response = await data.redis.resetStats(addon.id!)

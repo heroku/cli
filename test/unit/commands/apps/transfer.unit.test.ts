@@ -1,5 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
+import {hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {appExtensions} from '@heroku/sdk/extensions/platform'
 import ansis from 'ansis'
@@ -9,7 +10,6 @@ import * as sinon from 'sinon'
 import {createSandbox, SinonSandbox} from 'sinon'
 
 import Cmd from '../../../../src/commands/apps/transfer.js'
-import ConfirmCommand from '../../../../src/lib/confirm-command.js'
 
 type FakePlatform = {
   app: {
@@ -132,7 +132,7 @@ describe('heroku apps:transfer', function () {
     })
 
     it('ignores the --confirm flag when the recipient is not a valid email', async function () {
-      const confirmSpy = sandbox.spy(ConfirmCommand.prototype, 'confirm')
+      const confirmSpy = sandbox.spy(hux, 'confirmCommand')
       fakePlatform.app.transfer.resolves({state: 'transferred'})
 
       const {stderr, stdout} = await runCommand(Cmd, [
@@ -154,7 +154,7 @@ describe('heroku apps:transfer', function () {
     })
 
     it('confirms before transferring a team app to a personal recipient', async function () {
-      const confirmSpy = sandbox.spy(ConfirmCommand.prototype, 'confirm')
+      const confirmSpy = sandbox.spy(hux, 'confirmCommand')
       fakePlatform.app.transfer.resolves({state: 'pending'})
 
       const {stderr} = await runCommand(Cmd, [
@@ -164,7 +164,11 @@ describe('heroku apps:transfer', function () {
         'myapp',
         'gandalf@heroku.com',
       ])
-      expect(confirmSpy.calledOnceWith('myapp', 'myapp', 'All collaborators will be removed from this app')).to.equal(true)
+      expect(confirmSpy.calledOnceWith({
+        comparison: 'myapp',
+        confirmation: 'myapp',
+        warningMessage: 'All collaborators will be removed from this app',
+      })).to.equal(true)
       // recipient is styled with color.team even though it's an email → strip ANSI.
       expect(ansis.strip(stderr)).to.include('Transferring ⬢ myapp to gandalf@heroku.com... email sent')
       expect(fakePlatform.app.transfer.calledWith(

@@ -3,6 +3,7 @@ import type {Socket} from 'node:net'
 import type {Duplex, Writable} from 'node:stream'
 
 import {Command, flags} from '@heroku-cli/command'
+import {hux} from '@heroku/heroku-cli-util'
 import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import * as net from 'node:net'
@@ -13,7 +14,6 @@ import portfinder from 'portfinder'
 import Parser from 'redis-parser'
 import {Client} from 'ssh2'
 
-import ConfirmCommand from '../../lib/confirm-command.js'
 import {createSDK} from '../../lib/sdk.js'
 
 const REPLY_OK = 'OK'
@@ -202,7 +202,11 @@ export default class Cli extends Command {
     const hobby = redis.plan!.indexOf('hobby') === 0
     const {prefer_native_tls} = redis
     if (!prefer_native_tls && hobby) {
-      await new ConfirmCommand().confirm(flags.app, flags.confirm, 'WARNING: Insecure action.\nAll data, including the Redis password, will not be encrypted.')
+      await hux.confirmCommand({
+        comparison: flags.app,
+        confirmation: flags.confirm,
+        warningMessage: 'WARNING: Insecure action.\nAll data, including the Redis password, will not be encrypted.',
+      })
     }
 
     const nonBastionVars = Object.keys(configVars)

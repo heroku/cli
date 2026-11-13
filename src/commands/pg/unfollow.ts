@@ -1,10 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../lib/confirm-command.js'
 import {PgDatabase} from '../../lib/pg/types.js'
 import {databaseNameFromUrl} from '../../lib/pg/util.js'
 import {nls} from '../../nls.js'
@@ -33,10 +32,14 @@ export default class Unfollow extends Command {
       ux.error(`${color.addon(db.name)} is not a follower`)
     const {body: configVars} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
     const origin = databaseNameFromUrl(replica.following as string, configVars)
-    await new ConfirmCommand().confirm(app, confirm, heredoc(`
-      Destructive action
-      ${color.addon(db.name)} will become writeable and no longer follow ${origin}. This cannot be undone.
-    `))
+    await hux.confirmCommand({
+      comparison: app,
+      confirmation: confirm,
+      warningMessage: heredoc(`
+        Destructive action
+        ${color.addon(db.name)} will become writeable and no longer follow ${origin}. This cannot be undone.
+      `),
+    })
     ux.action.start(`${color.addon(db.name)} unfollowing`)
     await this.heroku.put(`/client/v11/databases/${db.id}/unfollow`, {hostname: utils.pg.host()})
     ux.action.stop()

@@ -1,12 +1,11 @@
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import type {NonAdvancedCredentialInfo} from '../../lib/data/types.js'
 import type {BackupTransfer} from '../../lib/pg/types.js'
 
-import ConfirmCommand from '../../lib/confirm-command.js'
 import backupsFactory from '../../lib/pg/backups.js'
 
 const getAttachmentInfo = async function (heroku: APIClient, db: string, app: string) {
@@ -70,7 +69,11 @@ export default class Copy extends Command {
     if (source.url === target.url)
       throw new Error('Cannot copy database onto itself')
 
-    await new ConfirmCommand().confirm(target.confirm || args.target, confirm, `WARNING: Destructive action\nThis command will remove all data from ${color.yellow(target.name)}\nData from ${color.yellow(source.name)} will then be transferred to ${color.yellow(target.name)}`)
+    await hux.confirmCommand({
+      comparison: target.confirm || args.target,
+      confirmation: confirm,
+      warningMessage: `WARNING: Destructive action\nThis command will remove all data from ${color.yellow(target.name)}\nData from ${color.yellow(source.name)} will then be transferred to ${color.yellow(target.name)}`,
+    })
     ux.action.start(`Starting copy of ${color.yellow(source.name)} to ${color.yellow(target.name)}`)
     const attachment = target.attachment || source.attachment
     if (!attachment) {

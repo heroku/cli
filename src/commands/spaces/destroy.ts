@@ -1,12 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
+import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {getGeneration} from '../../lib/apps/generation.js'
-import ConfirmCommand from '../../lib/confirm-command.js'
 import {createSDK} from '../../lib/sdk.js'
 import {displayNat} from '../../lib/spaces/spaces.js'
 import {Space} from '../../lib/types/fir.js'
@@ -67,11 +67,11 @@ export default class Destroy extends Command {
       }
     }
 
-    await new ConfirmCommand().confirm(
-      spaceName as string,
-      confirm,
-      `Destructive Action\nThis command will destroy the space ${color.space(spaceName as string)}\n${natWarning}\n`,
-    )
+    await hux.confirmCommand({
+      comparison: spaceName as string,
+      confirmation: confirm,
+      warningMessage: `Destructive Action\nThis command will destroy the space ${color.space(spaceName as string)}\n${natWarning}\n`,
+    })
 
     ux.action.start(`Destroying space ${color.space(spaceName as string)}`)
     await platform.space.delete(spaceName as string)

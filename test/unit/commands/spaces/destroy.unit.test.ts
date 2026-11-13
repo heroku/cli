@@ -1,9 +1,9 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/spaces/destroy.js'
+import {stubConfirmPrompt} from '../../../helpers/confirm-prompt.js'
 import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
@@ -15,7 +15,7 @@ describe('spaces:destroy', function () {
   let sdkMock: MockSDK
 
   beforeEach(function () {
-    sinon.stub(hux, 'prompt').resolves('my-space')
+    stubConfirmPrompt('my-space')
     infoStub = sinon.stub()
     natInfoStub = sinon.stub()
     deleteStub = sinon.stub()

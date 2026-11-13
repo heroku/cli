@@ -1,10 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {databaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../../lib/confirm-command.js'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
@@ -45,10 +44,14 @@ export default class Upgrade extends Command {
     if (replica.following)
       ux.error(`You can only use ${color.code('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For follower databases, use ${color.code('heroku pg:upgrade:run')} instead.`)
 
-    await new ConfirmCommand().confirm(app, confirm, heredoc(`
-        Destructive action
-        This command prepares the upgrade for ${color.datastore(db.name)} to ${versionPhrase} and schedules to upgrade it during the next available maintenance window.
-    `))
+    await hux.confirmCommand({
+      comparison: app,
+      confirmation: confirm,
+      warningMessage: heredoc(`
+          Destructive action
+          This command prepares the upgrade for ${color.datastore(db.name)} to ${versionPhrase} and schedules to upgrade it during the next available maintenance window.
+      `),
+    })
 
     try {
       ux.action.start(`Preparing upgrade on ${color.addon(db.name)}`)

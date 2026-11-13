@@ -1,9 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {postgresDatabaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 
-import ConfirmCommand from '../../../lib/confirm-command.js'
 import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
 
@@ -69,7 +68,7 @@ export default class Rotate extends Command {
           warnings.push(`This command will affect the app${(uniqueAppNames.length > 1) ? 's' : ''} ${uniqueAppNames}.`)
         }
 
-        await new ConfirmCommand().confirm(app, confirm, `Destructive Action\n${warnings.join('\n')}`)
+        await hux.confirmCommand({comparison: app, confirmation: confirm, warningMessage: `Destructive Action\n${warnings.join('\n')}`})
 
         if (all) {
           ux.action.start(`Rotating all credentials on ${color.datastore(addon.name)}`)

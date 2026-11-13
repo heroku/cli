@@ -1,7 +1,6 @@
 import type {OauthAuthorization, OauthAuthorizationUpdateOpts} from '@heroku/types/3.sdk'
 
 import {Command, flags} from '@heroku-cli/command'
-import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {format} from '../../lib/authorizations/authorizations.js'
@@ -33,17 +32,10 @@ export default class AuthorizationsUpdate extends Command {
       }
     }
 
-    let authentication: OauthAuthorization
-    try {
-      authentication = await platform.oauthAuthorization.update(args.id, {
-        client,
-        description: flags.description,
-      } as OauthAuthorizationUpdateOpts)
-    } catch (error) {
-      // Under --json, oclif's catch() leaves the spinner running and it swallows the error output.
-      ux.action.stop(color.red('!'))
-      throw error
-    }
+    const authentication = await platform.oauthAuthorization.update(args.id, {
+      client,
+      description: flags.description,
+    } as OauthAuthorizationUpdateOpts)
 
     ux.action.stop()
 
