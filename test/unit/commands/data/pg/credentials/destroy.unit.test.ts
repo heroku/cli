@@ -1,7 +1,7 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import {SinonStub, stub} from 'sinon'
+import {match, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgCredentialsDestroy from '../../../../../../src/commands/data/pg/credentials/destroy.js'
@@ -150,9 +150,9 @@ describe('data:pg:credentials:destroy', function () {
     })
 
     it('destroys a credential successfully', async function () {
-      fakeData.databaseCredential.destroy.resolves({
-        addon: advancedAddon,
-        result: undefined,
+      fakeData.databaseCredential.destroy.callsFake(async (_addonIdentity, _credName, options) => {
+        await options?.beforeDestroy?.({addon: advancedAddon})
+        return {addon: advancedAddon, result: undefined}
       })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsDestroy, [
@@ -169,14 +169,18 @@ describe('data:pg:credentials:destroy', function () {
           We destroyed the credential my-credential in ⛁ advanced-horizontal-01234.
           Database objects owned by my-credential will be assigned to the owner credential.
         `))
-      expect(fakeData.databaseCredential.destroy.calledOnce).to.equal(true)
-      expect(fakeData.databaseCredential.destroy.firstCall.args[0]).to.equal('DATABASE')
-      expect(fakeData.databaseCredential.destroy.firstCall.args[1]).to.equal('my-credential')
-      expect(fakeData.databaseCredential.destroy.firstCall.args[2].appIdentity).to.equal('myapp')
+      expect(fakeData.databaseCredential.destroy.calledOnceWithExactly(
+        'DATABASE',
+        'my-credential',
+        {appIdentity: 'myapp', beforeDestroy: match.func},
+      )).to.equal(true)
     })
 
     it('handles API errors gracefully', async function () {
-      fakeData.databaseCredential.destroy.rejects(new Error('Not found.'))
+      fakeData.databaseCredential.destroy.callsFake(async (_addonIdentity, _credName, options) => {
+        await options?.beforeDestroy?.({addon: advancedAddon})
+        throw new Error('Not found.')
+      })
 
       const {error, stderr} = await runCommand(DataPgCredentialsDestroy, [
         'DATABASE',
@@ -222,9 +226,9 @@ describe('data:pg:credentials:destroy', function () {
     })
 
     it('destroys a credential successfully', async function () {
-      fakeData.databaseCredential.destroy.resolves({
-        addon: standardAddon,
-        result: undefined,
+      fakeData.databaseCredential.destroy.callsFake(async (_addonIdentity, _credName, options) => {
+        await options?.beforeDestroy?.({addon: standardAddon})
+        return {addon: standardAddon, result: undefined}
       })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsDestroy, [
@@ -244,7 +248,10 @@ describe('data:pg:credentials:destroy', function () {
     })
 
     it('handles API errors gracefully', async function () {
-      fakeData.databaseCredential.destroy.rejects(new Error('Not found.'))
+      fakeData.databaseCredential.destroy.callsFake(async (_addonIdentity, _credName, options) => {
+        await options?.beforeDestroy?.({addon: standardAddon})
+        throw new Error('Not found.')
+      })
 
       const {error, stderr} = await runCommand(DataPgCredentialsDestroy, [
         'DATABASE',

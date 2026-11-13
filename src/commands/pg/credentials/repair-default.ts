@@ -28,18 +28,21 @@ export default class RepairDefault extends Command {
     const {database} = args
     const {data} = createSDK(this.heroku, {extensions: [postgresDatabaseExtensions]})
 
-    await hux.confirmCommand({
-      comparison: app,
-      confirmation: confirm,
-      warningMessage: heredoc(`
-        Destructive Action
-        Ownership of all database objects owned by additional credentials will be transferred to the default credential.
-        This command will also grant the default credential admin option for all additional credentials.
-      `),
+    await data.postgresDatabase.repairDefault(app, {
+      addonIdentity: database,
+      async beforeRepair() {
+        await hux.confirmCommand({
+          comparison: app,
+          confirmation: confirm,
+          warningMessage: heredoc(`
+            Destructive Action
+            Ownership of all database objects owned by additional credentials will be transferred to the default credential.
+            This command will also grant the default credential admin option for all additional credentials.
+          `),
+        })
+        ux.action.start('Resetting permissions and object ownership for default role to factory settings')
+      },
     })
-
-    ux.action.start('Resetting permissions and object ownership for default role to factory settings')
-    await data.postgresDatabase.repairDefault(app, {addonIdentity: database})
     ux.action.stop()
   }
 }

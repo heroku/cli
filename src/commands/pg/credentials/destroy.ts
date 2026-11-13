@@ -26,10 +26,13 @@ export default class Destroy extends Command {
     const {app, confirm, name} = flags
     const {data} = createSDK(this.heroku, {extensions: [postgresDatabaseExtensions]})
 
-    await hux.confirmCommand({comparison: app, confirmation: confirm})
-
-    ux.action.start(`Destroying credential ${color.name(name)}`)
-    const {addon: db} = await data.postgresDatabase.deleteCredential(app, name, {addonIdentity: database})
+    const {addon: db} = await data.postgresDatabase.deleteCredential(app, name, {
+      addonIdentity: database,
+      async beforeDelete() {
+        await hux.confirmCommand({comparison: app, confirmation: confirm})
+        ux.action.start(`Destroying credential ${color.name(name)}`)
+      },
+    })
     ux.action.stop()
     ux.stdout(`The credential has been destroyed within ${db.name}.`)
     ux.stdout(`Database objects owned by ${name} will be assigned to the default credential.`)

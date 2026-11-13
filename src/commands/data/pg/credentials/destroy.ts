@@ -32,11 +32,14 @@ export default class DataPgCredentialsDestroy extends BaseCommand {
     const {database} = args
     const {data} = createSDK(this.heroku, {extensions: [databaseCredentialExtensions]})
 
-    await confirmCommand({comparison: app, confirmation: confirm})
-
     try {
-      ux.action.start(`Destroying credential ${color.name(name)}`)
-      const {addon} = await data.databaseCredential.destroy(database, name, {appIdentity: app})
+      const {addon} = await data.databaseCredential.destroy(database, name, {
+        appIdentity: app,
+        async beforeDestroy() {
+          await confirmCommand({comparison: app, confirmation: confirm})
+          ux.action.start(`Destroying credential ${color.name(name)}`)
+        },
+      })
 
       ux.action.stop()
       ux.stdout(`We destroyed the credential ${color.name(name)} in ${color.datastore(addon.name)}.`)
