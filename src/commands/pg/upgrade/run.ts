@@ -1,11 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {databaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../../lib/confirm-command.js'
 import {databaseNameFromUrl, formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
@@ -62,29 +61,41 @@ export default class Upgrade extends Command {
     const replica = await data.database.describe(app, db.name)
 
     if (utils.pg.isEssentialDatabase(db)) {
-      await new ConfirmCommand().confirm(app, confirm, heredoc(`
-        Destructive action
-        You're upgrading ${color.addon(db.name)} to ${versionPhrase}.
+      await hux.confirmCommand({
+        comparison: app,
+        confirmation: confirm,
+        warningMessage: heredoc(`
+          Destructive action
+          You're upgrading ${color.addon(db.name)} to ${versionPhrase}.
 
-        You can't undo this action.
-      `))
+          You can't undo this action.
+        `),
+      })
     } else if (replica.following) {
       const {body: configVars} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
       const origin = databaseNameFromUrl(replica.following, configVars)
 
-      await new ConfirmCommand().confirm(app, confirm, heredoc(`
-        Destructive action
-        You're upgrading ${color.addon(db.name)} to ${versionPhrase}. The database will stop following ${origin} and become writable.
+      await hux.confirmCommand({
+        comparison: app,
+        confirmation: confirm,
+        warningMessage: heredoc(`
+          Destructive action
+          You're upgrading ${color.addon(db.name)} to ${versionPhrase}. The database will stop following ${origin} and become writable.
 
-        You can't undo this action.
-      `))
+          You can't undo this action.
+        `),
+      })
     } else {
-      await new ConfirmCommand().confirm(app, confirm, heredoc(`
-        Destructive action
-        You're upgrading the Postgres version on ${color.datastore(db.name)}. This action also upgrades any followers on the database.
+      await hux.confirmCommand({
+        comparison: app,
+        confirmation: confirm,
+        warningMessage: heredoc(`
+          Destructive action
+          You're upgrading the Postgres version on ${color.datastore(db.name)}. This action also upgrades any followers on the database.
 
-        You can't undo this action.
-      `))
+          You can't undo this action.
+        `),
+      })
     }
 
     try {

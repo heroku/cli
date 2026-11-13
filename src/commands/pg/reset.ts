@@ -1,9 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../lib/confirm-command.js'
 import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc
@@ -35,11 +34,14 @@ export default class Reset extends Command {
         .sort()
     }
 
-    const confirmCommand = new ConfirmCommand()
-    await confirmCommand.confirm(app, confirm, heredoc(`
-      Destructive action
-      ${color.addon(db.name)} will lose all of its data
-    `))
+    await hux.confirmCommand({
+      comparison: app,
+      confirmation: confirm,
+      warningMessage: heredoc(`
+        Destructive action
+        ${color.addon(db.name)} will lose all of its data
+      `),
+    })
     ux.action.start(`Resetting ${color.addon(db.name)}`)
     await this.heroku.put(`/client/v11/databases/${db.id}/reset`, {
       body: {extensions: extensionsArray}, hostname: utils.pg.host(),

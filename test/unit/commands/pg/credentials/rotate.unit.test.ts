@@ -1,5 +1,4 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 import ansis from 'ansis'
 import {expect} from 'chai'
@@ -7,6 +6,7 @@ import {match, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/credentials/rotate.js'
+import {type ConfirmPromptStub, stubConfirmPrompt} from '../../../../helpers/confirm-prompt.js'
 import {type MockSDK, mockSDK} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
@@ -47,10 +47,12 @@ describe('pg:credentials:rotate', function () {
   let sdkMock: MockSDK
   let uxWarnStub: SinonStub
   let uxPromptStub: SinonStub
+  let confirmPrompt: ConfirmPromptStub
 
   before(function () {
     uxWarnStub = stub(ux, 'warn')
-    uxPromptStub = stub(hux, 'prompt').resolves('myapp')
+    confirmPrompt = stubConfirmPrompt('myapp')
+    uxPromptStub = confirmPrompt.prompt
   })
 
   beforeEach(function () {
@@ -67,7 +69,7 @@ describe('pg:credentials:rotate', function () {
 
   after(function () {
     uxWarnStub.restore()
-    uxPromptStub.restore()
+    confirmPrompt.restore()
   })
 
   describe('standard addon', function () {

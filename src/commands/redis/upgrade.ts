@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
+import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../lib/confirm-command.js'
 import {createSDK} from '../../lib/sdk.js'
 
 const heredoc = tsheredoc
@@ -34,8 +34,7 @@ export default class Upgrade extends Command {
       Redis database will be upgraded to ${color.code(version)}. This cannot be undone.
     `)
 
-    const confirmCommand = new ConfirmCommand()
-    await confirmCommand.confirm(app, confirm, warning)
+    await hux.confirmCommand({comparison: app, confirmation: confirm, warningMessage: warning})
 
     ux.action.start(`Requesting upgrade of ${color.addon(addon.name || '')} to ${version}`)
     const response = await data.redis.upgrade(addon.id!, {version})

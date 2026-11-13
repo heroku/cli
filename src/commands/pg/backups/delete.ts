@@ -1,8 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
-import ConfirmCommand from '../../../lib/confirm-command.js'
 import * as pgBackups from '../../../lib/pg/backups.js'
 import {createSDK} from '../../../lib/sdk.js'
 
@@ -27,7 +26,7 @@ export default class Delete extends Command {
     const {backup_id} = args
     const {data} = createSDK(this.heroku)
 
-    await new ConfirmCommand().confirm(app, confirm)
+    await hux.confirmCommand({comparison: app, confirmation: confirm})
     ux.action.start(`Deleting backup ${color.cyan(backup_id)} on ${color.app(app)}`)
 
     const num = await pgBackups.num(backup_id, app, data)

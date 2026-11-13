@@ -1,4 +1,5 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {AddonConfirmationRequiredError} from '@heroku/sdk/resources/platform/add-on'
 import ansis from 'ansis'
@@ -8,7 +9,6 @@ import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgCreate from '../../../../../src/commands/data/pg/create.js'
-import ConfirmCommand from '../../../../../src/lib/confirm-command.js'
 import PoolConfig from '../../../../../src/lib/data/pool-config.js'
 import {clearLevelsAndPricingCache} from '../../../../../src/lib/data/utils.js'
 import {
@@ -223,7 +223,7 @@ describe('data:pg:create', function () {
 
   describe('confirmation prompt retry', function () {
     it('prompts for confirmation then retries the provision with the app as confirmation', async function () {
-      const confirmStub = stub(ConfirmCommand.prototype, 'confirm').resolves()
+      const confirmStub = stub(hux, 'confirmCommand').resolves()
       fakeData.postgres.provisionAdvanced
         .onFirstCall().rejects(new AddonConfirmationRequiredError('confirmation required'))
         .onSecondCall().callsFake(provisionResolving())

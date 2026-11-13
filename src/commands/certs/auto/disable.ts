@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
+import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {App} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../../lib/confirm-command.js'
 import {createSDK} from '../../../lib/sdk.js'
 
 const heredoc = tsheredoc
@@ -33,17 +33,15 @@ export default class Disable extends Command {
       1) Request a new SSL certificate for your domains names from your certificate provider
       2) heroku certs:update CRT KEY
     `)
-    await new ConfirmCommand().confirm(app, confirm, warning, {json: this.jsonEnabled()})
+    await hux.confirmCommand({
+      comparison: app,
+      confirmation: confirm,
+      json: this.jsonEnabled(),
+      warningMessage: warning,
+    })
 
     ux.action.start('Disabling Automatic Certificate Management')
-    let disabledApp: App
-    try {
-      disabledApp = await platform.app.disableACM(app)
-    } catch (error) {
-      // Under --json, oclif's catch() leaves the spinner running and it swallows the error output.
-      ux.action.stop(color.failure('!'))
-      throw error
-    }
+    const disabledApp = await platform.app.disableACM(app)
 
     ux.action.stop()
 

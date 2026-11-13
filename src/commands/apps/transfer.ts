@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
 import {appExtensions} from '@heroku/sdk/extensions/platform'
@@ -6,7 +7,6 @@ import {App} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../lib/confirm-command.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import {createSDK} from '../../lib/sdk.js'
 import {getOwner, isTeamApp, isValidEmail} from '../../lib/team-utils.js'
@@ -84,7 +84,11 @@ export default class AppsTransfer extends Command {
       const appInfo = await platform.app.info(app)
       const appName = appInfo.name ?? app ?? ''
       if (isValidEmail(recipient) && isTeamApp(appInfo.owner?.email)) {
-        await new ConfirmCommand().confirm(appName, confirm, 'All collaborators will be removed from this app')
+        await hux.confirmCommand({
+          comparison: appName,
+          confirmation: confirm,
+          warningMessage: 'All collaborators will be removed from this app',
+        })
       }
 
       await transferApp({

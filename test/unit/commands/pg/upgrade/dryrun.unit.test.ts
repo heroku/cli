@@ -1,6 +1,6 @@
 import * as Heroku from '@heroku-cli/schema'
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
-import {color, hux} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 import ansis from 'ansis'
 import {expect} from 'chai'
@@ -11,6 +11,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/dryrun.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
+import {type ConfirmPromptStub, stubConfirmPrompt} from '../../../../helpers/confirm-prompt.js'
 import {MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
@@ -19,6 +20,7 @@ describe('pg:upgrade:dryrun', function () {
   let addon: Heroku.AddOn
   let uxWarnStub: sinon.SinonStub
   let uxPromptStub: sinon.SinonStub
+  let confirmPrompt: ConfirmPromptStub
   let api: nock.Scope
   let sdkMock: MockSDK
   let infoStub: ReturnType<typeof stub>
@@ -26,7 +28,8 @@ describe('pg:upgrade:dryrun', function () {
 
   before(function () {
     uxWarnStub = sinon.stub(ux, 'warn')
-    uxPromptStub = sinon.stub(hux, 'prompt').resolves('myapp')
+    confirmPrompt = stubConfirmPrompt('myapp')
+    uxPromptStub = confirmPrompt.prompt
   })
 
   beforeEach(async function () {
@@ -50,7 +53,7 @@ describe('pg:upgrade:dryrun', function () {
 
   after(function () {
     uxWarnStub.restore()
-    uxPromptStub.restore()
+    confirmPrompt.restore()
   })
 
   it('refuses to start test upgrade on legacy essential dbs', async function () {
