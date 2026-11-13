@@ -5,6 +5,8 @@ import * as sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/certs/index.js'
+import {sniEndpointList} from '../../../fixtures/certs/fixtures.js'
+import {expectJsonSnapshot} from '../../../helpers/json-snapshot.js'
 import {
   endpointAcm,
   endpointStables,
@@ -106,5 +108,21 @@ describe('heroku certs', function () {
     const expected = removeAllWhitespace(' tokyo-1050 foo.example.org, bar.example.org, biz.example.com 2013-08-01 21:34 UTC False   SNI  0')
     expect(actual).to.include(expectedHeader)
     expect(actual).to.include(expected)
+  })
+
+  describe('--json', function () {
+    it('returns the SDK certificate list in API order', async function () {
+      fakePlatform.sniEndpoint.list.resolves(sniEndpointList)
+
+      const {json} = await expectJsonSnapshot<{name: string}[]>(this, Cmd, ['--app', 'example'])
+
+      expect(json.map(cert => cert.name)).to.deep.equal(['tokyo-1050', 'akita-7777'])
+    })
+
+    it('returns an empty list without the empty-state message', async function () {
+      fakePlatform.sniEndpoint.list.resolves([])
+
+      await expectJsonSnapshot(this, Cmd, ['--app', 'example'])
+    })
   })
 })

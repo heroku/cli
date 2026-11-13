@@ -1,5 +1,4 @@
 import {hux} from '@heroku/heroku-cli-util'
-import {ux} from '@oclif/core/ux'
 
 import {SniEndpoint} from '../types/sni-endpoint.js'
 import formatDate from './format-date.js'
@@ -12,7 +11,7 @@ function type(endpoint: SniEndpoint) {
   return 'SNI'
 }
 
-export default function displayTable(endpoints: SniEndpoint[]) {
+export default function formatTable(endpoints: SniEndpoint[]): string {
   const mapped = endpoints
     .filter(endpoint => endpoint.ssl_cert)
     .map(endpoint => {
@@ -58,5 +57,5 @@ export default function displayTable(endpoints: SniEndpoint[]) {
     columns.associated_domains = {header: 'Domains'}
   }
 
-  ux.stdout(hux.table(mapped, columns))
+  return hux.table(mapped, columns)
 }

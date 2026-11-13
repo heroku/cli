@@ -6,6 +6,8 @@ import {SinonStub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/enable.js'
+import {app, customDomain, domainList} from '../../../../fixtures/certs/fixtures.js'
+import {expectJsonError, expectJsonSnapshot, runCommandJson} from '../../../../helpers/json-snapshot.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
 const heredoc = tsheredoc
@@ -260,6 +262,39 @@ describe('heroku certs:auto:enable', function () {
       expect(stdout).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.\n\n')
       // Pre-check found every custom domain terminal, so the SDK wait must be skipped entirely.
       expect(fakePlatform.app.waitForACMCertificates.called).to.equal(false)
+    })
+  })
+
+  describe('--json', function () {
+    it('returns the app and its domains with their DNS record types', async function () {
+      fakePlatform.domain.list.resolves(domainList)
+      fakePlatform.app.enableACM.resolves(app)
+
+      const {json} = await expectJsonSnapshot<{domains: {dns_record_type: null | string; hostname: string}[]}>(this, Cmd, ['--app', 'example'])
+
+      expect(json.domains.map(({dns_record_type, hostname}) => [hostname, dns_record_type])).to.deep.equal([
+        ['example-0123456789ab.herokuapp.com', null],
+        ['www.example.com', 'CNAME'],
+        ['example.com', 'ALIAS/ANAME'],
+      ])
+    })
+
+    it('returns a null dns_record_type for a custom hostname it can\'t classify, instead of failing', async function () {
+      const unclassifiable = {...customDomain, hostname: 'localhost', id: '6c7d8e9f-0a1b-4c2d-8e3f-4a5b6c7d8e9f'}
+      fakePlatform.domain.list.resolves([unclassifiable])
+      fakePlatform.app.enableACM.resolves(app)
+
+      const {exitCode, json} = await runCommandJson<{domains: {dns_record_type: null | string}[]}>(Cmd, ['--app', 'example'])
+
+      expect(exitCode).to.equal(undefined)
+      expect(json.domains.map(d => d.dns_record_type)).to.deep.equal([null])
+    })
+
+    it('renders an API error as a JSON error document', async function () {
+      fakePlatform.domain.list.resolves(domainList)
+      fakePlatform.app.enableACM.rejects(new Error('ACM is not available for this app.'))
+
+      await expectJsonError(Cmd, ['--app', 'example'], 'ACM is not available for this app.')
     })
   })
 })

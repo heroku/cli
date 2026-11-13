@@ -5,6 +5,8 @@ import * as sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/refresh.js'
+import {app} from '../../../../fixtures/certs/fixtures.js'
+import {expectJsonError, expectJsonSnapshot} from '../../../../helpers/json-snapshot.js'
 
 const heredoc = tsheredoc
 
@@ -41,5 +43,19 @@ describe('heroku certs:auto:refresh', function () {
     `))
     expectOutput(stdout, '')
     expect(fakePlatform.app.refreshACM.calledOnceWithExactly('example', {acm_refresh: true})).to.equal(true)
+  })
+
+  describe('--json', function () {
+    it('returns the app', async function () {
+      fakePlatform.app.refreshACM.resolves(app)
+
+      await expectJsonSnapshot(this, Cmd, ['--app', 'example'])
+    })
+
+    it('renders an API error as a JSON error document', async function () {
+      fakePlatform.app.refreshACM.rejects(new Error('Couldn\'t find that app.'))
+
+      await expectJsonError(Cmd, ['--app', 'example'], 'Couldn\'t find that app.')
+    })
   })
 })

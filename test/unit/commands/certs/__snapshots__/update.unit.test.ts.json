@@ -1,0 +1,30 @@
+{
+  "heroku certs:update --json returns the updated certificate": {
+    "app": {
+      "id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+      "name": "example"
+    },
+    "certificate_chain": "-----BEGIN CERTIFICATE-----\nfake-certificate-chain-a\n-----END CERTIFICATE-----\n",
+    "created_at": "2026-01-02T03:04:05Z",
+    "display_name": null,
+    "domains": [
+      "3f1e2d4c-5b6a-4789-8a9b-0c1d2e3f4a5b"
+    ],
+    "id": "6a7b8c9d-0e1f-4a2b-9c3d-4e5f6a7b8c9d",
+    "name": "tokyo-1050",
+    "ssl_cert": {
+      "acm": false,
+      "ca_signed?": true,
+      "cert_domains": [
+        "www.example.com"
+      ],
+      "expires_at": "2027-01-02T03:04:05Z",
+      "id": "0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+      "issuer": "/C=US/O=Example CA/CN=Example CA",
+      "self_signed?": false,
+      "starts_at": "2026-01-02T03:04:05Z",
+      "subject": "/CN=www.example.com"
+    },
+    "updated_at": "2026-01-03T03:04:05Z"
+  }
+}
