@@ -1,4 +1,5 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {hux} from '@heroku/heroku-cli-util'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import {match, SinonStub, stub} from 'sinon'
@@ -92,6 +93,24 @@ describe('data:pg:credentials:destroy', function () {
     expect(ansis.strip(err.message)).to.equal("You can't destroy the owner credential.")
   })
 
+  it('does not prompt when the SDK rejects before the hook', async function () {
+    const confirmStub = stub(hux, 'confirmCommand').resolves()
+    try {
+      fakeData.databaseCredential.destroy.rejects(new Error('You can\'t destroy the default credential.'))
+      const {error} = await runCommand(DataPgCredentialsDestroy, [
+        'DATABASE',
+        '--app=myapp',
+        '--name=default',
+      ])
+      const err = error as Error
+
+      expect(err.message).to.equal('You can\'t destroy the default credential.')
+      expect(confirmStub.notCalled).to.equal(true)
+    } finally {
+      confirmStub.restore()
+    }
+  })
+
   describe('Advanced-tier databases', function () {
     it('shows an error when credential is single-factor attached to a single app', async function () {
       fakeData.databaseCredential.destroy.rejects(new Error('You must detach the credential analyst from the app myapp before destroying it.'))
@@ -151,7 +170,7 @@ describe('data:pg:credentials:destroy', function () {
 
     it('destroys a credential successfully', async function () {
       fakeData.databaseCredential.destroy.callsFake(async (_addonIdentity, _credName, options) => {
-        await options?.beforeDestroy?.({addon: advancedAddon})
+        await options.beforeDestroy({addon: advancedAddon})
         return {addon: advancedAddon, result: undefined}
       })
 
@@ -178,7 +197,7 @@ describe('data:pg:credentials:destroy', function () {
 
     it('handles API errors gracefully', async function () {
       fakeData.databaseCredential.destroy.callsFake(async (_addonIdentity, _credName, options) => {
-        await options?.beforeDestroy?.({addon: advancedAddon})
+        await options.beforeDestroy({addon: advancedAddon})
         throw new Error('Not found.')
       })
 
@@ -227,7 +246,7 @@ describe('data:pg:credentials:destroy', function () {
 
     it('destroys a credential successfully', async function () {
       fakeData.databaseCredential.destroy.callsFake(async (_addonIdentity, _credName, options) => {
-        await options?.beforeDestroy?.({addon: standardAddon})
+        await options.beforeDestroy({addon: standardAddon})
         return {addon: standardAddon, result: undefined}
       })
 
@@ -249,7 +268,7 @@ describe('data:pg:credentials:destroy', function () {
 
     it('handles API errors gracefully', async function () {
       fakeData.databaseCredential.destroy.callsFake(async (_addonIdentity, _credName, options) => {
-        await options?.beforeDestroy?.({addon: standardAddon})
+        await options.beforeDestroy({addon: standardAddon})
         throw new Error('Not found.')
       })
 

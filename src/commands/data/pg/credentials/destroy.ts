@@ -1,6 +1,5 @@
 import {flags as Flags} from '@heroku-cli/command'
-import * as color from '@heroku/heroku-cli-util/color'
-import {confirmCommand} from '@heroku/heroku-cli-util/hux'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {databaseCredentialExtensions} from '@heroku/sdk/extensions/data'
 import {isAdvancedDatabase} from '@heroku/sdk/resources/data/postgres-database'
 import {Args, ux} from '@oclif/core'
@@ -36,7 +35,7 @@ export default class DataPgCredentialsDestroy extends BaseCommand {
       const {addon} = await data.databaseCredential.destroy(database, name, {
         appIdentity: app,
         async beforeDestroy() {
-          await confirmCommand({comparison: app, confirmation: confirm})
+          await hux.confirmCommand({comparison: app, confirmation: confirm})
           ux.action.start(`Destroying credential ${color.name(name)}`)
         },
       })
