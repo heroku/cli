@@ -2,11 +2,10 @@ import type {DatabaseCopyEndpoint, DatabaseCopyOptions, DatabaseCopyResult} from
 import type {TransferCreateResult} from '@heroku/types/data'
 
 import {Command, flags} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {databaseCopyExtensions, TransferFailedError} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 
-import ConfirmCommand from '../../lib/confirm-command.js'
 import * as pgBackups from '../../lib/pg/backups.js'
 import {createSDK} from '../../lib/sdk.js'
 
@@ -63,7 +62,7 @@ export default class Copy extends Command {
           const message = 'WARNING: Destructive action\n'
             + `This command will remove all data from ${color.yellow(target.name)}\n`
             + `Data from ${color.yellow(source.name)} will then be transferred to ${color.yellow(target.name)}`
-          await new ConfirmCommand().confirm(target.confirm, confirm, message)
+          await hux.confirmCommand({comparison: target.confirm, confirmation: confirm, warningMessage: message})
         },
         copyPoller: {
           onStart({source, target}: {source: DatabaseCopyEndpoint; target: DatabaseCopyEndpoint}) {

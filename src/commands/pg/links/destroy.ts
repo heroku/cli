@@ -1,10 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {type DeleteLinkResult, linkExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../../lib/confirm-command.js'
 import {toLinkCommandError} from '../../../lib/pg/links.js'
 import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
@@ -35,12 +34,16 @@ export default class Destroy extends Command {
     try {
       const result = await data.link.deleteFromDatabase(app, database, link, {
         async beforeDelete({addon}) {
-          await new ConfirmCommand().confirm(app, confirm, heredoc(`
-            Destructive action
-            This command will affect the database ${color.yellow(addon.name)}
-            This will delete ${color.cyan(link)} along with the tables and views created within it.
-            This may have adverse effects for software written against the ${color.cyan(link)} schema.
-          `))
+          await hux.confirmCommand({
+            comparison: app,
+            confirmation: confirm,
+            warningMessage: heredoc(`
+              Destructive action
+              This command will affect the database ${color.yellow(addon.name)}
+              This will delete ${color.cyan(link)} along with the tables and views created within it.
+              This may have adverse effects for software written against the ${color.cyan(link)} schema.
+            `),
+          })
           ux.action.start(`Destroying link ${color.cyan(link)} from ${color.yellow(addon.name)}`)
           spinning = true
         },

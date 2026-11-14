@@ -1,10 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {restoreExtensions, TransferFailedError} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../../lib/confirm-command.js'
 import * as pgBackups from '../../../lib/pg/backups.js'
 import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
@@ -113,8 +112,7 @@ export default class Restore extends Command {
       backupURL = backup.to_url
     }
 
-    const confirmCmd = new ConfirmCommand()
-    await confirmCmd.confirm(app, confirm)
+    await hux.confirmCommand({comparison: app, confirmation: confirm})
 
     const waitOptions = pgBackups.constructWaitOptions(interval, verbose, () => 'Restoring')
 

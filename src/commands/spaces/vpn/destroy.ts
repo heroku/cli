@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
+import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../../lib/confirm-command.js'
 import {createSDK} from '../../../lib/sdk.js'
 
 const heredoc = tsheredoc
@@ -35,14 +35,14 @@ export default class Destroy extends Command {
     const {confirm, space} = flags
     const {name} = args
 
-    await new ConfirmCommand().confirm(
-      name,
-      confirm,
-      heredoc`
+    await hux.confirmCommand({
+      comparison: name,
+      confirmation: confirm,
+      warningMessage: heredoc`
         Destructive Action
         This command will attempt to destroy the specified VPN Connection in space ${color.space(space)}
       `,
-    )
+    })
 
     ux.action.start(`Tearing down VPN Connection ${color.cyan(name)} in space ${color.space(space)}`)
     await platform.vpnConnection.destroy(space, name)

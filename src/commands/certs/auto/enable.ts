@@ -48,16 +48,8 @@ export default class Enable extends Command {
 
     ux.action.start('Enabling Automatic Certificate Management')
 
-    let domainsBeforeEnable: Domain[]
-    let enabledApp: App
-    try {
-      domainsBeforeEnable = await platform.domain.list(app) as Domain[]
-      enabledApp = await platform.app.enableACM(app)
-    } catch (error) {
-      // Under --json, oclif's catch() leaves the spinner running and it swallows the error output.
-      ux.action.stop(color.failure('!'))
-      throw error
-    }
+    const domainsBeforeEnable = await platform.domain.list(app) as Domain[]
+    const enabledApp = await platform.app.enableACM(app)
 
     if (wait) {
       ux.action.stop(`${color.info('starting')}.`)

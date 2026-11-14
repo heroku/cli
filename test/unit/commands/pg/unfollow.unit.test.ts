@@ -1,5 +1,5 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
-import {color} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {DatabaseNotFollowerError} from '@heroku/sdk/extensions/data'
 import ansis from 'ansis'
@@ -8,7 +8,6 @@ import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/unfollow.js'
-import ConfirmCommand from '../../../../src/lib/confirm-command.js'
 
 const heredoc = tsheredoc
 
@@ -116,14 +115,14 @@ describe('pg:unfollow', function () {
 
   it('preserves the destructive-action confirmation message', async function () {
     fakeData.database.unfollowForApp.callsFake(unfollowWith(unfollowResult))
-    const confirm = stub(ConfirmCommand.prototype, 'confirm').resolves()
+    const confirm = stub(hux, 'confirmCommand').resolves()
 
     const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
     expect(confirm.calledOnce).to.equal(true)
-    expect(confirm.firstCall.args[0]).to.equal('myapp')
-    expect(confirm.firstCall.args[1]).to.be.undefined
-    expect(ansis.strip(confirm.firstCall.args[2] as string)).to.equal(heredoc(`
+    expect(confirm.firstCall.args[0].comparison).to.equal('myapp')
+    expect(confirm.firstCall.args[0].confirmation).to.be.undefined
+    expect(ansis.strip(confirm.firstCall.args[0].warningMessage as string)).to.equal(heredoc(`
       Destructive action
       postgres-1 will become writeable and no longer follow postgres-1. This cannot be undone.
     `))
@@ -136,12 +135,12 @@ describe('pg:unfollow', function () {
       following: 'postgres://db1:5432/database',
       origin: {name: 'FOLLOWING', rawName: 'FOLLOWING_URL', type: 'config_var'},
     }))
-    const confirm = stub(ConfirmCommand.prototype, 'confirm').resolves()
+    const confirm = stub(hux, 'confirmCommand').resolves()
 
     await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'myapp', 'DATABASE'])
 
-    expect(confirm.firstCall.args[2]).to.contain(color.name('FOLLOWING'))
-    expect(ansis.strip(confirm.firstCall.args[2] as string)).not.to.contain('FOLLOWING_URL')
+    expect(confirm.firstCall.args[0].warningMessage).to.contain(color.name('FOLLOWING'))
+    expect(ansis.strip(confirm.firstCall.args[0].warningMessage as string)).not.to.contain('FOLLOWING_URL')
   })
 
   it('uses PGPORT when formatting an origin URL without an explicit port', async function () {
@@ -154,11 +153,11 @@ describe('pg:unfollow', function () {
         defaultPort: '5432', hostname: 'db1', pathname: '/database', port: '', protocol: 'postgres:', type: 'url',
       },
     }))
-    const confirm = stub(ConfirmCommand.prototype, 'confirm').resolves()
+    const confirm = stub(hux, 'confirmCommand').resolves()
 
     try {
       await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'myapp', 'DATABASE'])
-      expect(confirm.firstCall.args[2]).to.contain('db1:6432/database')
+      expect(confirm.firstCall.args[0].warningMessage).to.contain('db1:6432/database')
     } finally {
       if (previousPgPort === undefined) delete process.env.PGPORT
       else process.env.PGPORT = previousPgPort
@@ -175,12 +174,12 @@ describe('pg:unfollow', function () {
         defaultPort: '5432', hostname: 'db1', pathname: '/database', port: '6543', protocol: 'postgres:', type: 'url',
       },
     }))
-    const confirm = stub(ConfirmCommand.prototype, 'confirm').resolves()
+    const confirm = stub(hux, 'confirmCommand').resolves()
 
     try {
       await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'myapp', 'DATABASE'])
-      expect(ansis.strip(confirm.firstCall.args[2] as string)).to.contain('db1:6543/database')
-      expect(ansis.strip(confirm.firstCall.args[2] as string)).not.to.contain('db1:6432/database')
+      expect(ansis.strip(confirm.firstCall.args[0].warningMessage as string)).to.contain('db1:6543/database')
+      expect(ansis.strip(confirm.firstCall.args[0].warningMessage as string)).not.to.contain('db1:6432/database')
     } finally {
       if (previousPgPort === undefined) delete process.env.PGPORT
       else process.env.PGPORT = previousPgPort
@@ -197,13 +196,13 @@ describe('pg:unfollow', function () {
         defaultPort: '5432', hostname: 'db2', pathname: '/database', port: '', protocol: 'postgres:', type: 'url',
       },
     }))
-    const confirm = stub(ConfirmCommand.prototype, 'confirm').resolves()
+    const confirm = stub(hux, 'confirmCommand').resolves()
 
     try {
       await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'myapp', 'DATABASE'])
 
-      expect(ansis.strip(confirm.firstCall.args[2] as string)).to.contain('db2:5432/database')
-      expect(ansis.strip(confirm.firstCall.args[2] as string)).to.not.contain('legacy-host')
+      expect(ansis.strip(confirm.firstCall.args[0].warningMessage as string)).to.contain('db2:5432/database')
+      expect(ansis.strip(confirm.firstCall.args[0].warningMessage as string)).to.not.contain('legacy-host')
     } finally {
       if (previousPgPort === undefined) delete process.env.PGPORT
       else process.env.PGPORT = previousPgPort

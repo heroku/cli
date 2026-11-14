@@ -1,10 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {databaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../../lib/confirm-command.js'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
@@ -42,12 +41,16 @@ export default class Upgrade extends Command {
     if (replica.following)
       ux.error(`You can't use ${color.code('pg:upgrade:cancel')} on follower databases. You can only use this command on Standard-tier and higher leader databases.`)
 
-    await new ConfirmCommand().confirm(app, confirm, heredoc(`
-      Destructive action
-      You're canceling the scheduled version upgrade for ${color.datastore(db.name)}.
+    await hux.confirmCommand({
+      comparison: app,
+      confirmation: confirm,
+      warningMessage: heredoc(`
+        Destructive action
+        You're canceling the scheduled version upgrade for ${color.datastore(db.name)}.
 
-      You can't undo this action.
-    `))
+        You can't undo this action.
+      `),
+    })
 
     try {
       ux.action.start(`Cancelling upgrade on ${color.addon(db.name)}`)

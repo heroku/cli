@@ -1,11 +1,11 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {hux} from '@heroku/heroku-cli-util'
 import {HerokuApiClient} from '@heroku/heroku-fetch'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/attach.js'
-import ConfirmCommand from '../../../../src/lib/confirm-command.js'
 import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 let confirmStub: SinonStub
@@ -14,7 +14,7 @@ describe('addons:attach', function () {
   let sdkMock: MockSDK
 
   beforeEach(function () {
-    confirmStub = stub(ConfirmCommand.prototype, 'confirm').resolves()
+    confirmStub = stub(hux, 'confirmCommand').resolves()
   })
 
   afterEach(function () {

@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {sniEndpointExtensions} from '@heroku/sdk/extensions/platform'
 import {SniEndpoint} from '@heroku/types/3.sdk'
@@ -6,7 +7,6 @@ import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import {sniEndpointSelector, withSelectorFlagHint} from '../../lib/certs/flags.js'
-import ConfirmCommand from '../../lib/confirm-command.js'
 import {createSDK} from '../../lib/sdk.js'
 
 const heredoc = tsheredoc
@@ -27,28 +27,24 @@ export default class Remove extends Command {
     const {platform} = createSDK(this.heroku, {extensions: [sniEndpointExtensions]})
     const {flags} = await this.parse(Remove)
     const {app, confirm} = flags
-    let removing = false
     try {
       const deletedEndpoint = await platform.sniEndpoint.deleteByApp(app, sniEndpointSelector(flags), {
         beforeDelete: async ({sniEndpoint}) => {
-          await new ConfirmCommand().confirm(
-            app,
-            confirm,
-            heredoc`
+          await hux.confirmCommand({
+            comparison: app,
+            confirmation: confirm,
+            json: this.jsonEnabled(),
+            warningMessage: heredoc`
               WARNING: Destructive Action - you cannot rollback this change
               This command will remove the endpoint ${sniEndpoint.name} from ${color.app(app)}.
             `,
-            {json: this.jsonEnabled()},
-          )
+          })
           ux.action.start(`Removing SSL certificate ${sniEndpoint.name} from ${color.app(app)}`)
-          removing = true
         },
       })
       ux.action.stop()
       return deletedEndpoint
     } catch (error) {
-      // Under --json, oclif's catch() leaves the spinner running and it swallows the error output.
-      if (removing) ux.action.stop(color.failure('!'))
       throw withSelectorFlagHint(error)
     }
   }

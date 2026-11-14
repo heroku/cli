@@ -1,6 +1,7 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
-import {SinonStub, stub} from 'sinon'
+import {match, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/credentials/destroy.js'
@@ -34,7 +35,10 @@ describe('pg:credentials:destroy', function () {
   })
 
   it('destroys the credential', async function () {
-    fakeData.postgresDatabase.deleteCredential.resolves({addon, result: {message: 'destroyed'}})
+    fakeData.postgresDatabase.deleteCredential.callsFake(async (_appIdentity, _credName, options) => {
+      await options.beforeDelete({addon})
+      return {addon, result: {message: 'destroyed'}}
+    })
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -51,7 +55,11 @@ describe('pg:credentials:destroy', function () {
       The credential has been destroyed within postgres-1.
       Database objects owned by credname will be assigned to the default credential.
     `))
-    expect(fakeData.postgresDatabase.deleteCredential.calledOnceWithExactly('myapp', 'credname', {addonIdentity: undefined})).to.equal(true)
+    expect(fakeData.postgresDatabase.deleteCredential.calledOnceWithExactly(
+      'myapp',
+      'credname',
+      {addonIdentity: undefined, beforeDelete: match.func},
+    )).to.equal(true)
   })
 
   it('propagates errors from deleteCredential', async function () {
@@ -63,9 +71,26 @@ describe('pg:credentials:destroy', function () {
       'myapp',
       '--name',
       'gandalf',
-      '--confirm',
-      'myapp',
     ])
     expect(error!.message).to.equal(err)
+  })
+
+  it('does not prompt when the SDK rejects before the hook', async function () {
+    const confirmStub = stub(hux, 'confirmCommand').resolves()
+    try {
+      fakeData.postgresDatabase.deleteCredential.rejects(new Error('Default credential cannot be destroyed.'))
+
+      const {error} = await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--name',
+        'default',
+      ])
+
+      expect(error!.message).to.equal('Default credential cannot be destroyed.')
+      expect(confirmStub.notCalled).to.equal(true)
+    } finally {
+      confirmStub.restore()
+    }
   })
 })

@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {sniEndpointExtensions} from '@heroku/sdk/extensions/platform'
 import {SniEndpoint} from '@heroku/types/3.sdk'
@@ -8,7 +9,6 @@ import tsheredoc from 'tsheredoc'
 import {formatCertificateDetails} from '../../lib/certs/certificate-details.js'
 import {sniEndpointSelector, withSelectorFlagHint} from '../../lib/certs/flags.js'
 import {CertAndKeyManager} from '../../lib/certs/get-cert-and-key.js'
-import ConfirmCommand from '../../lib/confirm-command.js'
 import {createSDK} from '../../lib/sdk.js'
 import {SniEndpoint as LocalSniEndpoint} from '../../lib/types/sni-endpoint.js'
 
@@ -45,7 +45,6 @@ export default class Update extends Command {
     const {app, confirm} = flags
     const files = await new CertAndKeyManager().getCertAndKey(args)
 
-    let updating = false
     let sniEndpoint: SniEndpoint
     try {
       sniEndpoint = await platform.sniEndpoint.updateByApp(app, sniEndpointSelector(flags), {
@@ -53,22 +52,19 @@ export default class Update extends Command {
         privateKey: files.key,
       }, {
         beforeUpdate: async ({sniEndpoint: current}) => {
-          await new ConfirmCommand().confirm(
-            app,
-            confirm,
-            heredoc`
+          await hux.confirmCommand({
+            comparison: app,
+            confirmation: confirm,
+            json: this.jsonEnabled(),
+            warningMessage: heredoc`
               Potentially Destructive Action
               This command will change the certificate of endpoint ${current.name} from ${color.app(app)}.
             `,
-            {json: this.jsonEnabled()},
-          )
+          })
           ux.action.start(`Updating SSL certificate ${current.name} for ${color.app(app)}`)
-          updating = true
         },
       })
     } catch (error) {
-      // Under --json, oclif's catch() leaves the spinner running and it swallows the error output.
-      if (updating) ux.action.stop(color.failure('!'))
       throw withSelectorFlagHint(error)
     }
 

@@ -1,5 +1,4 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
-import {hux} from '@heroku/heroku-cli-util'
 import {EssentialDatabaseNotSupportedError} from '@heroku/sdk/extensions/data'
 import ansis from 'ansis'
 import {expect} from 'chai'
@@ -8,6 +7,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/links/destroy.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
+import {stubConfirmPrompt} from '../../../../helpers/confirm-prompt.js'
 import {MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
@@ -80,7 +80,7 @@ describe('pg:links:destroy', function () {
     })
 
     it('prompts for confirmation without --confirm, then destroys the link', async function () {
-      const prompt = sinon.stub(hux, 'prompt').resolves('myapp')
+      const {prompt} = stubConfirmPrompt('myapp')
 
       const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'dwh-db', 'postgres-link'])
 

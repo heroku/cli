@@ -1,11 +1,10 @@
 import type {AddOn} from '@heroku/types/3.sdk'
 import type {PostgresWaitStatusResult} from '@heroku/types/data'
 
+import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {AddonConfirmationRequiredError} from '@heroku/sdk/resources/platform/add-on'
 import {ux} from '@oclif/core/ux'
-
-import ConfirmCommand from '../confirm-command.js'
 
 export type ProvisionHooks = {
   onPoll: (status: PostgresWaitStatusResult) => void
@@ -126,7 +125,7 @@ export default async function provisionInteractively<T extends {addon: AddOn; po
     } catch (error) {
       if (error instanceof AddonConfirmationRequiredError) {
         ux.action.stop(color.red('!'))
-        await new ConfirmCommand().confirm(app, confirm, error.message)
+        await hux.confirmCommand({comparison: app, confirmation: confirm, warningMessage: error.message})
         // A deferred caller re-fires `onResolved` on retry, which restarts the
         // spinner; a non-deferred caller restarts it here.
         if (!deferStart) {

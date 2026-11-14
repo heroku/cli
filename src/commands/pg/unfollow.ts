@@ -1,10 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {databaseCommandExtensions, DatabaseNotFollowerError} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../lib/confirm-command.js'
 import {createSDK} from '../../lib/sdk.js'
 import {nls} from '../../nls.js'
 
@@ -39,7 +38,6 @@ export default class Unfollow extends Command {
   public async run() {
     const {args, flags} = await this.parse(Unfollow)
     const {app, confirm} = flags
-
     const {data} = createSDK(this.heroku, {extensions: [databaseCommandExtensions]})
     // The published SDK declarations still type origin as a string; newer
     // extension builds pass structured origin details to this callback.
@@ -54,10 +52,14 @@ export default class Unfollow extends Command {
     try {
       const result = await database.unfollowForApp(app, args.database, {
         async beforeUnfollow({addon, origin}) {
-          await new ConfirmCommand().confirm(app, confirm, heredoc(`
-            Destructive action
-            ${color.addon(addon.name)} will become writeable and no longer follow ${formatOrigin(origin)}. This cannot be undone.
-          `))
+          await hux.confirmCommand({
+            comparison: app,
+            confirmation: confirm,
+            warningMessage: heredoc(`
+              Destructive action
+              ${color.addon(addon.name)} will become writeable and no longer follow ${formatOrigin(origin)}. This cannot be undone.
+            `),
+          })
           ux.action.start(`${color.addon(addon.name)} unfollowing`)
         },
       })

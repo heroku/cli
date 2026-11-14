@@ -1,10 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {postgresDatabaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../../lib/confirm-command.js'
 import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
 
@@ -29,14 +28,21 @@ export default class RepairDefault extends Command {
     const {database} = args
     const {data} = createSDK(this.heroku, {extensions: [postgresDatabaseExtensions]})
 
-    await new ConfirmCommand().confirm(app, confirm, heredoc(`
-      Destructive Action
-      Ownership of all database objects owned by additional credentials will be transferred to the default credential.
-      This command will also grant the default credential admin option for all additional credentials.
-    `))
-
-    ux.action.start('Resetting permissions and object ownership for default role to factory settings')
-    await data.postgresDatabase.repairDefault(app, {addonIdentity: database})
+    await data.postgresDatabase.repairDefault(app, {
+      addonIdentity: database,
+      async beforeRepair() {
+        await hux.confirmCommand({
+          comparison: app,
+          confirmation: confirm,
+          warningMessage: heredoc(`
+            Destructive Action
+            Ownership of all database objects owned by additional credentials will be transferred to the default credential.
+            This command will also grant the default credential admin option for all additional credentials.
+          `),
+        })
+        ux.action.start('Resetting permissions and object ownership for default role to factory settings')
+      },
+    })
     ux.action.stop()
   }
 }

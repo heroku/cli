@@ -1,4 +1,5 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import ansis from 'ansis'
 import {expect} from 'chai'
@@ -6,7 +7,6 @@ import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/reset.js'
-import ConfirmCommand from '../../../../src/lib/confirm-command.js'
 
 const heredoc = tsheredoc
 
@@ -119,14 +119,14 @@ describe('pg:reset', function () {
 
   it('passes the destructive-action message to confirmation when --confirm is omitted', async function () {
     fakeData.database.resetForApp.callsFake(resetWith(resetResult))
-    const confirm = stub(ConfirmCommand.prototype, 'confirm').resolves()
+    const confirm = stub(hux, 'confirmCommand').resolves()
 
     const {stderr} = await runCommand(Cmd, ['--app', 'myapp'])
 
     expect(confirm.calledOnce).to.equal(true)
-    expect(confirm.firstCall.args[0]).to.equal('myapp')
-    expect(confirm.firstCall.args[1]).to.be.undefined
-    expect(ansis.strip(confirm.firstCall.args[2] as string)).to.equal(heredoc(`
+    expect(confirm.firstCall.args[0].comparison).to.equal('myapp')
+    expect(confirm.firstCall.args[0].confirmation).to.be.undefined
+    expect(ansis.strip(confirm.firstCall.args[0].warningMessage as string)).to.equal(heredoc(`
       Destructive action
       postgres-1 will lose all of its data
     `))

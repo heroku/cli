@@ -1,5 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
+import {hux} from '@heroku/heroku-cli-util'
 import {HerokuApiClient} from '@heroku/heroku-fetch'
 import {HerokuSDK} from '@heroku/sdk'
 import {TransferFailedError} from '@heroku/sdk/extensions/data'
@@ -11,7 +12,6 @@ import {
 } from 'sinon'
 
 import Cmd from '../../../../src/commands/pg/copy.js'
-import ConfirmCommand from '../../../../src/lib/confirm-command.js'
 
 const sourceEndpoint = {
   confirm: 'bar',
@@ -109,7 +109,7 @@ describe('pg:copy', function () {
 
   it('uses the raw external target URL identity for confirmation', async function () {
     const externalTarget = {confirm: 'target', name: 'database target on target.example:5432'}
-    const confirm = sandbox.stub(ConfirmCommand.prototype, 'confirm').resolves()
+    const confirm = sandbox.stub(hux, 'confirmCommand').resolves()
     fakeData.database.copyForApp.callsFake(copyWith({
       source: sourceEndpoint, target: externalTarget, transfer, warnings: [],
     }, {target: externalTarget}))
@@ -120,8 +120,8 @@ describe('pg:copy', function () {
 
     expect(error).to.be.undefined
     expect(fakeData.database.copyForApp.calledOnce).to.equal(true)
-    expect(confirm.firstCall.args[0]).to.equal('target')
-    expect(confirm.firstCall.args[1]).to.equal('target')
+    expect(confirm.firstCall.args[0].comparison).to.equal('target')
+    expect(confirm.firstCall.args[0].confirmation).to.equal('target')
   })
 
   it('preserves cross-app attachment references without rewriting source inputs', async function () {
@@ -192,7 +192,7 @@ describe('pg:copy', function () {
     }
     const sequence: string[] = []
     const credentialLookup = sandbox.stub(HerokuApiClient.prototype, 'get')
-    sandbox.stub(ConfirmCommand.prototype, 'confirm').callsFake(async () => {
+    sandbox.stub(hux, 'confirmCommand').callsFake(async () => {
       sequence.push('confirmed')
     })
     fakeData.database.copyForApp.callsFake(async (_app: string, _source: string, _target: string, options: CopyOptions = {}) => {
