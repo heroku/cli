@@ -1,293 +1,371 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
+import {hux} from '@heroku/heroku-cli-util'
+import {HerokuApiClient} from '@heroku/heroku-fetch'
+import {HerokuSDK} from '@heroku/sdk'
+import {TransferFailedError} from '@heroku/sdk/extensions/data'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
+import {
+  createSandbox,
+  SinonStub,
+} from 'sinon'
 
 import Cmd from '../../../../src/commands/pg/copy.js'
 
-const addon = {
-  app: {name: 'myapp'}, config_vars: ['READONLY_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_RED_URL'], id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
+const sourceEndpoint = {
+  confirm: 'bar',
+  name: 'database bar on foo.com:5432',
 }
-const otherAddon = {
-  app: {name: 'myotherapp'}, config_vars: ['DATABASE_URL', 'HEROKU_POSTGRESQL_BLUE_URL'], id: 2, name: 'postgres-2', plan: {name: 'heroku-postgresql:standard-0'},
+type SourceEndpoint = typeof sourceEndpoint & {database?: {addon: {name: string}}}
+const targetEndpoint = {
+  confirm: 'RED',
+  name: 'RED',
 }
-const lowercaseAddon = {
-  app: {name: 'mylowercaseapp'}, config_vars: ['LOWERCASE_DATABASE_URL'], id: 2, name: 'postgres-3', plan: {name: 'heroku-postgresql:standard-0'},
+const transfer = {
+  created_at: '2026-01-01 00:00:00 +0000',
+  from_type: 'pg_dump' as const,
+  logs: [{created_at: '2026-01-01 00:00:01 +0000', level: 'info' as const, message: 'copy started'}],
+  num: 1,
+  num_keep: 0,
+  processed_bytes: 100,
+  to_type: 'pg_restore' as const,
+  uuid: '100-001',
+  warnings: 0,
 }
-const attachment = {
-  addon, app: {name: 'myapp'}, name: 'HEROKU_POSTGRESQL_RED',
-}
-const otherAttachment = {
-  addon: otherAddon, app: {name: 'myotherapp'}, name: 'HEROKU_POSTGRESQL_BLUE',
-}
-const lowercaseAttachment = {
-  addon: lowercaseAddon, app: {name: 'mylowercaseapp'}, name: 'lowercase_database',
-}
-const attachedBlueAttachment = {
-  addon: otherAddon, app: {name: 'myapp'}, name: 'ATTACHED_BLUE',
-}
-const myappConfig = {
-  ATTACHED_BLUE_URL: 'postgres://heroku/otherdb', DATABASE_URL: 'postgres://heroku/db', HEROKU_POSTGRESQL_RED_URL: 'postgres://heroku/db', READONLY_URL: 'postgres://readonly-heroku/db',
-}
-const myotherappConfig = {
-  DATABASE_URL: 'postgres://heroku/otherdb', HEROKU_POSTGRESQL_BLUE_URL: 'postgres://heroku/otherdb',
-}
-const mylowercaseappConfig = {
-  LOWERCASE_DATABASE_URL: 'postgres://heroku/lowercasedb',
-}
-const copyingText = 'Copying... done'
+type Transfer = typeof transfer
 
-const copyingFailText = 'Copying... !\n'
+interface CopyOptions {
+  beforeCopy?: (preview: {source: SourceEndpoint; target: typeof targetEndpoint}) => Promise<void> | void
+  copyPoller?: {onStart?: (preview: {source: typeof sourceEndpoint; target: typeof targetEndpoint}) => void; onStop?: () => void}
+  credentialToken?: string
+  intervalMs?: number
+  onCredentialsChecked?: (result: {credentialCount?: number; hasAdditionalCredentials: boolean; warning?: string}) => void
+  onPoll?: (transfer: Transfer | undefined) => void
+  verbose?: boolean
+  waitPoller?: {onStart?: (transfer: Transfer) => void; onStop?: (transfer: Transfer) => void}
+}
+
+interface FakeData {
+  database: {copyForApp: SinonStub}
+}
+
+const copyWith = (
+  copyResult: Record<string, unknown>,
+  overrides: {source?: SourceEndpoint; target?: typeof targetEndpoint} = {},
+) => async (_app: string, _source: string, _target: string, options: CopyOptions = {}) => {
+  const preview = {source: overrides.source ?? sourceEndpoint, target: overrides.target ?? targetEndpoint}
+  await options.beforeCopy?.(preview)
+  options.onCredentialsChecked?.({credentialCount: 1, hasAdditionalCredentials: false})
+  options.copyPoller?.onStart?.(preview)
+  options.waitPoller?.onStart?.(transfer)
+  options.copyPoller?.onStop?.()
+  options.onPoll?.(transfer)
+  options.waitPoller?.onStop?.(transfer)
+  await Promise.resolve()
+  return copyResult
+}
+
+const originalDataGetter = Object.getOwnPropertyDescriptor(HerokuSDK.prototype, 'data')!.get!
 
 describe('pg:copy', function () {
-  let pg: nock.Scope
-  let api: nock.Scope
+  let fakeData: FakeData
+  let sandbox: ReturnType<typeof createSandbox>
+  let dataGetterCalls: number
 
   beforeEach(function () {
-    pg = nock('https://api.data.heroku.com')
-    api = nock('https://api.heroku.com')
+    sandbox = createSandbox()
+    fakeData = {database: {copyForApp: sandbox.stub()}}
+    dataGetterCalls = 0
+    sandbox.stub(HerokuSDK.prototype, 'data').get(function (this: HerokuSDK) {
+      dataGetterCalls += 1
+      return dataGetterCalls === 1 ? fakeData as never : originalDataGetter.call(this)
+    })
   })
 
   afterEach(function () {
-    nock.cleanAll()
-    api.done()
-    pg.done()
+    sandbox.restore()
   })
-  context('url to heroku', function () {
-    beforeEach(function () {
-      api.get('/addons/postgres-1')
-        .reply(200, addon)
-      api.post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'HEROKU_POSTGRESQL_RED_URL', app: 'myapp',
-      })
-        .reply(200, [attachment])
-      api.get('/apps/myapp/config-vars')
-        .reply(200, myappConfig)
-      pg.post('/client/v11/databases/1/transfers', {
-        from_name: 'database bar on foo.com:5432', from_url: 'postgres://foo.com/bar', to_name: 'RED', to_url: 'postgres://heroku/db',
-      })
-        .reply(200, {uuid: '100-001'})
-      pg.post('/client/v11/databases/1/transfers', {
-        from_name: 'database bar on boop.com:5678', from_url: 'postgres://boop.com:5678/bar', to_name: 'RED', to_url: 'postgres://heroku/db',
-      })
-        .reply(200, {uuid: '100-001'})
-      pg.get('/client/v11/apps/myapp/transfers/100-001')
-        .reply(200, {finished_at: '100', succeeded: true})
-    })
-    it('copies', async function () {
-      const {stderr, stdout} = await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        '--confirm',
-        'RED',
-        'postgres://foo.com/bar',
-        'HEROKU_POSTGRESQL_RED_URL',
-      ])
-      expect(stdout).to.equal('')
-      expect(stderr).to.include('Starting copy of database bar on foo.com:5432 to RED... done\n')
-      expect(stderr).to.include(copyingText)
-    })
-    it('copies (with port number)', async function () {
-      const {stderr, stdout} = await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        '--confirm',
-        'RED',
-        'postgres://boop.com:5678/bar',
-        'HEROKU_POSTGRESQL_RED_URL',
-      ])
-      expect(stdout).to.equal('')
-      expect(stderr).to.include('Starting copy of database bar on boop.com:5678 to RED... done\n')
-      expect(stderr).to.include(copyingText)
-    })
+
+  it('passes raw URL and attachment inputs through to database.copyForApp and preserves output', async function () {
+    const copyResult = {
+      credentialCount: undefined, hasAdditionalCredentials: false, source: sourceEndpoint, target: targetEndpoint, transfer, warnings: [],
+    }
+    fakeData.database.copyForApp.callsFake(copyWith(copyResult))
+
+    const {error, result, stderr, stdout} = await runCommand(Cmd, [
+      '--app', 'myapp', '--confirm', 'RED', 'postgres://foo.com/bar', 'HEROKU_POSTGRESQL_RED_URL',
+    ])
+
+    expect(error).to.be.undefined
+    expect(fakeData.database.copyForApp.calledOnce).to.equal(true)
+    expect(fakeData.database.copyForApp.firstCall.args.slice(0, 3)).to.deep.equal(['myapp', 'postgres://foo.com/bar', 'HEROKU_POSTGRESQL_RED_URL'])
+    expect(dataGetterCalls).to.equal(1)
+    expect(result).to.equal(copyResult)
+    expect(stdout).to.equal('')
+    expect(stderr).to.include('Starting copy of database bar on foo.com:5432 to RED... done\n')
+    expect(stderr).to.include('Copying... done')
   })
-  context('heroku to heroku with additional credentials', function () {
-    beforeEach(function () {
-      api.get('/addons/postgres-1')
-        .reply(200, addon)
-      api.get('/addons/postgres-2')
-        .reply(200, otherAddon)
-      api.post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'HEROKU_POSTGRESQL_RED_URL', app: 'myapp',
-      })
-        .reply(200, [attachment])
-      api.post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'DATABASE_URL', app: 'myotherapp',
-      })
-        .reply(200, [otherAttachment])
-      api.get('/apps/myapp/config-vars')
-        .reply(200, myappConfig)
-      api.get('/apps/myotherapp/config-vars')
-        .reply(200, myotherappConfig)
-      pg.get('/postgres/v0/databases/postgres-1/credentials')
-        .reply(200, ['two', 'things'])
-      pg.post('/client/v11/databases/2/transfers', {
-        from_name: 'RED', from_url: 'postgres://heroku/db', to_name: 'BLUE', to_url: 'postgres://heroku/otherdb',
-      })
-        .reply(200, {uuid: '100-001'})
-      pg.get('/client/v11/apps/myotherapp/transfers/100-001')
-        .reply(200, {finished_at: '100', succeeded: true})
-    })
-    it('copies', async function () {
-      const {stderr, stdout} = await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        '--confirm',
-        'BLUE',
-        'HEROKU_POSTGRESQL_RED_URL',
-        'myotherapp::DATABASE_URL',
-      ])
-      expect(stdout).to.equal('')
-      expect(stderr).to.include('Starting copy of RED to BLUE... done\n')
-      // Check for warning message parts (handle line wrapping in CI)
-      // Normalize: remove newlines and oclif warning prefixes (› on Unix, » on Windows), then collapse spaces
-      const normalizedOutput = stderr.replaceAll(/\n\s*[›»]?\s*/g, ' ').replaceAll(/\s+/g, ' ')
-      expect(normalizedOutput).to.include('Warning: pg:copy will only copy your default credential')
-      expect(normalizedOutput).to.include('and the data it has access to')
-      expect(normalizedOutput).to.include('Any additional credentials and data that only they can access will not be copied')
-      expect(stderr).to.include(copyingText)
-    })
+
+  it('uses the raw external target URL identity for confirmation', async function () {
+    const externalTarget = {confirm: 'target', name: 'database target on target.example:5432'}
+    const confirm = sandbox.stub(hux, 'confirmCommand').resolves()
+    fakeData.database.copyForApp.callsFake(copyWith({
+      source: sourceEndpoint, target: externalTarget, transfer, warnings: [],
+    }, {target: externalTarget}))
+
+    const {error} = await runCommand(Cmd, [
+      '--app', 'myapp', '--confirm', 'target', 'HEROKU_POSTGRESQL_RED_URL', 'postgres://target.example/target',
+    ])
+
+    expect(error).to.be.undefined
+    expect(fakeData.database.copyForApp.calledOnce).to.equal(true)
+    expect(confirm.firstCall.args[0].comparison).to.equal('target')
+    expect(confirm.firstCall.args[0].confirmation).to.equal('target')
   })
-  context('heroku to heroku with non-billing app attachment name', function () {
-    beforeEach(function () {
-      api.get('/addons/postgres-1')
-        .reply(200, addon)
-      api.get('/addons/postgres-2')
-        .reply(200, otherAddon)
-      api.post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'HEROKU_POSTGRESQL_RED_URL', app: 'myapp',
-      })
-        .reply(200, [attachment])
-      api.post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'ATTACHED_BLUE', app: 'myapp',
-      })
-        .reply(200, [attachedBlueAttachment])
-      api.get('/apps/myapp/config-vars')
-        .twice()
-        .reply(200, myappConfig)
-      pg.get('/postgres/v0/databases/postgres-1/credentials')
-        .reply(200, ['one'])
-      pg.post('/client/v11/databases/2/transfers', {
-        from_name: 'RED', from_url: 'postgres://heroku/db', to_name: 'ATTACHED_BLUE', to_url: 'postgres://heroku/otherdb',
-      })
-        .reply(200, {uuid: '100-001'})
-      pg.get('/client/v11/apps/myotherapp/transfers/100-001')
-        .reply(200, {finished_at: '100', succeeded: true})
-    })
-    it('copies', async function () {
-      const {stderr, stdout} = await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        '--confirm',
-        'ATTACHED_BLUE',
-        'HEROKU_POSTGRESQL_RED_URL',
-        'ATTACHED_BLUE',
-      ])
-      expect(stdout).to.equal('')
-      expect(stderr).to.include('Starting copy of RED to ATTACHED_BLUE... done\n')
-      expect(stderr).to.include(copyingText)
-    })
+
+  it('preserves cross-app attachment references without rewriting source inputs', async function () {
+    const crossAppTarget = {confirm: 'BLUE', name: 'BLUE'}
+    fakeData.database.copyForApp.callsFake(copyWith({transfer, warnings: []}, {target: crossAppTarget}))
+
+    const {error} = await runCommand(Cmd, [
+      '--app', 'myapp', '--confirm', 'BLUE', 'HEROKU_POSTGRESQL_RED_URL', 'myotherapp::DATABASE_URL',
+    ])
+
+    expect(error).to.be.undefined
+    expect(fakeData.database.copyForApp.firstCall.args.slice(0, 3)).to.deep.equal(['myapp', 'HEROKU_POSTGRESQL_RED_URL', 'myotherapp::DATABASE_URL'])
   })
-  context('heroku to heroku with lower case attachment name', function () {
-    beforeEach(function () {
-      api.get('/addons/postgres-3')
-        .reply(200, lowercaseAddon)
-      api.get('/addons/postgres-2')
-        .reply(200, otherAddon)
-      api.post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'lowercase_database_URL', app: 'mylowercaseapp',
-      })
-        .reply(200, [lowercaseAttachment])
-      api.post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'DATABASE_URL', app: 'myotherapp',
-      })
-        .reply(200, [otherAttachment])
-      api.get('/apps/mylowercaseapp/config-vars')
-        .reply(200, mylowercaseappConfig)
-      api.get('/apps/myotherapp/config-vars')
-        .reply(200, myotherappConfig)
-      pg.get('/postgres/v0/databases/postgres-3/credentials')
-        .reply(200, ['one'])
-      pg.post('/client/v11/databases/2/transfers', {
-        from_name: 'lowercase_database', from_url: 'postgres://heroku/lowercasedb', to_name: 'BLUE', to_url: 'postgres://heroku/otherdb',
-      })
-        .reply(200, {uuid: '100-001'})
-      pg.get('/client/v11/apps/myotherapp/transfers/100-001')
-        .reply(200, {finished_at: '100', succeeded: true})
-    })
-    it('copies', async function () {
-      const {stderr, stdout} = await runCommand(Cmd, [
-        '--app',
-        'mylowercaseapp',
-        '--confirm',
-        'BLUE',
-        'lowercase_database_URL',
-        'myotherapp::DATABASE_URL',
-      ])
-      expect(stdout).to.equal('')
-      expect(stderr).to.include('Starting copy of lowercase_database to BLUE... done\n')
-      expect(stderr).to.include(copyingText)
-    })
+
+  it('rejects an incorrect external target confirmation before transfer', async function () {
+    fakeData.database.copyForApp.callsFake(copyWith({transfer}, {target: {confirm: 'target', name: 'database target on target.example:5432'}}))
+
+    const {error} = await runCommand(Cmd, [
+      '--app', 'myapp', '--confirm', 'target.example', 'HEROKU_POSTGRESQL_RED_URL', 'postgres://target.example/target',
+    ])
+
+    expect(error?.message).to.include('Confirmation')
+    expect(error?.message).to.include('did not match')
   })
-  context('confirmation uses addon name not app name', function () {
-    beforeEach(function () {
-      api.get('/addons/postgres-1')
-        .reply(200, addon)
-      api.post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'HEROKU_POSTGRESQL_RED_URL', app: 'myapp',
-      })
-        .reply(200, [attachment])
-      api.get('/apps/myapp/config-vars')
-        .reply(200, myappConfig)
+
+  it('warns for additional credentials and reports SDK credential lookup warnings after successful polling', async function () {
+    const callbackError = new Error('credential query unavailable')
+    const copyResult = {
+      credentialCount: undefined,
+      hasAdditionalCredentials: false,
+      source: sourceEndpoint,
+      target: targetEndpoint,
+      transfer,
+      warnings: [`source credential lookup failed: ${callbackError.message}`],
+    }
+    fakeData.database.copyForApp.callsFake(async (_app: string, _source: string, _target: string, options: CopyOptions = {}) => {
+      const preview = {source: sourceEndpoint, target: targetEndpoint}
+      await options.beforeCopy?.(preview)
+      options.onCredentialsChecked?.({credentialCount: 2, hasAdditionalCredentials: true})
+      options.copyPoller?.onStart?.(preview)
+      options.waitPoller?.onStart?.(transfer)
+      options.copyPoller?.onStop?.()
+      options.onPoll?.(transfer)
+      options.waitPoller?.onStop?.(transfer)
+      await Promise.resolve()
+      return copyResult
     })
-    it('rejects confirmation when app name is given instead of addon name', async function () {
-      const {error} = await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        '--confirm',
-        'myapp',
-        'postgres://foo.com/bar',
-        'HEROKU_POSTGRESQL_RED_URL',
-      ])
-      expect(error?.message).to.include('Confirmation')
-      expect(error?.message).to.include('did not match')
-    })
+
+    const {error, result, stderr} = await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'RED', 'DATABASE_URL', 'RED_URL'])
+
+    expect(error).to.be.undefined
+    expect(result).to.equal(copyResult)
+    const normalizedOutput = stderr.replaceAll(/\n\s*[›»]?\s*/g, ' ').replaceAll(/\s+/g, ' ')
+    expect(normalizedOutput).to.include('Warning: pg:copy will only copy your default credential')
+    expect(normalizedOutput).to.include('Warning: source credential lookup failed: credential query unavailable')
+    expect(stderr.indexOf('done')).to.be.lessThan(stderr.indexOf('source credential lookup failed'))
+    expect(stderr).to.include('Copying...')
+    expect(stderr).to.include('Copying... done')
   })
-  context('fails', function () {
-    beforeEach(function () {
-      api.get('/addons/postgres-1')
-        .reply(200, addon)
-      api.post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'HEROKU_POSTGRESQL_RED_URL', app: 'myapp',
-      })
-        .reply(200, [attachment])
-      api.get('/apps/myapp/config-vars')
-        .reply(200, myappConfig)
-      pg.post('/client/v11/databases/1/transfers', {
-        from_name: 'database bar on foo.com:5432', from_url: 'postgres://foo.com/bar', to_name: 'RED', to_url: 'postgres://heroku/db',
-      })
-        .reply(200, {uuid: '100-001'})
-      pg.get('/client/v11/apps/myapp/transfers/100-001')
-        .reply(200, {finished_at: '100', num: 1, succeeded: false})
-      pg.get('/client/v11/apps/myapp/transfers/100-001?verbose=true')
-        .reply(200, {
-          finished_at: '100', logs: [{message: 'foobar'}], num: 1, succeeded: false,
-        })
+
+  it('uses the SDK credential callback before transfer and constructs one data client', async function () {
+    const sourceWithDatabase: SourceEndpoint = {...sourceEndpoint, database: {addon: {name: 'source-addon'}}}
+    const copyResult = {
+      source: sourceWithDatabase,
+      target: targetEndpoint,
+      transfer,
+      warnings: [],
+    }
+    const sequence: string[] = []
+    const credentialLookup = sandbox.stub(HerokuApiClient.prototype, 'get')
+    sandbox.stub(hux, 'confirmCommand').callsFake(async () => {
+      sequence.push('confirmed')
     })
-    it('fails to copy', async function () {
-      const err = 'An error occurred and the backup did not finish.\n\nfoobar\n\nRun heroku pg:backups:info b001 for more details.'
-      const {error, stderr, stdout} = await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        '--confirm',
-        'RED',
-        'postgres://foo.com/bar',
-        'HEROKU_POSTGRESQL_RED_URL',
-      ])
-      expect(ansis.strip(error!.message)).to.contain(err)
-      expect(stdout).to.equal('')
-      expect(stderr).to.include('Starting copy of database bar on foo.com:5432 to RED... done\n')
-      expect(stderr).to.include(copyingFailText)
+    fakeData.database.copyForApp.callsFake(async (_app: string, _source: string, _target: string, options: CopyOptions = {}) => {
+      const preview = {source: sourceWithDatabase, target: targetEndpoint}
+      await options.beforeCopy?.(preview)
+      options.onCredentialsChecked?.({credentialCount: 2, hasAdditionalCredentials: true})
+      sequence.push('credentials checked', 'transfer')
+      options.copyPoller?.onStart?.(preview)
+      options.waitPoller?.onStart?.(transfer)
+      options.copyPoller?.onStop?.()
+      options.waitPoller?.onStop?.(transfer)
+      return copyResult
     })
+
+    const {error, result, stderr} = await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'RED', 'DATABASE_URL', 'RED_URL'])
+
+    expect(error).to.be.undefined
+    expect(result).to.equal(copyResult)
+    expect(fakeData.database.copyForApp.calledOnce).to.equal(true)
+    expect(dataGetterCalls).to.equal(1)
+    expect(credentialLookup.called).to.equal(false)
+    expect(sequence).to.deep.equal(['confirmed', 'credentials checked', 'transfer'])
+    expect(stderr.indexOf('only copy your default credential')).to.be.lessThan(stderr.indexOf('Starting copy'))
+    expect(stderr.match(/only copy your default credential/g)).to.have.length(1)
+  })
+
+  it('passes CLI credentials to the data-service lookup through the bound SDK resource method', async function () {
+    sandbox.stub(APIClient.prototype, 'auth').get(() => 'credential-token')
+    // `this` is part of the call contract being exercised here.
+    // eslint-disable-next-line max-params
+    fakeData.database.copyForApp.callsFake(async function (this: FakeData['database'], _app: string, _source: string, _target: string, options: CopyOptions = {}) {
+      expect(this).to.equal(fakeData.database)
+      expect(options.credentialToken).to.equal('credential-token')
+      return copyWith({transfer, warnings: []})('myapp', 'DATABASE_URL', 'RED_URL', options)
+    })
+
+    const {error} = await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'RED', 'DATABASE_URL', 'RED_URL'])
+
+    expect(error).to.be.undefined
+    expect(fakeData.database.copyForApp.calledOnce).to.equal(true)
+  })
+
+  it('shows sanitized SDK credential lookup warnings before transfer without duplication', async function () {
+    const sourceWithDatabase: SourceEndpoint = {...sourceEndpoint, database: {addon: {name: 'source-addon'}}}
+    const warning = 'source credential lookup failed: credential service unavailable for postgres://[REDACTED]'
+    const copyResult = {
+      source: sourceWithDatabase,
+      target: targetEndpoint,
+      transfer,
+      warnings: [warning],
+    }
+    const sequence: string[] = []
+    fakeData.database.copyForApp.callsFake(async (_app: string, _source: string, _target: string, options: CopyOptions = {}) => {
+      const preview = {source: sourceWithDatabase, target: targetEndpoint}
+      await options.beforeCopy?.(preview)
+      options.onCredentialsChecked?.({hasAdditionalCredentials: false, warning})
+      sequence.push('credentials checked', 'transfer')
+      options.copyPoller?.onStart?.(preview)
+      options.waitPoller?.onStart?.(transfer)
+      options.copyPoller?.onStop?.()
+      options.waitPoller?.onStop?.(transfer)
+      return copyResult
+    })
+
+    const {error, result, stderr} = await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'RED', 'DATABASE_URL', 'RED_URL'])
+
+    expect(error).to.be.undefined
+    expect(result).to.equal(copyResult)
+    expect(sequence).to.deep.equal(['credentials checked', 'transfer'])
+    expect(stderr.match(/source credential lookup failed/g)).to.have.length(1)
+    expect(stderr.indexOf('source credential lookup failed')).to.be.lessThan(stderr.indexOf('Starting copy'))
+    expect(stderr).not.to.include('source-addon')
+  })
+
+  it('passes verbose and polling progress options to database.copyForApp', async function () {
+    fakeData.database.copyForApp.callsFake(copyWith({transfer, warnings: []}))
+
+    const {stderr, stdout} = await runCommand(Cmd, [
+      '--app', 'myapp', '--confirm', 'RED', '--verbose', '--wait-interval', '5', 'DATABASE_URL', 'RED_URL',
+    ])
+
+    const options = fakeData.database.copyForApp.firstCall.args[3] as CopyOptions
+    expect(options.verbose).to.equal(true)
+    expect(options.intervalMs).to.equal(5000)
+    expect(options.onPoll).to.be.a('function')
+    expect(options.copyPoller?.onStart).to.be.a('function')
+    expect(options.waitPoller?.onStart).to.be.a('function')
+    expect(stdout).to.include('copy started')
+    expect(stdout).to.include('Copying...')
+    expect(stderr).to.include('Starting copy of database bar on foo.com:5432 to RED... done\n')
+  })
+
+  it('reports copy failures and does not repeat ancillary warnings already shown', async function () {
+    const failedTransfer = {...transfer, logs: [{...transfer.logs[0]!, message: 'copy failed'}]}
+    const warning = 'source credential lookup failed'
+    const additionalWarning = 'target credential lookup failed'
+    const failure = new TransferFailedError(failedTransfer)
+    failure.ancillaryErrors = [warning, additionalWarning]
+    fakeData.database.copyForApp.callsFake(async (_app: string, _source: string, _target: string, options: CopyOptions = {}) => {
+      const preview = {source: sourceEndpoint, target: targetEndpoint}
+      await options.beforeCopy?.(preview)
+      options.onCredentialsChecked?.({hasAdditionalCredentials: false, warning})
+      options.copyPoller?.onStart?.(preview)
+      throw failure
+    })
+
+    const {error, stderr, stdout} = await runCommand(Cmd, [
+      '--app', 'myapp', '--confirm', 'RED', 'DATABASE_URL', 'RED_URL',
+    ])
+
+    expect(ansis.strip(error!.message)).to.contain('An error occurred and the copy did not finish.')
+    expect(ansis.strip(error!.message)).not.to.contain('backup did not finish')
+    expect(ansis.strip(error!.message)).to.contain('copy failed')
+    expect(ansis.strip(error!.message)).to.contain('Run heroku pg:backups:info c001 for more details.')
+    expect(stdout).to.equal('')
+    expect(stderr).to.include('!\n')
+    expect(stderr.match(/source credential lookup failed/g)).to.have.length(1)
+    expect(stderr.match(/target credential lookup failed/g)).to.have.length(1)
+  })
+
+  it('stops the copy spinner when transfer creation fails', async function () {
+    const error = new Error('transfer create failed')
+    fakeData.database.copyForApp.callsFake(async (_app: string, _source: string, _target: string, options: CopyOptions = {}) => {
+      const preview = {source: sourceEndpoint, target: targetEndpoint}
+      await options.beforeCopy?.(preview)
+      options.copyPoller?.onStart?.(preview)
+      throw error
+    })
+
+    const {error: commandError, stderr} = await runCommand(Cmd, [
+      '--app', 'myapp', '--confirm', 'RED', 'DATABASE_URL', 'RED_URL',
+    ])
+
+    expect(commandError).to.equal(error)
+    expect(stderr).to.contain('Starting copy of database bar on foo.com:5432 to RED... !')
+  })
+
+  it('stops the polling spinner when transfer observation fails', async function () {
+    const error = new Error('transfer observation failed')
+    fakeData.database.copyForApp.callsFake(async (_app: string, _source: string, _target: string, options: CopyOptions = {}) => {
+      const preview = {source: sourceEndpoint, target: targetEndpoint}
+      await options.beforeCopy?.(preview)
+      options.copyPoller?.onStart?.(preview)
+      options.waitPoller?.onStart?.(transfer)
+      options.copyPoller?.onStop?.()
+      throw error
+    })
+
+    const {error: commandError, stderr} = await runCommand(Cmd, [
+      '--app', 'myapp', '--confirm', 'RED', 'DATABASE_URL', 'RED_URL',
+    ])
+
+    expect(commandError).to.equal(error)
+    expect(stderr).to.contain('Copying... !')
+  })
+
+  it('renders failed transfer logs once in verbose mode', async function () {
+    const failedTransfer = {...transfer, logs: [{...transfer.logs[0]!, message: 'copy failed'}]}
+    fakeData.database.copyForApp.callsFake(async (_app: string, _source: string, _target: string, options: CopyOptions = {}) => {
+      const preview = {source: sourceEndpoint, target: targetEndpoint}
+      await options.beforeCopy?.(preview)
+      options.copyPoller?.onStart?.(preview)
+      options.waitPoller?.onStart?.(transfer)
+      options.copyPoller?.onStop?.()
+      options.onPoll?.(failedTransfer)
+      throw new TransferFailedError(failedTransfer)
+    })
+
+    const {error, stdout} = await runCommand(Cmd, [
+      '--app', 'myapp', '--confirm', 'RED', '--verbose', 'DATABASE_URL', 'RED_URL',
+    ])
+
+    expect(error).to.not.be.undefined
+    expect(stdout.match(/copy failed/g)).to.have.length(1)
   })
 })

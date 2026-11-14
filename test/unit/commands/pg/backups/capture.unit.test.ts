@@ -1,6 +1,7 @@
 import type {CaptureAndWaitOptions} from '@heroku/sdk/extensions/data'
 
 import {runCommand} from '@heroku-cli/test-utils'
+import {TransferFailedError} from '@heroku/sdk/extensions/data'
 import {expect} from 'chai'
 import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
@@ -152,5 +153,19 @@ describe('pg:backups:capture', function () {
     `)
     expect(stderr).to.match(/Starting backup of ⛁ postgres-1... done/)
     expect(stderr).to.match(/backups of large databases are likely to fail/)
+  })
+
+  it('reports ancillary warnings when capture fails', async function () {
+    const failure = new TransferFailedError({
+      from_type: 'pg_dump', logs: [], num: 5, to_type: 'gof3r',
+    } as never)
+    failure.ancillaryErrors = ['source credential lookup failed']
+    fakeData.database.describe.resolves({info: []})
+    fakeData.backup.captureAndWait.rejects(failure)
+
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp'])
+
+    expect(error?.message).to.include('An error occurred and the backup did not finish.')
+    expect(stderr).to.include('Warning: source credential lookup failed')
   })
 })

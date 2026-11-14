@@ -1,8 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {databaseCommandExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
+import {createSDK} from '../../lib/sdk.js'
 import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc
@@ -20,32 +22,27 @@ export default class Reset extends Command {
   }
   static topic = 'pg'
 
-  public async run(): Promise<void> {
+  public async run() {
     const {args, flags} = await this.parse(Reset)
     const {app, confirm, extensions} = flags
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const {addon: db} = await dbResolver.getAttachment(app, args.database)
 
-    let extensionsArray
-    if (extensions) {
-      extensionsArray = extensions.split(',')
-        .map((ext: string) => ext.trim()
-          .toLowerCase())
-        .sort()
-    }
-
-    await hux.confirmCommand({
-      comparison: app,
-      confirmation: confirm,
-      warningMessage: heredoc(`
-        Destructive action
-        ${color.addon(db.name)} will lose all of its data
-      `),
-    })
-    ux.action.start(`Resetting ${color.addon(db.name)}`)
-    await this.heroku.put(`/client/v11/databases/${db.id}/reset`, {
-      body: {extensions: extensionsArray}, hostname: utils.pg.host(),
+    const {data} = createSDK(this.heroku, {extensions: [databaseCommandExtensions]})
+    const result = await data.database.resetForApp(app, args.database, {
+      async beforeReset({addon}) {
+        await hux.confirmCommand({
+          comparison: app,
+          confirmation: confirm,
+          warningMessage: heredoc(`
+            Destructive action
+            ${color.addon(addon.name)} will lose all of its data
+          `),
+        })
+        ux.action.start(`Resetting ${color.addon(addon.name)}`)
+      },
+      extensions,
     })
     ux.action.stop()
+
+    return result
   }
 }

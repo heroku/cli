@@ -2,131 +2,9 @@ import type {DatabaseSettingKey} from '@heroku/sdk/extensions/data'
 
 import * as Heroku from '@heroku-cli/schema'
 
-type TransferTargetType = 'gof3r' | 'htcat' | 'pg_dump' | 'pg_restore'
-
-export type BackupTransfer = {
-  canceled_at: string
-  created_at: string
-  deleted_at: string
-  finished_at: string
-  from_name: string
-  from_type: TransferTargetType
-  from_url: string
-  logs: Array<{
-    created_at: string
-    level: string
-    message: string
-  }>
-  num: number
-  num_keep: number
-  options: {
-    [k: string]: unknown
-  }
-  processed_bytes: number
-  purged_at: string
-  schedule?: {
-    uuid: string
-  }
-  source_bytes: number
-  started_at: string
-  succeeded: boolean
-  to_name: string
-  to_type: TransferTargetType
-  to_url: string
-  updated_at: string
-  uuid: string
-  warnings: number
-}
-
 export type ExtendedAddon = Required<Heroku.AddOn> & {
   addon_service: Required<Heroku.AddOnService>,
   plan: Required<Heroku.Plan>,
-}
-
-type ServiceInfo
-  = 'Behind By'
-  | 'Connection Pooling'
-  | 'Connections'
-  | 'Continuous Protection'
-  | 'Created'
-  | 'Credentials'
-  | 'Customer Encryption Key'
-  | 'Data Encryption'
-  | 'Data Size'
-  | 'Enhanced Certificates'
-  | 'Followers'
-  | 'Following'
-  | 'Fork/Follow'
-  | 'Forked From'
-  | 'Forks'
-  | 'HA Status'
-  | 'Infrastructure'
-  | 'Maintenance'
-  | 'Maintenance window'
-  | 'Mutual TLS'
-  | 'PG Version'
-  | 'Plan'
-  | 'Region'
-  | 'Restricted Credentials'
-  | 'Rollback'
-  | 'Status'
-  | 'Tables'
-  | 'Upgradable Extensions'
-  | 'Warning'
-
-export type PgDatabaseService = {
-  addon_id: string
-  available_for_ingress: boolean
-  created_at: string
-  credentials: number
-  current_transaction: number
-  database_name: string
-  database_password: string
-  database_user: string
-  following?: string
-  forked_from: string
-  formation?: {
-    id: string
-    primary: string
-  }
-  heroku_resource_id: string
-  'hot_standby?'?: boolean
-  info: Array<{
-    name: ServiceInfo
-    values: string[]
-  }>
-  is_in_recovery?: boolean
-  leader: null | string
-  metaas_source: string
-  name: string
-  num_bytes: number
-  num_connections: number
-  num_connections_waiting: number
-  num_tables: number
-  plan: {
-    id: number
-    name: string
-  }
-  port: number
-  postgres_version: string
-  resource_url: string
-  'standalone?'?: boolean
-  status_updated_at?: string
-  target_transaction: null | string
-  'waiting?': boolean
-}
-
-export type PgStatus = {
-  'error?': boolean
-  message: string
-  'waiting?': boolean
-}
-
-export type PgUpgradeStatus = {
-  'error?': boolean
-  message: string
-  step: string
-  'waiting?': boolean
 }
 
 type TenantInfoNames
@@ -163,17 +41,6 @@ export type PgDatabaseTenant = {
   'waiting?': boolean
 }
 
-export type PgDatabase = PgDatabaseService & PgDatabaseTenant
-
-export type MaintenanceApiResponse = {
-  message: string,
-}
-export type PgDatabaseConfig = {
-  [key: string]: any;
-  log_lock_waits: {
-    value: boolean,
-  },
-}
 export type SettingKey = DatabaseSettingKey
 
 export type PGDiagnoseResponse = {

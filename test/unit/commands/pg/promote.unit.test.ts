@@ -1,899 +1,649 @@
-import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import type {AddOnAttachment, Release} from '@heroku/types/3.sdk'
+
+import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
+import {
+  DatabaseAlreadyPromotedError,
+  DatabaseNotReadyError,
+  DatabasePromotionError,
+  DatabaseReleasePhaseError,
+  type PromoteDatabaseOptions,
+  type PromoteDatabasePreview,
+  type PromoteDatabaseProgressEvent,
+  type PromoteDatabaseResult,
+} from '@heroku/sdk/extensions/data'
+import {ux} from '@oclif/core'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
-import tsheredoc from 'tsheredoc'
+import {restore, SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/pg/promote.js'
-import * as fixtures from '../../../fixtures/addons/fixtures.js'
 
-const heredoc = tsheredoc
-
-describe('pg:promote when argument is database', function () {
-  const addon = fixtures.addons['dwh-db']
-  const pgbouncerAddonID = 'c667bce0-3238-4202-8550-e1dc323a02a2'
-
-  beforeEach(function () {
-    nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve')
-      .reply(200, [{addon}])
-    nock('https://api.data.heroku.com')
-      .get(`/client/v11/databases/${addon.id}/wait_status`)
-      .reply(200, {message: 'available', 'waiting?': false})
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200, {following: null})
-  })
-
-  afterEach(function () {
-    nock.cleanAll()
-  })
-
-  it('promotes db and attaches pgbouncer if DATABASE_CONNECTION_POOL is an attachment', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/formation')
-      .reply(200, [])
-      .get('/apps/myapp/addon-attachments').reply(200, [
-        {
-          addon: {name: 'postgres-2'},
-          name: 'DATABASE',
-          namespace: null,
-        },
-        {
-          addon: {name: 'postgres-2'},
-          id: pgbouncerAddonID,
-          name: 'DATABASE_CONNECTION_POOL',
-          namespace: 'connection-pooling:default',
-        },
-      ])
-      .post('/addon-attachments', {
-        addon: {name: 'postgres-2'},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        namespace: null,
-      }).reply(201, {name: 'RED'})
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        name: 'DATABASE',
-        namespace: null,
-      }).reply(201)
-      .delete(`/addon-attachments/${pgbouncerAddonID}`).reply(200)
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        name: 'DATABASE_CONNECTION_POOL',
-        namespace: 'connection-pooling:default',
-      }).reply(201)
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
-      Reattaching pooler to new leader... done
-    `))
-  })
-
-  it('promotes db and does not detach pgbouncers attached to new leader under other name than DATABASE_CONNECTION_POOL', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/formation')
-      .reply(200, [])
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {
-          addon: {name: 'postgres-2'},
-          name: 'DATABASE',
-          namespace: null,
-        },
-        {
-          addon: {id: '1', name: addon.name},
-          id: '12345',
-          name: 'DATABASE_CONNECTION_POOL2',
-          namespace: 'connection-pooling:default',
-        },
-      ])
-      .post('/addon-attachments', {
-        addon: {name: 'postgres-2'}, app: {name: 'myapp'}, confirm: 'myapp', namespace: null,
-      })
-      .reply(201, {name: 'RED'})
-      .post('/addon-attachments', {
-        addon: {name: addon.name}, app: {name: 'myapp'}, confirm: 'myapp', name: 'DATABASE', namespace: null,
-      })
-      .reply(201)
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
-    `))
-  })
-
-  it('promotes db and does not reattach pgbouncer if DATABASE_CONNECTION_POOL attached to database being promoted, but not old leader', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/formation')
-      .reply(200, [])
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {
-          addon: {name: 'postgres-2'},
-          name: 'DATABASE',
-          namespace: null,
-        },
-        {
-          addon: {id: addon.id, name: addon.name},
-          id: '12345',
-          name: 'DATABASE_CONNECTION_POOL',
-          namespace: 'connection-pooling:default',
-        },
-      ])
-      .post('/addon-attachments', {
-        addon: {name: 'postgres-2'}, app: {name: 'myapp'}, confirm: 'myapp', namespace: null,
-      })
-      .reply(201, {name: 'RED'})
-      .post('/addon-attachments', {
-        addon: {name: addon.name}, app: {name: 'myapp'}, confirm: 'myapp', name: 'DATABASE', namespace: null,
-      })
-      .reply(201)
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
-    `))
-  })
-
-  it('promotes the db and creates another attachment if current DATABASE does not have another', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/formation')
-      .reply(200, [])
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {addon: {name: 'postgres-2'}, name: 'DATABASE', namespace: null},
-      ])
-      .post('/addon-attachments', {
-        addon: {name: 'postgres-2'},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        namespace: null,
-      })
-      .reply(201, {name: 'RED'})
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        name: 'DATABASE',
-        namespace: null,
-      })
-      .reply(201)
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
-    `))
-  })
-
-  it('promotes the db and does not create another attachment if current DATABASE has another', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/formation')
-      .reply(200, [])
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {
-          addon: {name: 'postgres-2'},
-          name: 'DATABASE',
-          namespace: null,
-        },
-        {
-          addon: {name: 'postgres-2'},
-          name: 'RED',
-          namespace: null,
-        },
-      ])
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        name: 'DATABASE',
-        namespace: null,
-      })
-      .reply(201)
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
-    `))
-  })
-
-  it('promotes the db with a custom attachment name when --as is provided', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/formation')
-      .reply(200, [])
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {
-          addon: {name: 'postgres-2'},
-          name: 'DATABASE',
-          namespace: null,
-        },
-        {
-          addon: {name: 'postgres-2'},
-          name: 'RED',
-          namespace: null,
-        },
-      ])
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        name: 'CUSTOM_DB',
-        namespace: null,
-      })
-      .reply(201)
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      '--as',
-      'CUSTOM_DB',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
-    `))
-  })
-
-  it('does not promote the db if is already is DATABASE', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/formation')
-      .reply(200, [])
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {addon: {name: addon.name}, name: 'DATABASE', namespace: null},
-        {addon: {name: addon.name}, name: 'PURPLE', namespace: null},
-      ])
-    const err = `${addon.name} is already promoted on ⬢ myapp`
-    const {error} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expect(ansis.strip(error!.message)).to.equal(err)
-  })
-
-  it('promotes when the db is not a follower and has no DATABASE attachment exists', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {addon: {name: addon.name}, name: 'PURPLE', namespace: null},
-      ])
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        name: 'DATABASE',
-        namespace: null,
-      })
-      .reply(201)
-      .get('/apps/myapp/formation')
-      .reply(200, [
-        {type: 'release'},
-      ])
-      .get('/apps/myapp/releases')
-      .reply(200, [
-        {description: 'Attach DATABASE', id: 1},
-        {description: 'Detach DATABASE', id: 2},
-      ])
-      .get('/apps/myapp/releases/1')
-      .reply(200, {status: 'succeeded'})
-      .get('/apps/myapp/releases/2')
-      .reply(200, {status: 'succeeded'})
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'dwh-db',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done
-      Checking release phase... pg:promote succeeded.
-    `))
-  })
+const addon = {
+  app: {id: 'app-1', name: 'myapp'},
+  id: 'db-1',
+  name: 'dwh-db',
+  plan: {id: 'plan-1', name: 'heroku-postgresql:standard-2'},
+}
+const otherAddon = {
+  app: {id: 'app-1', name: 'myapp'},
+  id: 'db-2',
+  name: 'postgres-2',
+  plan: {id: 'plan-1', name: 'heroku-postgresql:standard-2'},
+}
+const makeAttachment = (fields: Pick<AddOnAttachment, 'addon' | 'id' | 'name' | 'namespace'>): AddOnAttachment => ({
+  addon: fields.addon,
+  app: addon.app,
+  created_at: '2026-01-01T00:00:00Z',
+  id: fields.id,
+  log_input_url: null,
+  name: fields.name,
+  namespace: fields.namespace,
+  updated_at: '2026-01-01T00:00:00Z',
+  web_url: 'https://addons-sso.heroku.com/',
+})
+const attachment = makeAttachment({
+  addon, id: 'attachment-1', name: 'DATABASE', namespace: null,
+})
+const alias = makeAttachment({
+  addon: otherAddon, id: 'alias-1', name: 'RED', namespace: null,
+})
+const backup = makeAttachment({
+  addon: otherAddon, id: 'backup-1', name: 'GREEN', namespace: null,
+})
+const pooler = makeAttachment({
+  addon: otherAddon, id: 'pooler-1', name: 'DATABASE_CONNECTION_POOL', namespace: 'connection-pooling:default',
 })
 
-describe('pg:promote when argument is a credential attachment', function () {
-  const addon = fixtures.addons['dwh-db']
-
-  beforeEach(function () {
-    nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'DATABASE',
-        app: 'myapp',
-      })
-      .reply(200, [{addon, name: 'PURPLE', namespace: 'credential:hello'}])
-      .get('/apps/myapp/formation')
-      .reply(200, [])
-    nock('https://api.data.heroku.com')
-      .get(`/client/v11/databases/${addon.id}/wait_status`)
-      .reply(200, {message: 'available', 'waiting?': false})
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200, {following: null})
-  })
-
-  afterEach(function () {
-    nock.cleanAll()
-  })
-
-  it('promotes the credential and creates another attachment if current DATABASE does not have another', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {
-          addon: {name: 'postgres-2'},
-          name: 'DATABASE',
-        },
-        {
-          addon: {name: addon.name},
-          name: 'RED',
-          namespace: 'credential:hello',
-        },
-      ])
-      .post('/addon-attachments', {
-        addon: {name: 'postgres-2'}, app: {name: 'myapp'}, confirm: 'myapp',
-      })
-      .reply(201, {name: 'RED'})
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        name: 'DATABASE',
-        namespace: 'credential:hello',
-      })
-      .reply(201)
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
-    `))
-  })
-
-  it('promotes the credential and creates another attachment if current DATABASE does not have another and current DATABASE is a credential', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {
-          addon: {name: addon.name},
-          name: 'PURPLE',
-          namespace: 'credential:hello',
-        },
-        {
-          addon: {name: addon.name},
-          name: 'DATABASE',
-          namespace: 'credential:goodbye',
-        },
-      ])
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        namespace: 'credential:goodbye',
-      })
-      .reply(201, {name: 'RED'})
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        name: 'DATABASE',
-        namespace: 'credential:hello',
-      })
-      .reply(201)
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
-    `))
-  })
-
-  it('promotes the credential and does not create another attachment if current DATABASE has another', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {
-          addon: {name: 'postgres-2'},
-          name: 'DATABASE',
-        },
-        {
-          addon: {name: 'postgres-2'},
-          name: 'RED',
-        },
-        {
-          addon: {name: addon.name},
-          name: 'PURPLE',
-          namespace: 'credential:hello',
-        },
-      ])
-      .post('/addon-attachments', {
-        addon: {name: addon.name}, app: {name: 'myapp'}, confirm: 'myapp', name: 'DATABASE', namespace: 'credential:hello',
-      })
-      .reply(201)
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
-    `))
-  })
-
-  it('promotes the credential if the current promoted database is for the same addon, but the default credential', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {
-          addon: {name: addon.name},
-          name: 'DATABASE',
-          namespace: null,
-        }, {
-          addon: {name: addon.name}, name: 'RED',
-          namespace: null,
-        }, {
-          addon: {name: addon.name},
-          name: 'PURPLE',
-          namespace: 'credential:hello',
-        },
-      ])
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        name: 'DATABASE',
-        namespace: 'credential:hello',
-      })
-      .reply(201)
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
-    `))
-  })
-
-  it('promotes the credential if the current promoted database is for the same addon, but another credential', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {
-          addon: {name: addon.name},
-          name: 'DATABASE',
-          namespace: 'credential:goodbye',
-        }, {
-          addon: {name: addon.name},
-          name: 'RED',
-          namespace: 'credential:goodbye',
-        }, {
-          addon: {name: addon.name},
-          name: 'PURPLE',
-          namespace: 'credential:hello',
-        },
-      ])
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        name: 'DATABASE',
-        namespace: 'credential:hello',
-      })
-      .reply(201)
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
-    `))
-  })
-
-  it('does not promote the credential if it already is DATABASE', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {
-          addon: {name: addon.name},
-          name: 'RED', namespace: null,
-        }, {
-          addon: {name: addon.name},
-          name: 'DATABASE',
-          namespace: 'credential:hello',
-        }, {
-          addon: {name: addon.name},
-          name: 'PURPLE',
-          namespace: 'credential:hello',
-        },
-      ])
-    const err = 'PURPLE is already promoted on ⬢ myapp'
-    const {error} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expect(ansis.strip(error!.message)).to.equal(err)
-  })
+const preview = (overrides: Partial<PromoteDatabasePreview> = {}): PromoteDatabasePreview => ({
+  addon,
+  appIdentity: 'myapp',
+  attachment,
+  ...overrides,
 })
 
-describe('pg:promote when release phase is present', function () {
-  const addon = fixtures.addons['dwh-db']
-
-  beforeEach(function () {
-    nock('https://api.heroku.com:')
-      .get('/apps/myapp/formation')
-      .reply(200, [{type: 'release'}])
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {
-          addon: {name: addon.name},
-          name: 'DATABASE',
-          namespace: 'credential:goodbye',
-        }, {
-          addon: {name: addon.name},
-          name: 'RED',
-          namespace: 'credential:goodbye',
-        }, {
-          addon: {name: addon.name},
-          name: 'PURPLE',
-          namespace: 'credential:hello',
-        },
-      ])
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        name: 'DATABASE',
-        namespace: 'credential:hello',
-      })
-      .reply(201)
-      .post('/addon-attachments', {
-        addon: {name: addon.name}, app: {name: 'myapp'}, confirm: 'myapp', name: 'DATABASE', namespace: null,
-      })
-      .reply(201)
-      .post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'DATABASE', app: 'myapp',
-      })
-      .reply(201, [{
-        addon: {id: addon.id, name: addon.name, plan: {id: addon.plan!.id, name: addon.plan!.name}}, name: 'PURPLE', namespace: 'credential:hello',
-      }])
-    nock('https://api.data.heroku.com')
-      .get(`/client/v11/databases/${addon.id}/wait_status`)
-      .reply(200, {message: 'available', 'waiting?': false})
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200, {following: null})
-  })
-
-  afterEach(function () {
-    nock.cleanAll()
-  })
-
-  it('checks release phase', async function () {
-    nock('https://api.heroku.com:')
-      .get('/apps/myapp/releases')
-      .reply(200, [{description: 'Attach DATABASE', id: 1}, {description: 'Detach DATABASE', id: 2}])
-      .get('/apps/myapp/releases/1')
-      .reply(200, {status: 'succeeded'})
-      .get('/apps/myapp/releases/2')
-      .reply(200, {status: 'succeeded'})
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
-      Checking release phase... pg:promote succeeded.
-    `))
-  })
-
-  it('checks release phase for detach failure', async function () {
-    nock('https://api.heroku.com:')
-      .get('/apps/myapp/releases')
-      .reply(200, [{description: 'Attach DATABASE', id: 1}, {description: 'Detach DATABASE', id: 2}])
-      .get('/apps/myapp/releases/1')
-      .reply(200, {status: 'succeeded'})
-      .get('/apps/myapp/releases/2')
-      .reply(200, {description: 'Detach DATABASE', status: 'failed'})
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
-      Checking release phase... pg:promote succeeded. It is safe to ignore the failed Detach DATABASE release.
-    `))
-  })
-
-  it('checks release phase for attach failure', async function () {
-    nock('https://api.heroku.com:')
-      .get('/apps/myapp/releases')
-      .reply(200, [{description: 'Attach DATABASE', id: 1}, {description: 'Detach DATABASE', id: 2}])
-      .get('/apps/myapp/releases/1')
-      .reply(200, {description: 'Attach DATABASE', status: 'failed'})
-      .get('/apps/myapp/releases/2')
-      .reply(200, {description: 'Attach DATABASE', status: 'failed'})
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
-      Checking release phase... pg:promote failed because Attach DATABASE release was unsuccessful. Your application is currently running with ${addon.name} attached as DATABASE_URL. Check your release phase logs for failure causes.
-    `))
-  })
-
-  it('checks release phase for attach failure and detach success', async function () {
-    nock('https://api.heroku.com:')
-      .get('/apps/myapp/releases')
-      .reply(200, [{description: 'Attach DATABASE', id: 1}, {description: 'Detach DATABASE', id: 2}])
-      .get('/apps/myapp/releases/1')
-      .reply(200, {description: 'Attach DATABASE', status: 'failed'})
-      .get('/apps/myapp/releases/2')
-      .reply(200, {description: 'Attach DATABASE', status: 'succeeded'})
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
-      Checking release phase... pg:promote failed because Attach DATABASE release was unsuccessful. Your application is currently running without an attached DATABASE_URL. Check your release phase logs for failure causes.
-    `))
-  })
-
-  it('errors when there are no releases', async function () {
-    nock('https://api.heroku.com:')
-      .get('/apps/myapp/releases')
-      .reply(200, [])
-    const {error} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expect(error).to.exist
-  })
+const result = (overrides: Partial<PromoteDatabaseResult> = {}): PromoteDatabaseResult => ({
+  addon,
+  attachment,
+  mutationStatus: {
+    attachment: {attempted: true, status: 'created'},
+    backupAttachment: {attempted: false, status: 'not_attempted'},
+    poolerAttachment: {attempted: false, status: 'not_attempted'},
+  },
+  ...overrides,
 })
 
-describe('pg:promote when database is not available or force flag is present', function () {
-  const addon = fixtures.addons['dwh-db']
+interface FakeData {
+  database: {
+    info: SinonStub
+    promoteForApp: SinonStub
+  }
+}
+
+const emitProgressForResult = async (options: PromoteDatabaseOptions, promotionResult: PromoteDatabaseResult) => {
+  const {mutationStatus, releasePhase} = promotionResult
+  const progress: PromoteDatabaseProgressEvent[] = []
+
+  if (mutationStatus.backupAttachment.attempted) {
+    progress.push({stage: 'backup', status: 'started', type: 'attachment'}, {
+      attachment: promotionResult.backupAttachment,
+      stage: 'backup',
+      status: mutationStatus.backupAttachment.status === 'created' ? 'succeeded' : 'unknown',
+      type: 'attachment',
+    })
+  }
+
+  if (mutationStatus.attachment.attempted) {
+    progress.push({stage: 'promotion', status: 'started', type: 'attachment'}, {
+      attachment: promotionResult.attachment,
+      stage: 'promotion',
+      status: mutationStatus.attachment.status === 'created' ? 'succeeded' : 'unknown',
+      type: 'attachment',
+    })
+  }
+
+  if (mutationStatus.poolerAttachment.attempted) {
+    progress.push({stage: 'reattachment', status: 'started', type: 'pooler-reattachment'}, {
+      attachment: promotionResult.poolerAttachment,
+      stage: 'reattachment',
+      status: mutationStatus.poolerAttachment.status === 'created' ? 'succeeded' : 'unknown',
+      type: 'pooler-reattachment',
+    })
+  }
+
+  if (releasePhase) {
+    progress.push({stage: 'started', status: 'started', type: 'release-phase'}, {
+      attach: releasePhase.attach,
+      detach: releasePhase.detach,
+      stage: 'completed',
+      status: releasePhase.status,
+      type: 'release-phase',
+    })
+  }
+
+  // eslint-disable-next-line no-await-in-loop -- preserve the SDK progress order
+  for (const event of progress) await options.onProgress?.(event)
+}
+
+const promoteWith = (
+  promotionResult: PromoteDatabaseResult,
+  promotionPreview: PromoteDatabasePreview = preview({currentAttachment: {...alias, name: 'DATABASE'}, existingAlias: alias}),
+  customizeOptions?: (options: PromoteDatabaseOptions) => void,
+) =>
+  async (_app: string, _database?: string, options: PromoteDatabaseOptions = {}) => {
+    customizeOptions?.(options)
+    await options.beforePromote?.(promotionPreview)
+    await emitProgressForResult(options, promotionResult)
+
+    return promotionResult
+  }
+
+describe('pg:promote', function () {
+  let fakeData: FakeData
 
   beforeEach(function () {
-    nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve')
-      .reply(200, [{addon}])
-      .get('/apps/myapp/formation')
-      .reply(200, [])
-    nock('https://api.data.heroku.com')
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200, {following: null})
+    fakeData = {database: {info: stub().resolves({}), promoteForApp: stub()}}
+    stub(HerokuSDK.prototype, 'data').get(() => fakeData)
   })
 
   afterEach(function () {
-    nock.cleanAll()
+    restore()
   })
 
-  it('warns user if database is unavailable', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {
-          addon: {name: 'postgres-2'},
-          name: 'DATABASE',
-          namespace: null,
-        }, {
-          addon: {name: 'postgres-2'},
-          name: 'RED',
-          namespace: null,
-        },
-      ])
-    nock('https://api.data.heroku.com')
-      .get(`/client/v11/databases/${addon.id}/wait_status`)
-      .reply(200, {message: 'pending', 'waiting?': true})
+  it('promotes a database and returns the SDK result', async function () {
+    const promotionResult = result()
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult, undefined, options => {
+      expect(options.force).to.equal(false)
+    }))
 
-    const err = heredoc(`
-      Database cannot be promoted while in state: pending
+    const {result: commandResult, stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
 
-      Promoting this database can lead to application errors and outage. Please run heroku pg:wait to wait for database to become available.
-
-      To ignore this error, you can pass the --force flag to promote the database and risk application issues.
-    `)
-    const {error} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expect(ansis.strip(error!.message)).to.equal(err)
+    expect(fakeData.database.promoteForApp.calledOnce).to.equal(true)
+    expect(fakeData.database.promoteForApp.firstCall.args[0]).to.equal('myapp')
+    expect(fakeData.database.promoteForApp.firstCall.args[1]).to.equal('DATABASE')
+    expect(commandResult).to.equal(promotionResult)
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
   })
 
-  it('promotes database in unavailable state if --force flag is present', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {
-          addon: {name: 'postgres-2'},
-          name: 'DATABASE',
-          namespace: null,
-        }, {
-          addon: {name: 'postgres-2'},
-          name: 'RED',
-          namespace: null,
-        },
-      ])
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        name: 'DATABASE',
-        namespace: null,
+  it('preserves custom attachment names', async function () {
+    fakeData.database.promoteForApp.callsFake(promoteWith(result(), undefined, options => {
+      expect(options.as).to.equal('CUSTOM_DB')
+    }))
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', '--as', 'CUSTOM_DB', 'DATABASE'])
+
+    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
+  })
+
+  it('promotes when the app has no DATABASE attachment', async function () {
+    const promotionResult = result()
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult, preview()))
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'dwh-db'])
+
+    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
+    expect(stderr).to.not.contain('Ensuring an alternate alias')
+  })
+
+  it('rejects an unready database before creating an alias for the existing DATABASE', async function () {
+    const notReady = new DatabaseNotReadyError({message: 'pending', 'waiting?': true})
+    fakeData.database.promoteForApp.rejects(notReady)
+
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(error).to.equal(notReady)
+    expect(fakeData.database.promoteForApp.firstCall.args[2].force).to.equal(false)
+    expect(stderr).to.not.contain('Ensuring an alternate alias')
+    expect(stderr).to.not.contain('Promoting ⛁ dwh-db')
+  })
+
+  it('uses --force to proceed through backup and promotion progress', async function () {
+    const promotionResult = result({backupAttachment: backup})
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+      expect(options.force).to.equal(true)
+      await options.beforePromote?.(preview({currentAttachment: {...alias, name: 'DATABASE'}}))
+      await options.onProgress?.({stage: 'backup', status: 'started', type: 'attachment'})
+      await options.onProgress?.({
+        attachment: backup, stage: 'backup', status: 'succeeded', type: 'attachment',
       })
-      .reply(201)
-    nock('https://api.data.heroku.com')
-      .get(`/client/v11/databases/${addon.id}/wait_status`)
-      .reply(200, {message: 'pending', 'waiting?': true})
-
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      '--force',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
-    `))
-  })
-
-  it('promotes database in available state if --force flag is present', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {
-          addon: {name: 'postgres-2'},
-          name: 'DATABASE',
-          namespace: null,
-        }, {
-          addon: {name: 'postgres-2'},
-          name: 'RED',
-          namespace: null,
-        },
-      ])
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        name: 'DATABASE',
-        namespace: null,
+      await options.onProgress?.({stage: 'promotion', status: 'started', type: 'attachment'})
+      await options.onProgress?.({
+        attachment, stage: 'promotion', status: 'succeeded', type: 'attachment',
       })
-      .reply(201)
-    nock('https://api.data.heroku.com')
-      .get(`/client/v11/databases/${addon.id}/wait_status`)
-      .reply(200, {message: 'available', 'waiting?': false})
+      return promotionResult
+    })
 
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      '--force',
-      'DATABASE',
-    ])
-    expectOutput(stderr, heredoc(`
-      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
-      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
-    `))
-  })
-})
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', '--force', 'DATABASE'])
 
-describe('pg:promote when promoted database is a follower', function () {
-  const addon = fixtures.addons['dwh-db']
-
-  beforeEach(function () {
-    nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve')
-      .reply(200, [{addon}])
-      .get('/apps/myapp/formation')
-      .reply(200, [])
-    nock('https://api.data.heroku.com')
-      .get(`/client/v11/databases/${addon.id}/wait_status`)
-      .reply(200, {message: 'available', 'waiting?': false})
+    expect(error).to.be.undefined
+    expect(stderr).to.contain('Ensuring an alternate alias for existing ⛁ DATABASE_URL... GREEN_URL')
+    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
   })
 
-  afterEach(function () {
-    nock.cleanAll()
+  it('does not show an alias spinner when database resolution fails', async function () {
+    fakeData.database.promoteForApp.rejects(new Error('Database not found'))
+
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'missing-database'])
+
+    expect(error!.message).to.equal('Database not found')
+    expect(stderr).to.not.contain('Ensuring an alternate alias')
+    expect(stderr).to.not.contain('Promoting ⛁ dwh-db')
   })
 
-  it('warns user if database is a follower', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/addon-attachments')
-      .reply(200, [
-        {
-          addon: {name: 'postgres-2'},
-          name: 'DATABASE',
-          namespace: null,
-        }, {
-          addon: {name: 'postgres-2'},
-          name: 'RED',
-          namespace: null,
-        },
-      ])
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
-        confirm: 'myapp',
-        name: 'DATABASE', namespace: null,
+  it('uses an existing alias for the current DATABASE without creating a backup', async function () {
+    fakeData.database.promoteForApp.callsFake(promoteWith(result(), preview({
+      currentAttachment: {...alias, name: 'DATABASE'},
+      existingAlias: alias,
+    })))
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(stderr).to.contain('Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL')
+    expect(stderr).to.not.contain('GREEN_URL')
+  })
+
+  it('renders backup alias and promotion updates from live SDK progress', async function () {
+    const events: string[] = []
+    const promotionResult = result({
+      backupAttachment: backup,
+      mutationStatus: {
+        attachment: {attempted: true, status: 'created'},
+        backupAttachment: {attempted: true, status: 'created'},
+        poolerAttachment: {attempted: false, status: 'not_attempted'},
+      },
+    })
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+      await options.beforePromote?.(preview({currentAttachment: {...alias, name: 'DATABASE'}}))
+      events.push('backup-created')
+      await options.onProgress?.({stage: 'backup', status: 'started', type: 'attachment'})
+      await options.onProgress?.({
+        attachment: backup, stage: 'backup', status: 'succeeded', type: 'attachment',
       })
-      .reply(201)
-    nock('https://api.data.heroku.com')
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200, {
-        following: 'postgres://xxx.com:5432/abcdefghijklmn',
-        leader: {
-          addon_id: '5ba2ba8b-07a9-4a65-a808-585a50e37f98',
-          name: 'postgresql-leader',
-        },
+      await options.onProgress?.({stage: 'promotion', status: 'started', type: 'attachment'})
+      await options.onProgress?.({
+        attachment, stage: 'promotion', status: 'succeeded', type: 'attachment',
       })
+      return promotionResult
+    })
 
-    const {stderr} = await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'DATABASE',
-    ])
-    expect(stderr).to.include('Your database has been promoted but it is currently a follower')
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(events).to.deep.equal(['backup-created'])
+    expect(stderr).to.contain('Ensuring an alternate alias for existing ⛁ DATABASE_URL... GREEN_URL')
+    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
+  })
+
+  it('creates a backup alias when the current DATABASE has none', async function () {
+    const promotionResult = result({
+      backupAttachment: backup,
+      mutationStatus: {
+        attachment: {attempted: true, status: 'created'},
+        backupAttachment: {attempted: true, status: 'created'},
+        poolerAttachment: {attempted: false, status: 'not_attempted'},
+      },
+    })
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+      await options.beforePromote?.(preview({currentAttachment: {...alias, name: 'DATABASE'}}))
+      await options.onProgress?.({stage: 'backup', status: 'started', type: 'attachment'})
+      await options.onProgress?.({
+        attachment: backup, stage: 'backup', status: 'succeeded', type: 'attachment',
+      })
+      await options.onProgress?.({stage: 'promotion', status: 'started', type: 'attachment'})
+      await options.onProgress?.({
+        attachment, stage: 'promotion', status: 'succeeded', type: 'attachment',
+      })
+      return promotionResult
+    })
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(stderr).to.contain('Ensuring an alternate alias for existing ⛁ DATABASE_URL... GREEN_URL')
+    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
+  })
+
+  it('reattaches a default pooler from the old leader', async function () {
+    const promotionResult = result({
+      mutationStatus: {
+        attachment: {attempted: true, status: 'created'},
+        backupAttachment: {attempted: false, status: 'not_attempted'},
+        poolerAttachment: {attempted: true, status: 'created'},
+      },
+      poolerAttachment: pooler,
+    })
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult))
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(stderr).to.contain('Reattaching pooler to new leader... done')
+  })
+
+  it('does not reattach a pooler when SDK result has no pooler attachment', async function () {
+    const promotionResult = result()
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult))
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(stderr).to.not.contain('Reattaching pooler')
+  })
+
+  it('does not promote a database that is already DATABASE', async function () {
+    const alreadyPromoted = new DatabaseAlreadyPromotedError('myapp', addon, attachment)
+    fakeData.database.promoteForApp.rejects(alreadyPromoted)
+
+    const {error} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(ansis.strip(error!.message)).to.equal('dwh-db is already promoted on ⬢ myapp')
+  })
+
+  it('preserves already-promoted credential attachment output', async function () {
+    const credential = {...attachment, name: 'PURPLE', namespace: 'credential:hello'}
+    const alreadyPromoted = new DatabaseAlreadyPromotedError('myapp', addon, credential)
+    fakeData.database.promoteForApp.rejects(alreadyPromoted)
+
+    const {error} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(ansis.strip(error!.message)).to.equal('PURPLE is already promoted on ⬢ myapp')
+  })
+
+  it('promotes credential attachments without changing their namespace', async function () {
+    const credential = {...attachment, name: 'PURPLE', namespace: 'credential:hello'}
+    const promotionResult = result({attachment: credential})
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+      await options.beforePromote?.(preview({attachment: credential, existingAlias: alias}))
+      return promotionResult
+    })
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(stderr).to.contain('Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done')
+  })
+
+  it('warns when the promoted database remains a follower', async function () {
+    const promotionResult = result({database: {following: 'postgres://leader', leader: 'postgresql-leader'}})
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult))
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(stderr).to.contain('Your database has been promoted but it is currently a follower')
+    expect(stderr).to.contain('heroku pg:unfollow dwh-db')
+    expect(stderr).to.contain('postgresql-leader')
+  })
+
+  it('shows follower warning when promotion progress reports attachment success before release polling', async function () {
+    let resolvePromotion!: (promotionResult: PromoteDatabaseResult) => void
+    let promoteStarted!: () => void
+    const promotionStarted = new Promise<void>(resolve => {
+      promoteStarted = resolve
+    })
+    const promotionResult = result({
+      database: {following: 'postgres://leader', leader: 'postgresql-leader'},
+      releasePhase: {status: 'succeeded'} as PromoteDatabaseResult['releasePhase'],
+    })
+    const pendingPromotion = new Promise<PromoteDatabaseResult>(resolve => {
+      resolvePromotion = resolve
+    })
+    const followerWarning = stub(ux, 'warn').callThrough()
+    fakeData.database.info.resolves({following: 'postgres://leader', leader: 'postgresql-leader'})
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+      await options.beforePromote?.(preview())
+      await options.onProgress?.({stage: 'promotion', status: 'started', type: 'attachment'})
+      await options.onProgress?.({
+        attachment, stage: 'promotion', status: 'succeeded', type: 'attachment',
+      })
+      await options.onProgress?.({
+        database: {following: 'postgres://leader', leader: 'postgresql-leader'},
+        stage: 'resolved',
+        type: 'database',
+      })
+      await options.onProgress?.({stage: 'started', status: 'started', type: 'release-phase'})
+      await options.onProgress?.({
+        attach: {id: 'release-1', status: 'pending'} as Release,
+        stage: 'poll', status: 'pending', type: 'release-phase',
+      })
+      await options.onProgress?.({
+        attach: {id: 'release-1', status: 'succeeded'} as Release,
+        stage: 'completed', status: 'succeeded', type: 'release-phase',
+      })
+      promoteStarted()
+      return pendingPromotion
+    })
+
+    const command = runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+    await promotionStarted
+    expect(fakeData.database.promoteForApp.calledOnce).to.equal(true)
+    expect(followerWarning.calledOnce).to.equal(true)
+
+    resolvePromotion(promotionResult)
+    const {stderr} = await command
+
+    expect(stderr).to.contain('Your database has been promoted but it is currently a follower')
+    expect(stderr).to.contain('Checking release phase')
+    expect(stderr).to.contain('pg:promote succeeded.')
+    expect(stderr.split('pg:promote succeeded.')).to.have.length(2)
+    expect(followerWarning.calledOnce).to.equal(true)
+  })
+
+  it('checks release phase and preserves detach-failure messaging', async function () {
+    const promotionResult = result({
+      releasePhase: {
+        attach: {description: 'Attach DATABASE', id: 'release-1', status: 'succeeded'},
+        detach: {description: 'Detach DATABASE', id: 'release-2', status: 'failed'},
+        status: 'succeeded',
+      } as PromoteDatabaseResult['releasePhase'],
+    })
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult))
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(stderr).to.contain('Checking release phase... pg:promote succeeded. It is safe to ignore the failed Detach DATABASE release.')
+  })
+
+  it('preserves attach-failure message when detach also failed', async function () {
+    const promotionResult = result({
+      releasePhase: {
+        attach: {description: 'Attach DATABASE', id: 'release-1', status: 'failed'},
+        detach: {description: 'Detach DATABASE', id: 'release-2', status: 'failed'},
+        status: 'failed',
+      } as PromoteDatabaseResult['releasePhase'],
+    })
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult))
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(stderr).to.contain('pg:promote failed because Attach DATABASE release was unsuccessful. Your application is currently running with postgres-2 attached as DATABASE_URL.'
+      + ' Check your release phase logs for failure causes.')
+  })
+
+  it('preserves attach-failure message when detach succeeded', async function () {
+    const promotionResult = result({
+      releasePhase: {
+        attach: {description: 'Attach DATABASE', id: 'release-1', status: 'failed'},
+        detach: {description: 'Detach DATABASE', id: 'release-2', status: 'succeeded'},
+        status: 'failed',
+      } as PromoteDatabaseResult['releasePhase'],
+    })
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult))
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(stderr).to.contain('Your application is currently running without an attached DATABASE_URL.')
+  })
+
+  it('preserves release-phase timeout as a successful message', async function () {
+    const promotionResult = result({releasePhase: {status: 'timed_out'} as PromoteDatabaseResult['releasePhase']})
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult))
+
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(error).to.be.undefined
+    expect(stderr).to.contain('Checking release phase... timeout. Check your Attach DATABASE release for failures.')
+  })
+
+  it('uses generic CLI text when SDK rejects for a missing Attach DATABASE release', async function () {
+    const cause = new DatabaseReleasePhaseError('myapp')
+    fakeData.database.promoteForApp.rejects(new DatabasePromotionError(result({releasePhase: {status: 'unknown'} as PromoteDatabaseResult['releasePhase']}), cause))
+
+    expect(cause.message).to.equal('Unable to check release phase for myapp. Check your Attach DATABASE release for failures.')
+
+    const {error} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(ansis.strip(error!.message)).to.equal('Unable to check release phase. Check your Attach DATABASE release for failures.')
+  })
+
+  it('reports the app name for a fulfilled result with unknown release-phase status', async function () {
+    fakeData.database.promoteForApp.callsFake(promoteWith(result({releasePhase: {status: 'unknown'} as PromoteDatabaseResult['releasePhase']})))
+
+    const {error} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(ansis.strip(error!.message)).to.equal('Unable to check release phase for myapp. Check your Attach DATABASE release for failures.')
+  })
+
+  it('skips readiness checks with --force', async function () {
+    const promotionResult = result()
+    fakeData.database.promoteForApp.callsFake(promoteWith(promotionResult, undefined, options => {
+      expect(options.force).to.equal(true)
+    }))
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', '--force', 'DATABASE'])
+
+    expect(fakeData.database.promoteForApp.firstCall.args[2].force).to.equal(true)
+    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
+  })
+
+  it('does not promote when an SDK mutation fails and preserves the failure cause', async function () {
+    const cause = new Error('attachment create failed')
+    const partial = result({
+      mutationStatus: {
+        attachment: {attempted: true, status: 'unknown'},
+        backupAttachment: {attempted: false, status: 'not_attempted'},
+        poolerAttachment: {attempted: false, status: 'not_attempted'},
+      },
+    })
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+      await options.beforePromote?.(preview({existingAlias: alias}))
+      throw new DatabasePromotionError(partial, cause)
+    })
+
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(error).to.equal(cause)
+    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp...')
+    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... !')
+    expect(stderr).to.not.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
+  })
+
+  it('stops the active progress spinner when a mutation fails after progress starts', async function () {
+    const cause = new Error('attachment create failed')
+    const partial = result({
+      mutationStatus: {
+        attachment: {attempted: true, status: 'unknown'},
+        backupAttachment: {attempted: false, status: 'not_attempted'},
+        poolerAttachment: {attempted: false, status: 'not_attempted'},
+      },
+    })
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+      await options.beforePromote?.(preview())
+      await options.onProgress?.({stage: 'promotion', status: 'started', type: 'attachment'})
+      throw new DatabasePromotionError(partial, cause)
+    })
+
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(error).to.equal(cause)
+    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... !')
+    expect(stderr).to.not.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
+  })
+
+  it('stops the pooler spinner with failure indication when its mutation status is unknown', async function () {
+    const cause = new Error('pooler attachment status unknown')
+    const partial = result({
+      mutationStatus: {
+        attachment: {attempted: true, status: 'created'},
+        backupAttachment: {attempted: false, status: 'not_attempted'},
+        poolerAttachment: {attempted: true, status: 'unknown'},
+      },
+      poolerAttachment: pooler,
+    })
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+      await options.beforePromote?.(preview({existingAlias: alias}))
+      throw new DatabasePromotionError(partial, cause)
+    })
+
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(error).to.equal(cause)
+    expect(stderr).to.contain('Reattaching pooler to new leader... !')
+    expect(stderr).to.not.contain('Reattaching pooler to new leader... done')
+  })
+
+  it('stops the backup alias spinner with failure indication when its mutation status is unknown', async function () {
+    const cause = new Error('backup attachment status unknown')
+    const partial = result({
+      mutationStatus: {
+        attachment: {attempted: false, status: 'not_attempted'},
+        backupAttachment: {attempted: true, status: 'unknown'},
+        poolerAttachment: {attempted: false, status: 'not_attempted'},
+      },
+    })
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+      await options.beforePromote?.(preview({currentAttachment: {...alias, name: 'DATABASE'}}))
+      throw new DatabasePromotionError(partial, cause)
+    })
+
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(error).to.equal(cause)
+    expect(stderr).to.contain('Ensuring an alternate alias for existing ⛁ DATABASE_URL... !')
+    expect(stderr).to.not.contain('Ensuring an alternate alias for existing ⛁ DATABASE_URL... done')
+  })
+
+  it('retains namespace-sensitive credential promotion behavior', async function () {
+    const currentCredential = {...attachment, name: 'DATABASE', namespace: 'credential:goodbye'}
+    const promotedCredential = {...attachment, name: 'PURPLE', namespace: 'credential:hello'}
+    const promotionResult = result({attachment: promotedCredential})
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+      await options.beforePromote?.(preview({attachment: promotedCredential, currentAttachment: currentCredential, existingAlias: alias}))
+      return promotionResult
+    })
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(stderr).to.contain('Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done')
+  })
+
+  it('uses the default credential alias when replacing a default DATABASE on the same add-on', async function () {
+    const defaultAlias = makeAttachment({
+      addon, id: 'default-alias', name: 'RED', namespace: null,
+    })
+    const credential = {...attachment, name: 'PURPLE', namespace: 'credential:hello'}
+    fakeData.database.promoteForApp.callsFake(promoteWith(result({attachment: credential}), preview({
+      attachment: credential,
+      currentAttachment: attachment,
+      existingAlias: defaultAlias,
+    })))
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(stderr).to.contain('Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL')
+    expect(stderr).to.contain('Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done')
+  })
+
+  it('uses the existing credential alias when replacing a different credential on the same add-on', async function () {
+    const credentialAlias = makeAttachment({
+      addon, id: 'credential-alias', name: 'BLUE', namespace: 'credential:goodbye',
+    })
+    const currentCredential = {...attachment, name: 'DATABASE', namespace: 'credential:goodbye'}
+    const credential = {...attachment, name: 'PURPLE', namespace: 'credential:hello'}
+    fakeData.database.promoteForApp.callsFake(promoteWith(result({attachment: credential}), preview({
+      attachment: credential,
+      currentAttachment: currentCredential,
+      existingAlias: credentialAlias,
+    })))
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(stderr).to.contain('Ensuring an alternate alias for existing ⛁ DATABASE_URL... BLUE_URL')
+    expect(stderr).to.contain('Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done')
   })
 })

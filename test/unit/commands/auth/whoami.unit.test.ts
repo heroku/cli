@@ -19,15 +19,22 @@ function buildFakePlatform(): FakePlatform {
 
 describe('auth:whoami', function () {
   let fakePlatform: FakePlatform
+  let originalApiKey: string | undefined
 
   beforeEach(function () {
+    originalApiKey = process.env.HEROKU_API_KEY
     fakePlatform = buildFakePlatform()
     stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
     stub(APIClient.prototype, 'auth').get(() => 'foobar')
   })
 
   afterEach(function () {
-    delete process.env.HEROKU_API_KEY
+    if (originalApiKey === undefined) {
+      delete process.env.HEROKU_API_KEY
+    } else {
+      process.env.HEROKU_API_KEY = originalApiKey
+    }
+
     restore()
   })
 
@@ -83,13 +90,24 @@ describe('auth:whoami', function () {
 })
 
 describe('auth:whoami reauthorize opt-out', function () {
+  let originalApiKey: string | undefined
+
+  beforeEach(function () {
+    originalApiKey = process.env.HEROKU_API_KEY
+  })
+
   // whoami passes reauthorize: undefined to createSDK, so an expired/invalid
   // token must report "not logged in" rather than drive an interactive login.
   // Runs the real SDK over nock (no platform getter stub) so the opt-out is
   // exercised end to end: login() is the behavior that discriminates the opt-out
   // from the default (both paths still end in a 401), so we assert it never fires.
   afterEach(function () {
-    delete process.env.HEROKU_API_KEY
+    if (originalApiKey === undefined) {
+      delete process.env.HEROKU_API_KEY
+    } else {
+      process.env.HEROKU_API_KEY = originalApiKey
+    }
+
     nock.cleanAll()
     restore()
   })

@@ -1,47 +1,13 @@
-import {APIClient, Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
-import {color, hux, utils} from '@heroku/heroku-cli-util'
+import type {DatabaseCopyEndpoint, DatabaseCopyResult} from '@heroku/sdk/extensions/data'
+import type {TransferCreateResult} from '@heroku/types/data'
+
+import {Command, flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {databaseCopyExtensions, TransferFailedError} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 
-import type {NonAdvancedCredentialInfo} from '../../lib/data/types.js'
-import type {BackupTransfer} from '../../lib/pg/types.js'
-
-import backupsFactory from '../../lib/pg/backups.js'
-
-const getAttachmentInfo = async function (heroku: APIClient, db: string, app: string) {
-  const dbResolver = new utils.pg.DatabaseResolver(heroku)
-
-  if (/^postgres:\/\//.test(db)) {
-    const conn = utils.pg.DatabaseResolver.parsePostgresConnectionString(db)
-    const host = `${conn.host}:${conn.port}`
-    return {
-      confirm: conn.database || conn.host,
-      name: conn.database ? `database ${conn.database} on ${host}` : `database on ${host}`,
-      url: db,
-    }
-  }
-
-  const attachment = await dbResolver.getAttachment(app, db)
-  if (!attachment)
-    throw new Error(`${db} not found on ${color.app(app)}`)
-
-  const {body: addon} = await heroku.get<Heroku.AddOnAttachment>(`/addons/${attachment.addon.name}`)
-  const {body: config} = await heroku.get<Heroku.ConfigVars>(`/apps/${attachment.app.name}/config-vars`)
-  const formattedConfig = Object.fromEntries(Object.entries(config).map(([k, v]) => [k.toUpperCase(), v]))
-
-  const addonName = attachment.name
-    .replace(/^HEROKU_POSTGRESQL_/, '')
-    .replace(/_URL$/, '')
-  return {
-    attachment: {
-      ...attachment,
-      addon,
-    },
-    confirm: addonName,
-    name: addonName,
-    url: formattedConfig[attachment.name.toUpperCase() + '_URL'],
-  }
-}
+import * as pgBackups from '../../lib/pg/backups.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Copy extends Command {
   static args = {
@@ -59,50 +25,94 @@ export default class Copy extends Command {
   static help = 'at least one of the databases must be a Heroku PostgreSQL DB'
   static topic = 'pg'
 
-  public async run(): Promise<void> {
-    const {args, flags} = await this.parse(Copy)
-    const {app, confirm, verbose, 'wait-interval': waitInterval} = flags
-    const pgbackups = backupsFactory(app, this.heroku)
+  public async run(): Promise<DatabaseCopyResult> {
+    const {args, flags: commandFlags} = await this.parse(Copy)
+    const {app, confirm, verbose, 'wait-interval': waitInterval} = commandFlags
+    const {heroku} = this
     const interval = Math.max(3, Number.parseInt(waitInterval || '0', 10)) || 3
+    const {data} = createSDK(heroku, {extensions: [databaseCopyExtensions]})
+    const waitOptions = pgBackups.constructWaitOptions(interval, verbose, () => 'Copying')
+    let result: DatabaseCopyResult
+    let copyTransfer: TransferCreateResult | undefined
+    let hasAdditionalCredentials = false
+    let actionStarted = false
+    let additionalCredentialsWarningShown = false
+    const warningsShown = new Set<string>()
 
-    const [source, target] = await Promise.all([getAttachmentInfo(this.heroku, args.source, app), getAttachmentInfo(this.heroku, args.target, app)])
-    if (source.url === target.url)
-      throw new Error('Cannot copy database onto itself')
-
-    await hux.confirmCommand({
-      comparison: target.confirm || args.target,
-      confirmation: confirm,
-      warningMessage: `WARNING: Destructive action\nThis command will remove all data from ${color.yellow(target.name)}\nData from ${color.yellow(source.name)} will then be transferred to ${color.yellow(target.name)}`,
-    })
-    ux.action.start(`Starting copy of ${color.yellow(source.name)} to ${color.yellow(target.name)}`)
-    const attachment = target.attachment || source.attachment
-    if (!attachment) {
-      throw new Error('Heroku PostgreSQL database must be source or target')
+    const warnOnce = (warning: string) => {
+      if (warningsShown.has(warning)) return
+      ux.warn(warning)
+      warningsShown.add(warning)
     }
 
-    const {body: copy} = await this.heroku.post<BackupTransfer>(`/client/v11/databases/${attachment.addon.id}/transfers`, {
-      body: {
-        from_name: source.name, from_url: source.url, to_name: target.name, to_url: target.url,
-      },
-      hostname: utils.pg.host(),
-    })
-    ux.action.stop()
-
-    if (source.attachment) {
-      const {body: credentials} = await this.heroku.get<NonAdvancedCredentialInfo[]>(
-        `/postgres/v0/databases/${source.attachment.addon.name}/credentials`,
-        {
-          headers: {
-            Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
-          },
-          hostname: utils.pg.host(),
-        },
-      )
-      if (credentials.length > 1) {
-        ux.warn('pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.')
+    const warnAboutAdditionalCredentials = () => {
+      if (hasAdditionalCredentials && !additionalCredentialsWarningShown) {
+        warnOnce('pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.')
+        additionalCredentialsWarningShown = true
       }
     }
 
-    await pgbackups.wait('Copying', copy.uuid, interval, verbose, attachment.addon.app?.name || app)
+    try {
+      result = await data.database.copyForApp(app, args.source, args.target, {
+        async beforeCopy({source, target}) {
+          const message = 'WARNING: Destructive action\n'
+            + `This command will remove all data from ${color.yellow(target.name)}\n`
+            + `Data from ${color.yellow(source.name)} will then be transferred to ${color.yellow(target.name)}`
+          await hux.confirmCommand({comparison: target.confirm, confirmation: confirm, warningMessage: message})
+        },
+        copyPoller: {
+          onStart({source, target}: {source: DatabaseCopyEndpoint; target: DatabaseCopyEndpoint}) {
+            ux.action.start(`Starting copy of ${color.yellow(source.name)} to ${color.yellow(target.name)}`)
+            actionStarted = true
+          },
+          onStop() {
+            ux.action.stop()
+            actionStarted = false
+            if (copyTransfer) {
+              // waitPoller.onStart runs first and populates copyTransfer before this restart.
+              waitOptions.waitPoller?.onStart?.(copyTransfer)
+              actionStarted = true
+            }
+          },
+        },
+        credentialToken: heroku.auth,
+        onCredentialsChecked({hasAdditionalCredentials: hasAdditionalCredentialsFound, warning}: {
+          credentialCount?: number
+          hasAdditionalCredentials: boolean
+          warning?: string
+        }) {
+          hasAdditionalCredentials ||= hasAdditionalCredentialsFound
+          warnAboutAdditionalCredentials()
+          if (warning) warnOnce(warning)
+        },
+        verbose,
+        ...waitOptions,
+        waitPoller: {
+          ...waitOptions.waitPoller,
+          onStart(transfer) {
+            copyTransfer = transfer
+          },
+          onStop(transfer) {
+            waitOptions.waitPoller?.onStop?.(transfer)
+            actionStarted = false
+          },
+        },
+      })
+    } catch (error) {
+      warnAboutAdditionalCredentials()
+
+      if (error instanceof TransferFailedError) {
+        pgBackups.reportTransferFailure(error, 'copy', warningsShown)
+      }
+
+      if (actionStarted) ux.action.stop('!')
+      throw error
+    }
+
+    hasAdditionalCredentials ||= result.hasAdditionalCredentials
+    warnAboutAdditionalCredentials()
+
+    for (const warning of result.warnings) warnOnce(warning)
+    return result
   }
 }
