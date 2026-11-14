@@ -3,6 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 import debug from 'debug'
+import tty from 'node:tty'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
 import {HerokuSsh} from '../../lib/ps-exec/ssh.js'
@@ -55,10 +56,23 @@ export default class Exec extends Command {
           ux.action.start(message)
           psExecDebug(response.body)
           const json = JSON.parse(response.body)
-          await (useNativeSsh
-            ? ssh.ssh(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
-            : ssh.connect(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
-          )
+          // heroku console attaches with a direct socket, or hands the terminal
+          // to the system ssh on Private Spaces. Either way Node is not on the
+          // keystroke path. Do the same for an interactive ps:exec. The built-in
+          // client remains for piped commands and machines without ssh.
+          const interactive = tty.isatty(0) && tty.isatty(1)
+          if (useNativeSsh || interactive) {
+            try {
+              await ssh.ssh(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
+              return
+            } catch (error: unknown) {
+              const missing = (error as NodeJS.ErrnoException).code === 'ENOENT'
+              if (!missing || useNativeSsh) throw error
+              psExecDebug('ssh was not found; using the built-in client')
+            }
+          }
+
+          await ssh.connect(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
 
           ux.action.stop()
         })
