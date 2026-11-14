@@ -1,7 +1,7 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
-import {DatabaseNotFollowerError} from '@heroku/sdk/extensions/data'
+import {DatabaseNotFollowerError, type UnfollowDatabaseOrigin} from '@heroku/sdk/extensions/data'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
@@ -29,7 +29,7 @@ const unfollowResult = {
 interface UnfollowPreview {
   addon: typeof addon
   following: string
-  origin: {defaultPort: string, hostname: string, pathname: string, port: string, protocol: string, type: 'url'} | {name: string; rawName: string; type: 'config_var'}
+  origin: UnfollowDatabaseOrigin
 }
 
 interface UnfollowOptions {

@@ -1,6 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {databaseCommandExtensions, DatabaseNotFollowerError} from '@heroku/sdk/extensions/data'
+import {
+  databaseCommandExtensions,
+  DatabaseNotFollowerError,
+  type UnfollowDatabaseOrigin,
+} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -9,11 +13,7 @@ import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc
 
-type UnfollowOrigin
-  = | {defaultPort: string, hostname: string, pathname: string, port: string, protocol: string, type: 'url'}
-  | {name: string; rawName: string; type: 'config_var',}
-
-const formatOrigin = (origin: UnfollowOrigin) => {
+const formatOrigin = (origin: UnfollowDatabaseOrigin) => {
   if (origin.type === 'config_var') {
     return color.name(origin.name)
   }
@@ -39,18 +39,9 @@ export default class Unfollow extends Command {
     const {args, flags} = await this.parse(Unfollow)
     const {app, confirm} = flags
     const {data} = createSDK(this.heroku, {extensions: [databaseCommandExtensions]})
-    // The published SDK declarations still type origin as a string; newer
-    // extension builds pass structured origin details to this callback.
-    const database = data.database as unknown as {
-      unfollowForApp: (
-        app: string,
-        identity: string,
-        options: {beforeUnfollow?: (preview: {addon: {name: string}; origin: UnfollowOrigin}) => Promise<void> | void},
-      ) => ReturnType<typeof data.database.unfollowForApp>
-    }
 
     try {
-      const result = await database.unfollowForApp(app, args.database, {
+      const result = await data.database.unfollowForApp(app, args.database, {
         async beforeUnfollow({addon, origin}) {
           await hux.confirmCommand({
             comparison: app,

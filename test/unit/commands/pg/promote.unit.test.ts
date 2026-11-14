@@ -391,6 +391,11 @@ describe('pg:promote', function () {
       await options.onProgress?.({
         attachment, stage: 'promotion', status: 'succeeded', type: 'attachment',
       })
+      await options.onProgress?.({
+        database: {following: 'postgres://leader', leader: 'postgresql-leader'},
+        stage: 'resolved',
+        type: 'database',
+      })
       await options.onProgress?.({stage: 'started', status: 'started', type: 'release-phase'})
       await options.onProgress?.({
         attach: {id: 'release-1', status: 'pending'} as Release,
@@ -524,6 +529,28 @@ describe('pg:promote', function () {
 
     expect(error).to.equal(cause)
     expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp...')
+    expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... !')
+    expect(stderr).to.not.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
+  })
+
+  it('stops the active progress spinner when a mutation fails after progress starts', async function () {
+    const cause = new Error('attachment create failed')
+    const partial = result({
+      mutationStatus: {
+        attachment: {attempted: true, status: 'unknown'},
+        backupAttachment: {attempted: false, status: 'not_attempted'},
+        poolerAttachment: {attempted: false, status: 'not_attempted'},
+      },
+    })
+    fakeData.database.promoteForApp.callsFake(async (_app: string, _database: string, options: PromoteDatabaseOptions) => {
+      await options.beforePromote?.(preview())
+      await options.onProgress?.({stage: 'promotion', status: 'started', type: 'attachment'})
+      throw new DatabasePromotionError(partial, cause)
+    })
+
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(error).to.equal(cause)
     expect(stderr).to.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... !')
     expect(stderr).to.not.contain('Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done')
   })

@@ -1,4 +1,4 @@
-import type {DatabaseCopyEndpoint, DatabaseCopyOptions, DatabaseCopyResult} from '@heroku/sdk/extensions/data'
+import type {DatabaseCopyEndpoint, DatabaseCopyResult} from '@heroku/sdk/extensions/data'
 import type {TransferCreateResult} from '@heroku/types/data'
 
 import {Command, flags} from '@heroku-cli/command'
@@ -53,11 +53,7 @@ export default class Copy extends Command {
     }
 
     try {
-      // copyForApp is the public SDK API; keep a local shape for older installed SDK declarations.
-      const database = data.database as unknown as {
-        copyForApp: (app: string, source: string, target: string, options: DatabaseCopyOptions) => Promise<DatabaseCopyResult>
-      }
-      result = await database.copyForApp(app, args.source, args.target, {
+      result = await data.database.copyForApp(app, args.source, args.target, {
         async beforeCopy({source, target}) {
           const message = 'WARNING: Destructive action\n'
             + `This command will remove all data from ${color.yellow(target.name)}\n`

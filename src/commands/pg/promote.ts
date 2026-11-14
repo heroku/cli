@@ -178,13 +178,17 @@ export default class Promote extends Command {
 
       if (error instanceof DatabasePromotionError) {
         displayFollowerWarning(error.result.database)
-        if (!progressEventsSeen) this.displayPartialPromotion(error.result, {
-          aliasSpinnerActive,
-          cause: error.cause,
-          preview,
-          promotionMessage,
-          promotionSpinnerActive,
-        })
+        if (!progressEventsSeen) {
+          this.displayPartialPromotion(error.result, {
+            aliasSpinnerActive,
+            cause: error.cause,
+            preview,
+            promotionMessage,
+            promotionSpinnerActive,
+          })
+        } else if (aliasSpinnerActive || promotionSpinnerActive || poolerSpinnerActive || releasePhaseSpinnerActive) {
+          ux.action.stop(color.red('!'))
+        }
 
         if (error.cause instanceof DatabaseReleasePhaseError) {
           ux.error('Unable to check release phase. Check your Attach DATABASE release for failures.')
