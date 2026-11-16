@@ -76,7 +76,7 @@ export default class DataPgInfo extends BaseCommand {
 
     /* eslint-disable perfectionist/sort-objects */
     const infoObject: Record<string, string> = {
-      Plan: addon.plan.name.split(':', 2)[1],
+      Plan: addon.plan.name,
       Status: statusInfo,
       'Data Size': this.renderDataSizeInfo(info),
       Tables: this.renderTableInfo(info),

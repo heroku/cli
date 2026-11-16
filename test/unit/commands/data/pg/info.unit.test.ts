@@ -54,7 +54,7 @@ describe('data:pg:info', function () {
     expect(ansis.strip(stdout)).to.equal(heredoc(`
       === ⛁ advanced-horizontal-01234 on ⬢ myapp
 
-      Plan:       advanced
+      Plan:       heroku-postgresql:advanced
       Status:     Available
       Data Size:  1.10 GB / 128.00 TB
       Tables:     10 / 4000 (In compliance)
@@ -105,7 +105,7 @@ describe('data:pg:info', function () {
     expect(ansis.strip(stdout)).to.equal(heredoc(`
       === ⛁ advanced-horizontal-01234 on ⬢ myapp
 
-      Plan:       advanced
+      Plan:       heroku-postgresql:advanced
       Status:     Available
       Data Size:  1.10 GB / 128.00 TB
       Tables:     10 / 4000 (In compliance)
@@ -156,7 +156,7 @@ describe('data:pg:info', function () {
     expect(ansis.strip(stdout)).to.equal(heredoc(`
       === ⛁ advanced-horizontal-01234 on ⬢ myapp
 
-      Plan:        advanced
+      Plan:        heroku-postgresql:advanced
       Status:      Available
       Data Size:   1.10 GB / 128.00 TB
       Tables:      10 / 4000 (In compliance)
@@ -208,7 +208,7 @@ describe('data:pg:info', function () {
     expect(ansis.strip(stdout)).to.equal(heredoc(`
       === ⛁ advanced-horizontal-01234 on ⬢ myapp
 
-      Plan:       advanced
+      Plan:       heroku-postgresql:advanced
       Status:     Available
       Data Size:  1.10 GB / 128.00 TB
       Tables:     10 / 4000 (In compliance)
@@ -281,7 +281,7 @@ describe('data:pg:info', function () {
     expect(ansis.strip(stdout)).to.equal(heredoc(`
       === ⛁ advanced-horizontal-01234 on ⬢ myapp
 
-      Plan:       advanced
+      Plan:       heroku-postgresql:advanced
       Status:     Available
       Data Size:  128.05 TB / 128.00 TB
       Tables:     4001 / 4000 (Not in compliance)
@@ -303,26 +303,28 @@ describe('data:pg:info', function () {
     // cspell:enable
   })
 
-  it('shows the full plan name, which includes the networking', async function () {
-    const shieldAddon = {...addon, plan: {...addon.plan, name: 'heroku-postgresql:advanced-shield'}}
+  for (const planName of ['heroku-postgresql:advanced-shield', 'heroku-postgresql:advanced-private']) {
+    it(`shows the full plan name for ${planName}, which includes the networking`, async function () {
+      const networkedAddon = {...addon, plan: {...addon.plan, name: planName}}
 
-    dataApi
-      .get(`/data/postgres/v1/${addon.id}/info`)
-      .reply(200, pgInfo)
-    herokuApi
-      .post('/actions/addons/resolve')
-      .reply(200, [shieldAddon])
-      .get(`/addons/${addon.id}/addon-attachments`)
-      .reply(200, multipleAttachmentsResponse)
+      dataApi
+        .get(`/data/postgres/v1/${addon.id}/info`)
+        .reply(200, pgInfo)
+      herokuApi
+        .post('/actions/addons/resolve')
+        .reply(200, [networkedAddon])
+        .get(`/addons/${addon.id}/addon-attachments`)
+        .reply(200, multipleAttachmentsResponse)
 
-    const {stderr, stdout} = await runCommand(DataPgInfo, [
-      'advanced-horizontal-01234',
-      '--app=myapp',
-    ])
+      const {stderr, stdout} = await runCommand(DataPgInfo, [
+        'advanced-horizontal-01234',
+        '--app=myapp',
+      ])
 
-    expect(stderr).to.equal('')
-    expect(ansis.strip(stdout)).to.match(/^Plan:\s+advanced-shield$/m)
-  })
+      expect(stderr).to.equal('')
+      expect(ansis.strip(stdout)).to.match(new RegExp(`^Plan:\\s+${planName}$`, 'm'))
+    })
+  }
 
   describe('data size', function () {
     it('renders N/A when plan limits info doesn\'t contain a storage limit', async function () {
