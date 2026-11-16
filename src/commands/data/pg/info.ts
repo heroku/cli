@@ -59,7 +59,6 @@ export default class DataPgInfo extends BaseCommand {
       quotas,
       region,
       status,
-      tier,
       version,
     } = info
 
@@ -77,7 +76,7 @@ export default class DataPgInfo extends BaseCommand {
 
     /* eslint-disable perfectionist/sort-objects */
     const infoObject: Record<string, string> = {
-      Plan: hux.toTitleCase(tier)!,
+      Plan: addon.plan.name.split(':', 2)[1],
       Status: statusInfo,
       'Data Size': this.renderDataSizeInfo(info),
       Tables: this.renderTableInfo(info),
