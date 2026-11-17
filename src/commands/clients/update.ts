@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {validateURL} from '../../lib/clients/clients.js'
+import {createSDK} from '../../lib/sdk.js'
 
 interface Updates {
   name?: string;
@@ -35,6 +35,7 @@ export default class ClientsUpdate extends Command {
   }
 
   async run() {
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(ClientsUpdate)
     const body = getUpdates(flags)
 
@@ -42,10 +43,7 @@ export default class ClientsUpdate extends Command {
 
     ux.action.start(`Updating ${color.cyan(args.id)}`)
 
-    await this.heroku.patch<Heroku.OAuthClient>(
-      `/oauth/clients/${encodeURIComponent(args.id)}`,
-      {body},
-    )
+    await platform.oauthClient.update(args.id, body)
 
     ux.action.stop()
   }

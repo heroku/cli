@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class ClientsInfo extends Command {
   static args = {
@@ -17,9 +18,10 @@ export default class ClientsInfo extends Command {
   }
 
   async run() {
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(ClientsInfo)
 
-    const {body: client} = await this.heroku.get<Heroku.OAuthClient>(`/oauth/clients/${args.id}`)
+    const client = await platform.oauthClient.info(args.id)
 
     if (flags.json) {
       this.logJson(client)
