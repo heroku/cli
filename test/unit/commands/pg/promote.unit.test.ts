@@ -29,7 +29,7 @@ describe('pg:promote when argument is database', function () {
   })
 
   it('promotes db and attaches pgbouncer if DATABASE_CONNECTION_POOL is an attachment', async function () {
-    nock('https://api.heroku.com')
+    const api = nock('https://api.heroku.com')
       .get('/apps/myapp/formation')
       .reply(200, [])
       .get('/apps/myapp/addon-attachments').reply(200, [
@@ -58,14 +58,13 @@ describe('pg:promote when argument is database', function () {
         name: 'DATABASE',
         namespace: null,
       }).reply(201)
-      .delete(`/addon-attachments/${pgbouncerAddonID}`).reply(200)
-      .post('/addon-attachments', {
-        addon: {name: addon.name},
-        app: {name: 'myapp'},
+    const pg = nock('https://api.data.heroku.com')
+      .post(`/client/v11/databases/${addon.name}/connection-pooling`, {
+        app: 'myapp',
         confirm: 'myapp',
+        credential: 'default',
         name: 'DATABASE_CONNECTION_POOL',
-        namespace: 'connection-pooling:default',
-      }).reply(201)
+      }).reply(201, {name: 'DATABASE_CONNECTION_POOL'})
 
     const {stderr} = await runCommand(Cmd, [
       '--app',
@@ -77,6 +76,8 @@ describe('pg:promote when argument is database', function () {
       Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
       Reattaching pooler to new leader... done
     `))
+    api.done()
+    pg.done()
   })
 
   it('promotes db and does not detach pgbouncers attached to new leader under other name than DATABASE_CONNECTION_POOL', async function () {

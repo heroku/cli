@@ -96,14 +96,15 @@ export default class Promote extends Command {
     const currentPooler = attachments.find(a => a.namespace === 'connection-pooling:default' && a.addon?.id === current?.addon?.id && a.name === 'DATABASE_CONNECTION_POOL')
     if (currentPooler) {
       ux.action.start('Reattaching pooler to new leader')
-      await this.heroku.post('/addon-attachments', {
+      // Attach through the Postgres API, not Platform API, so the data service also records the pooler attachment.
+      await this.heroku.post(`/client/v11/databases/${encodeURIComponent(attachment.addon.name)}/connection-pooling`, {
         body: {
-          addon: {name: attachment.addon.name},
-          app: {name: app},
+          app,
           confirm: app,
+          credential: 'default',
           name: currentPooler.name,
-          namespace: 'connection-pooling:default',
         },
+        hostname: utils.pg.host(),
       })
       ux.action.stop()
     }
