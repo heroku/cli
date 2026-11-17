@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.14.0-beta.0](https://github.com/heroku/cli/compare/v11.13.0...v11.14.0-beta.0) (2026-11-17)
+
+### Features
+
+* warn in buildpacks:info when a buildpack is archived ([#4062](https://github.com/heroku/cli/issues/4062)) ([937dad6](https://github.com/heroku/cli/commit/937dad6e39de552df7a2f4109fff472cf3d65701)), references [#4056](https://github.com/heroku/cli/issues/4056)
+
+### Bug Fixes
+
+* **access:** honor optional permissions for team app collaborators ([#4066](https://github.com/heroku/cli/issues/4066)) ([620f4a1](https://github.com/heroku/cli/commit/620f4a1d01dc1272300d5604148cb693a42f76b8))
+* **buildpacks:** bump @heroku/buildpack-registry to 1.1.1 and fix slug validation ([#4056](https://github.com/heroku/cli/issues/4056)) ([ed54ee8](https://github.com/heroku/cli/commit/ed54ee8e6013c7b155bab5b3a6d5850c23460799))
+
+### Miscellaneous Chores
+
+* remove unused [@types](https://github.com/types) packages and ignore oclif plugin majors ([#4072](https://github.com/heroku/cli/issues/4072)) ([40d910e](https://github.com/heroku/cli/commit/40d910e837255f6f7882774116c33937029fe753))
+
+### Tests
+
+* **apps:** parse a real heroku.yml in apps:create --manifest tests ([#4078](https://github.com/heroku/cli/issues/4078)) ([02c5acb](https://github.com/heroku/cli/commit/02c5acb3613a40da1e63a403dd55508e1ddbf6ab))
+* **config:** hold editor termination timeouts open in interruption tests ([#4069](https://github.com/heroku/cli/issues/4069)) ([04f8d1c](https://github.com/heroku/cli/commit/04f8d1cf71600cc87db872e27c0f88751c9ed020))
+* keep pinned terminal size when the window is resized ([#4070](https://github.com/heroku/cli/issues/4070)) ([15471e7](https://github.com/heroku/cli/commit/15471e7cc36dff9eaa8798883ccfa871769f34cb))
+
 ## [11.13.0](https://github.com/heroku/cli/compare/v11.12.1...v11.13.0) (2026-11-10)
 
 ### Features
