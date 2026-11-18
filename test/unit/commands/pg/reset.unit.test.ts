@@ -1,6 +1,7 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
+import {databaseCommandExtensions, type ResetDatabaseOptions, type ResetDatabaseResult} from '@heroku/sdk/extensions/data'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
@@ -10,28 +11,23 @@ import Cmd from '../../../../src/commands/pg/reset.js'
 
 const heredoc = tsheredoc
 
-const addon = {
+const addon: ResetDatabaseResult['addon'] = {
+  app: {id: 'app-1', name: 'myapp'},
   id: 'addon-1',
   name: 'postgres-1',
+  plan: {name: 'heroku-postgresql:standard-0'},
 }
 
-const resetResult = {id: 'addon-1', state: 'available'}
+const resetResult: ResetDatabaseResult['result'] = {message: 'reset'}
 
-interface ResetPreview {
-  addon: typeof addon
-}
-
-interface ResetOptions {
-  beforeReset?: (preview: ResetPreview) => Promise<void> | void
-  extensions?: string[]
-}
+type ResetForApp = ReturnType<typeof databaseCommandExtensions.factory>['resetForApp']
 
 interface FakeData {
-  database: {resetForApp: SinonStub}
+  database: {resetForApp: SinonStub<Parameters<ResetForApp>, ReturnType<ResetForApp>>}
 }
 
-const resetWith = (result: unknown, onReset = () => {}) => async (_app: string, _database?: string, options: ResetOptions = {}) => {
-  await options.beforeReset?.({addon})
+const resetWith = (result: ResetDatabaseResult['result'], onReset = () => {}) => async (_app: string, _database?: string, options: ResetDatabaseOptions = {}) => {
+  await options.beforeReset?.({addon, appIdentity: _app})
   onReset()
 
   return {addon, result}
@@ -43,7 +39,7 @@ describe('pg:reset', function () {
 
   beforeEach(function () {
     resetRequested = false
-    fakeData = {database: {resetForApp: stub()}}
+    fakeData = {database: {resetForApp: stub<Parameters<ResetForApp>, ReturnType<ResetForApp>>()}}
     stub(HerokuSDK.prototype, 'data').get(() => fakeData)
   })
 
@@ -63,7 +59,7 @@ describe('pg:reset', function () {
     expect(fakeData.database.resetForApp.calledOnce).to.equal(true)
     expect(fakeData.database.resetForApp.firstCall.args[0]).to.equal('myapp')
     expect(fakeData.database.resetForApp.firstCall.args[1]).to.be.undefined
-    expect(fakeData.database.resetForApp.firstCall.args[2].extensions).to.be.undefined
+    expect(fakeData.database.resetForApp.firstCall.args[2]?.extensions).to.be.undefined
     expect(resetRequested).to.equal(true)
     expect(result).to.deep.equal({addon, result: resetResult})
     expect(stdout).to.equal('')
@@ -80,7 +76,7 @@ describe('pg:reset', function () {
     expect(fakeData.database.resetForApp.calledOnce).to.equal(true)
     expect(fakeData.database.resetForApp.firstCall.args[0]).to.equal('myapp')
     expect(fakeData.database.resetForApp.firstCall.args[1]).to.equal('DATABASE_URL')
-    expect(fakeData.database.resetForApp.firstCall.args[2].extensions).to.equal('uuid-ossp, Postgis')
+    expect(fakeData.database.resetForApp.firstCall.args[2]?.extensions).to.equal('uuid-ossp, Postgis')
     expect(result).to.deep.equal({addon, result: resetResult})
     expectOutput(stderr, 'Resetting postgres-1... done')
   })
@@ -96,15 +92,15 @@ describe('pg:reset', function () {
 
     expect(ansis.strip((error as Error).message)).to.contain('Confirmation another-app did not match myapp. Aborted.')
     expect(fakeData.database.resetForApp.calledOnce).to.equal(true)
-    expect(fakeData.database.resetForApp.firstCall.args[2].beforeReset).to.be.a('function')
+    expect(fakeData.database.resetForApp.firstCall.args[2]?.beforeReset).to.be.a('function')
     expect(resetRequested).to.equal(false)
     expect(stderr).to.equal('')
   })
 
   it('does not reset when the SDK rejects', async function () {
     const error = new Error('reset failed')
-    fakeData.database.resetForApp.callsFake(async (_app: string, _database: string | undefined, options: ResetOptions = {}) => {
-      await options.beforeReset?.({addon})
+    fakeData.database.resetForApp.callsFake(async (_app: string, _database: string | undefined, options: ResetDatabaseOptions = {}) => {
+      await options.beforeReset?.({addon, appIdentity: _app})
       throw error
     })
 

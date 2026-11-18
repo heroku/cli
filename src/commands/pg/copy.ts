@@ -9,6 +9,8 @@ import {Args, ux} from '@oclif/core'
 import * as pgBackups from '../../lib/pg/backups.js'
 import {createSDK} from '../../lib/sdk.js'
 
+const ADDITIONAL_CREDENTIALS_WARNING = 'pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.'
+
 export default class Copy extends Command {
   static args = {
     source: Args.string({description: 'config var exposed to the owning app containing the source database URL', required: true}),
@@ -25,7 +27,7 @@ export default class Copy extends Command {
   static help = 'at least one of the databases must be a Heroku PostgreSQL DB'
   static topic = 'pg'
 
-  public async run(): Promise<DatabaseCopyResult> {
+  public async run(): Promise<void> {
     const {args, flags: commandFlags} = await this.parse(Copy)
     const {app, confirm, verbose, 'wait-interval': waitInterval} = commandFlags
     const {heroku} = this
@@ -36,20 +38,12 @@ export default class Copy extends Command {
     let copyTransfer: TransferCreateResult | undefined
     let hasAdditionalCredentials = false
     let actionStarted = false
-    let additionalCredentialsWarningShown = false
     const warningsShown = new Set<string>()
 
     const warnOnce = (warning: string) => {
       if (warningsShown.has(warning)) return
       ux.warn(warning)
       warningsShown.add(warning)
-    }
-
-    const warnAboutAdditionalCredentials = () => {
-      if (hasAdditionalCredentials && !additionalCredentialsWarningShown) {
-        warnOnce('pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.')
-        additionalCredentialsWarningShown = true
-      }
     }
 
     try {
@@ -82,7 +76,7 @@ export default class Copy extends Command {
           warning?: string
         }) {
           hasAdditionalCredentials ||= hasAdditionalCredentialsFound
-          warnAboutAdditionalCredentials()
+          if (hasAdditionalCredentialsFound) warnOnce(ADDITIONAL_CREDENTIALS_WARNING)
           if (warning) warnOnce(warning)
         },
         verbose,
@@ -99,7 +93,7 @@ export default class Copy extends Command {
         },
       })
     } catch (error) {
-      warnAboutAdditionalCredentials()
+      if (hasAdditionalCredentials) warnOnce(ADDITIONAL_CREDENTIALS_WARNING)
 
       if (error instanceof TransferFailedError) {
         pgBackups.reportTransferFailure(error, 'copy', warningsShown)
@@ -110,9 +104,8 @@ export default class Copy extends Command {
     }
 
     hasAdditionalCredentials ||= result.hasAdditionalCredentials
-    warnAboutAdditionalCredentials()
+    if (hasAdditionalCredentials) warnOnce(ADDITIONAL_CREDENTIALS_WARNING)
 
     for (const warning of result.warnings) warnOnce(warning)
-    return result
   }
 }

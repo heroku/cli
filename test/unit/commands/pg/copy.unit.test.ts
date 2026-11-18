@@ -87,7 +87,7 @@ describe('pg:copy', function () {
     sandbox.restore()
   })
 
-  it('passes raw URL and attachment inputs through to database.copyForApp and preserves output', async function () {
+  it('passes raw URL and attachment inputs through without exposing the SDK result', async function () {
     const copyResult = {
       credentialCount: undefined, hasAdditionalCredentials: false, source: sourceEndpoint, target: targetEndpoint, transfer, warnings: [],
     }
@@ -101,7 +101,7 @@ describe('pg:copy', function () {
     expect(fakeData.database.copyForApp.calledOnce).to.equal(true)
     expect(fakeData.database.copyForApp.firstCall.args.slice(0, 3)).to.deep.equal(['myapp', 'postgres://foo.com/bar', 'HEROKU_POSTGRESQL_RED_URL'])
     expect(dataGetterCalls).to.equal(1)
-    expect(result).to.equal(copyResult)
+    expect(result).to.be.undefined
     expect(stdout).to.equal('')
     expect(stderr).to.include('Starting copy of database bar on foo.com:5432 to RED... done\n')
     expect(stderr).to.include('Copying... done')
@@ -170,10 +170,9 @@ describe('pg:copy', function () {
       return copyResult
     })
 
-    const {error, result, stderr} = await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'RED', 'DATABASE_URL', 'RED_URL'])
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'RED', 'DATABASE_URL', 'RED_URL'])
 
     expect(error).to.be.undefined
-    expect(result).to.equal(copyResult)
     const normalizedOutput = stderr.replaceAll(/\n\s*[›»]?\s*/g, ' ').replaceAll(/\s+/g, ' ')
     expect(normalizedOutput).to.include('Warning: pg:copy will only copy your default credential')
     expect(normalizedOutput).to.include('Warning: source credential lookup failed: credential query unavailable')
@@ -207,10 +206,9 @@ describe('pg:copy', function () {
       return copyResult
     })
 
-    const {error, result, stderr} = await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'RED', 'DATABASE_URL', 'RED_URL'])
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'RED', 'DATABASE_URL', 'RED_URL'])
 
     expect(error).to.be.undefined
-    expect(result).to.equal(copyResult)
     expect(fakeData.database.copyForApp.calledOnce).to.equal(true)
     expect(dataGetterCalls).to.equal(1)
     expect(credentialLookup.called).to.equal(false)
@@ -257,10 +255,9 @@ describe('pg:copy', function () {
       return copyResult
     })
 
-    const {error, result, stderr} = await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'RED', 'DATABASE_URL', 'RED_URL'])
+    const {error, stderr} = await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'RED', 'DATABASE_URL', 'RED_URL'])
 
     expect(error).to.be.undefined
-    expect(result).to.equal(copyResult)
     expect(sequence).to.deep.equal(['credentials checked', 'transfer'])
     expect(stderr.match(/source credential lookup failed/g)).to.have.length(1)
     expect(stderr.indexOf('source credential lookup failed')).to.be.lessThan(stderr.indexOf('Starting copy'))

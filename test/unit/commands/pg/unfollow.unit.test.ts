@@ -1,7 +1,13 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
-import {DatabaseNotFollowerError, type UnfollowDatabaseOrigin} from '@heroku/sdk/extensions/data'
+import {
+  databaseCommandExtensions,
+  DatabaseNotFollowerError,
+  type UnfollowDatabaseOptions,
+  type UnfollowDatabasePreview,
+  type UnfollowDatabaseResult,
+} from '@heroku/sdk/extensions/data'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
@@ -11,14 +17,14 @@ import Cmd from '../../../../src/commands/pg/unfollow.js'
 
 const heredoc = tsheredoc
 
-const addon = {
+const addon: UnfollowDatabaseResult['addon'] = {
   app: {id: 'app-1', name: 'myapp'},
   id: 'addon-1',
   name: 'postgres-1',
   plan: {name: 'heroku-postgresql:standard-0'},
 }
 
-const unfollowResult = {
+const unfollowResult: UnfollowDatabaseResult = {
   addon,
   database: {following: 'postgres://db1'},
   following: 'postgres://db1',
@@ -26,26 +32,37 @@ const unfollowResult = {
   result: {message: 'unfollowed'},
 }
 
-interface UnfollowPreview {
-  addon: typeof addon
-  following: string
-  origin: UnfollowDatabaseOrigin
-}
+type UnfollowForApp = ReturnType<typeof databaseCommandExtensions.factory>['unfollowForApp']
 
-interface UnfollowOptions {
-  beforeUnfollow?: (preview: UnfollowPreview) => Promise<void> | void
+const unfollowPreview: UnfollowDatabasePreview = {
+  addon,
+  appIdentity: 'myapp',
+  attachment: {
+    addon: {app: {id: 'app-1', name: 'myapp'}, id: 'addon-1', name: 'postgres-1'},
+    app: {id: 'app-1', name: 'myapp'},
+    created_at: '2026-01-01T00:00:00.000Z',
+    id: 'attachment-1',
+    log_input_url: null,
+    name: 'postgres-1',
+    namespace: null,
+    updated_at: '2026-01-01T00:00:00.000Z',
+    web_url: null,
+  },
+  database: {following: 'postgres://db1'},
+  following: 'postgres://db1',
+  origin: {name: 'postgres-1', rawName: 'postgres-1_URL', type: 'config_var'},
 }
 
 interface FakeData {
-  database: {unfollowForApp: SinonStub}
+  database: {unfollowForApp: SinonStub<Parameters<UnfollowForApp>, ReturnType<UnfollowForApp>>}
 }
 
-const unfollowWith = (result: unknown, onUnfollow = () => {}, preview?: UnfollowPreview) => async (_app: string, _database?: string, options: UnfollowOptions = {}) => {
-  await options.beforeUnfollow?.(preview ?? {
-    addon,
-    following: 'postgres://db1',
-    origin: {name: 'postgres-1', rawName: 'postgres-1_URL', type: 'config_var'},
-  })
+const unfollowWith = (
+  result: UnfollowDatabaseResult,
+  onUnfollow = () => {},
+  preview?: Partial<UnfollowDatabasePreview>,
+) => async (_app: string, _database?: string, options: UnfollowDatabaseOptions = {}) => {
+  await options.beforeUnfollow?.({...unfollowPreview, ...preview})
   onUnfollow()
 
   return result
@@ -57,7 +74,7 @@ describe('pg:unfollow', function () {
 
   beforeEach(function () {
     unfollowRequested = false
-    fakeData = {database: {unfollowForApp: stub()}}
+    fakeData = {database: {unfollowForApp: stub<Parameters<UnfollowForApp>, ReturnType<UnfollowForApp>>()}}
     stub(HerokuSDK.prototype, 'data').get(() => fakeData)
   })
 
@@ -108,7 +125,7 @@ describe('pg:unfollow', function () {
 
     expect(ansis.strip((error as Error).message)).to.contain('Confirmation another-app did not match myapp. Aborted.')
     expect(fakeData.database.unfollowForApp.calledOnce).to.equal(true)
-    expect(fakeData.database.unfollowForApp.firstCall.args[2].beforeUnfollow).to.be.a('function')
+    expect(fakeData.database.unfollowForApp.firstCall.args[2]?.beforeUnfollow).to.be.a('function')
     expect(unfollowRequested).to.equal(false)
     expect(stderr).to.equal('')
   })
@@ -202,7 +219,7 @@ describe('pg:unfollow', function () {
       await runCommand(Cmd, ['--app', 'myapp', '--confirm', 'myapp', 'DATABASE'])
 
       expect(ansis.strip(confirm.firstCall.args[0].warningMessage as string)).to.contain('db2:5432/database')
-      expect(ansis.strip(confirm.firstCall.args[0].warningMessage as string)).to.not.contain('legacy-host')
+      expect(ansis.strip(confirm.firstCall.args[0].warningMessage as string)).to.not.contain('db1')
     } finally {
       if (previousPgPort === undefined) delete process.env.PGPORT
       else process.env.PGPORT = previousPgPort
@@ -222,12 +239,8 @@ describe('pg:unfollow', function () {
 
   it('does not complete the spinner when the SDK rejects', async function () {
     const error = new Error('unfollow failed')
-    fakeData.database.unfollowForApp.callsFake(async (_app: string, _database: string | undefined, options: UnfollowOptions = {}) => {
-      await options.beforeUnfollow?.({
-        addon,
-        following: 'postgres://db1',
-        origin: {name: 'postgres-1', rawName: 'postgres-1_URL', type: 'config_var'},
-      })
+    fakeData.database.unfollowForApp.callsFake(async (_app: string, _database: string | undefined, options: UnfollowDatabaseOptions = {}) => {
+      await options.beforeUnfollow?.(unfollowPreview)
       throw error
     })
 

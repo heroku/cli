@@ -18,6 +18,34 @@ import {createSDK} from '../../lib/sdk.js'
 import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc
+const alternateAliasMessage = `Ensuring an alternate alias for existing ${color.datastore('DATABASE_URL')}`
+const releasePhaseMessage = 'Checking release phase'
+const releasePhaseUnknownMessage = (app: string) =>
+  `Unable to check release phase for ${app}. Check your Attach DATABASE release for failures.`
+const progressEventKey = (event: PromoteDatabaseProgressEvent) =>
+  `${event.type}:${event.stage}:${'status' in event ? event.status : ''}`
+const progressStageKey = (event: PromoteDatabaseProgressEvent) => `${event.type}:${event.stage}`
+const isTerminalProgressEvent = (event: PromoteDatabaseProgressEvent) => {
+  if (event.type === 'attachment' || event.type === 'pooler-reattachment') return event.status !== 'started'
+  if (event.type === 'release-phase') return event.stage === 'completed' || event.status === 'not_required'
+
+  return event.type === 'database'
+}
+
+const isStartedProgressEvent = (event: PromoteDatabaseProgressEvent) =>
+  (event.type === 'attachment' || event.type === 'pooler-reattachment')
+    ? event.status === 'started'
+    : event.type === 'release-phase' && event.stage === 'started'
+const isProgressStageActive = (
+  event: PromoteDatabaseProgressEvent,
+  state: {alias: boolean; pooler: boolean; promotion: boolean; releasePhase: boolean},
+) => {
+  if (event.type === 'attachment') return event.stage === 'backup' ? state.alias : state.promotion
+  if (event.type === 'pooler-reattachment') return state.pooler
+  if (event.type === 'release-phase') return state.releasePhase
+
+  return false
+}
 
 export default class Promote extends Command {
   static args = {
@@ -38,14 +66,15 @@ export default class Promote extends Command {
     const {data} = createSDK(this.heroku, {extensions: [databaseCommandExtensions]})
     let preview: PromoteDatabasePreview | undefined
     let promotionMessage = ''
-    let progressEventsSeen = false
     let aliasSpinnerActive = false
     let promotionSpinnerActive = false
     let poolerSpinnerActive = false
     let releasePhaseSpinnerActive = false
+    let releasePhaseUnknownPending = false
     let followerWarningShown = false
+    const observedProgressEvents = new Set<string>()
+    const completedProgressStages = new Set<string>()
 
-    const alternateAliasMessage = `Ensuring an alternate alias for existing ${color.datastore('DATABASE_URL')}`
     const startPromotion = () => {
       ux.action.start(promotionMessage)
       promotionSpinnerActive = true
@@ -60,7 +89,8 @@ export default class Promote extends Command {
 
     // eslint-disable-next-line complexity -- process the SDK's progress union in operation order
     const onProgress = (event: PromoteDatabaseProgressEvent) => {
-      progressEventsSeen = true
+      observedProgressEvents.add(progressEventKey(event))
+      if (isTerminalProgressEvent(event)) completedProgressStages.add(progressStageKey(event))
 
       if (event.type === 'attachment') {
         if (event.stage === 'backup') {
@@ -109,11 +139,11 @@ export default class Promote extends Command {
       }
 
       if (event.stage === 'started') {
-        ux.action.start('Checking release phase')
+        ux.action.start(releasePhaseMessage)
         releasePhaseSpinnerActive = true
       } else if (event.stage === 'poll') {
         if (!releasePhaseSpinnerActive) {
-          ux.action.start('Checking release phase')
+          ux.action.start(releasePhaseMessage)
           releasePhaseSpinnerActive = true
         }
 
@@ -121,10 +151,102 @@ export default class Promote extends Command {
       } else if (event.status === 'not_required') {
         if (releasePhaseSpinnerActive) ux.action.stop()
         releasePhaseSpinnerActive = false
+      } else if (event.stage === 'completed' && event.status === 'unknown') {
+        // The SDK reports unknown before its promise rejects with the release-phase error.
+        // Keep the spinner open until the settled result identifies the user-facing outcome.
+        releasePhaseUnknownPending = true
       } else {
         this.displayReleasePhaseProgress(event, preview)
         releasePhaseSpinnerActive = false
       }
+    }
+
+    const replayProgress = (
+      result: PromoteDatabasePartialResult,
+      options: {isPartialFailure?: boolean; releasePhaseError?: boolean} = {},
+    ) => { // eslint-disable-line complexity -- reconcile each operation result with observed SDK progress
+      const {mutationStatus, releasePhase} = result
+      const events: PromoteDatabaseProgressEvent[] = []
+
+      if (mutationStatus.backupAttachment.attempted) {
+        events.push({stage: 'backup', status: 'started', type: 'attachment'}, {
+          attachment: result.backupAttachment,
+          stage: 'backup',
+          status: mutationStatus.backupAttachment.status === 'created' ? 'succeeded' : 'unknown',
+          type: 'attachment',
+        })
+      } else if (aliasSpinnerActive) {
+        events.push({
+          stage: 'backup',
+          status: options.isPartialFailure ? 'unknown' : 'succeeded',
+          type: 'attachment',
+        })
+      }
+
+      if (mutationStatus.attachment.attempted) {
+        events.push({stage: 'promotion', status: 'started', type: 'attachment'}, {
+          attachment: result.attachment,
+          stage: 'promotion',
+          status: mutationStatus.attachment.status === 'created' ? 'succeeded' : 'unknown',
+          type: 'attachment',
+        })
+      }
+
+      if (mutationStatus.poolerAttachment.attempted) {
+        events.push({stage: 'reattachment', status: 'started', type: 'pooler-reattachment'}, {
+          attachment: result.poolerAttachment,
+          stage: 'reattachment',
+          status: mutationStatus.poolerAttachment.status === 'created' ? 'succeeded' : 'unknown',
+          type: 'pooler-reattachment',
+        })
+      }
+
+      if (result.database) events.push({database: result.database, stage: 'resolved', type: 'database'})
+
+      if (releasePhase) {
+        events.push({stage: 'started', status: 'started', type: 'release-phase'})
+        if (options.isPartialFailure !== true || releasePhase.status !== 'unknown') {
+          events.push({
+            attach: releasePhase.attach,
+            detach: releasePhase.detach,
+            stage: 'completed',
+            status: releasePhase.status,
+            type: 'release-phase',
+          })
+        }
+      } else if (options.releasePhaseError) {
+        events.push({stage: 'started', status: 'started', type: 'release-phase'})
+      }
+
+      for (const event of events) {
+        const stageKey = progressStageKey(event)
+        if (observedProgressEvents.has(progressEventKey(event))) continue
+        if (isStartedProgressEvent(event) && (completedProgressStages.has(stageKey) || isProgressStageActive(event, {
+          alias: aliasSpinnerActive,
+          pooler: poolerSpinnerActive,
+          promotion: promotionSpinnerActive,
+          releasePhase: releasePhaseSpinnerActive,
+        }))) continue
+        if (isTerminalProgressEvent(event) && completedProgressStages.has(stageKey)) continue
+
+        onProgress(event)
+      }
+    }
+
+    const finishReleasePhaseError = () => {
+      const failureMessage = releasePhaseUnknownMessage(app)
+      if (aliasSpinnerActive || promotionSpinnerActive || poolerSpinnerActive || releasePhaseSpinnerActive) {
+        ux.action.stop(failureMessage)
+      } else {
+        ux.action.start(releasePhaseMessage)
+        ux.action.stop(failureMessage)
+      }
+
+      aliasSpinnerActive = false
+      promotionSpinnerActive = false
+      poolerSpinnerActive = false
+      releasePhaseSpinnerActive = false
+      releasePhaseUnknownPending = false
     }
 
     const options: PromoteDatabaseOptions = {
@@ -149,24 +271,11 @@ export default class Promote extends Command {
       onProgress,
     }
 
+    let result: PromoteDatabaseResult
     try {
-      const result = await data.database.promoteForApp(app, args.database, options)
-      if (progressEventsSeen) displayFollowerWarning(result.database)
-      else {
-        if (aliasSpinnerActive) {
-          ux.action.stop(result.backupAttachment ? color.attachment(`${result.backupAttachment.name}_URL`) : undefined)
-          aliasSpinnerActive = false
-        }
-
-        if (!promotionSpinnerActive && promotionMessage) ux.action.start(promotionMessage)
-        this.displayPromotionResult(result, preview)
-      }
-
-      if (result.releasePhase?.status === 'unknown') {
-        ux.error(`Unable to check release phase for ${app}. Check your Attach DATABASE release for failures.`)
-      }
-
-      return result
+      result = await data.database.promoteForApp(app, args.database, options)
+      replayProgress(result)
+      displayFollowerWarning(result.database)
     } catch (error) {
       if (error instanceof DatabaseAlreadyPromotedError) {
         if (error.attachment.namespace) {
@@ -177,28 +286,38 @@ export default class Promote extends Command {
       }
 
       if (error instanceof DatabasePromotionError) {
-        displayFollowerWarning(error.result.database)
-        if (!progressEventsSeen) {
-          this.displayPartialPromotion(error.result, {
-            aliasSpinnerActive,
-            cause: error.cause,
-            preview,
-            promotionMessage,
-            promotionSpinnerActive,
-          })
+        const releasePhaseUnknown = error.cause instanceof DatabaseReleasePhaseError
+          || error.result.releasePhase?.status === 'unknown'
+          || releasePhaseUnknownPending
+        replayProgress(error.result, {
+          isPartialFailure: true,
+          releasePhaseError: error.cause instanceof DatabaseReleasePhaseError,
+        })
+
+        if (releasePhaseUnknown) {
+          finishReleasePhaseError()
         } else if (aliasSpinnerActive || promotionSpinnerActive || poolerSpinnerActive || releasePhaseSpinnerActive) {
           ux.action.stop(color.red('!'))
         }
 
-        if (error.cause instanceof DatabaseReleasePhaseError) {
-          ux.error('Unable to check release phase. Check your Attach DATABASE release for failures.')
-        }
+        displayFollowerWarning(error.result.database)
 
         throw error.cause
       }
 
+      if (releasePhaseUnknownPending) {
+        finishReleasePhaseError()
+      }
+
       throw error
     }
+
+    if (result.releasePhase?.status === 'unknown') {
+      finishReleasePhaseError()
+      ux.error(releasePhaseUnknownMessage(app))
+    }
+
+    return result
   }
 
   private displayFollowerWarning(result: Pick<PromoteDatabasePartialResult, 'addon' | 'database'>) {
@@ -212,76 +331,6 @@ export default class Promote extends Command {
 
       Use ${color.code(unfollowLeaderCmd)} to stop this follower from replicating from its leader (${color.datastore(result.database.leader as string)}) and convert it into a writable database.
     `))
-  }
-
-  private displayPartialPromotion(
-    result: PromoteDatabasePartialResult,
-    context: {
-      aliasSpinnerActive: boolean
-      cause: unknown
-      preview: PromoteDatabasePreview | undefined
-      promotionMessage: string
-      promotionSpinnerActive: boolean
-    },
-  ) {
-    const {aliasSpinnerActive, cause, preview, promotionMessage, promotionSpinnerActive} = context
-    const {attachment, backupAttachment} = result.mutationStatus
-    if (attachment.attempted) {
-      if (!promotionSpinnerActive) ux.action.start(promotionMessage)
-
-      if (attachment.status === 'created') {
-        ux.action.stop()
-      } else {
-        ux.action.stop(color.red('!'))
-      }
-    } else if (backupAttachment.attempted && backupAttachment.status !== 'created') {
-      if (!aliasSpinnerActive) ux.action.start(`Ensuring an alternate alias for existing ${color.datastore('DATABASE_URL')}`)
-      ux.action.stop(color.red('!'))
-    }
-
-    this.displayPoolerResult(result)
-    if (result.database?.following) this.displayFollowerWarning(result)
-
-    if (cause instanceof DatabaseReleasePhaseError || result.releasePhase?.status === 'unknown') {
-      ux.action.start('Checking release phase')
-    }
-
-    if (result.releasePhase && result.releasePhase.status !== 'unknown') {
-      this.displayReleasePhaseProgress({
-        attach: result.releasePhase.attach,
-        detach: result.releasePhase.detach,
-        stage: 'completed',
-        status: result.releasePhase.status,
-        type: 'release-phase',
-      }, preview)
-    }
-  }
-
-  private displayPoolerResult(result: Pick<PromoteDatabaseResult, 'mutationStatus' | 'poolerAttachment'>) {
-    if (!result.mutationStatus.poolerAttachment.attempted) return
-
-    ux.action.start('Reattaching pooler to new leader')
-    if (result.mutationStatus.poolerAttachment.status === 'created') {
-      ux.action.stop()
-    } else {
-      ux.action.stop(color.red('!'))
-    }
-  }
-
-  private displayPromotionResult(result: PromoteDatabaseResult, preview: PromoteDatabasePreview | undefined) {
-    ux.action.stop()
-    this.displayPoolerResult(result)
-    this.displayFollowerWarning(result)
-    if (result.releasePhase) {
-      ux.action.start('Checking release phase')
-      this.displayReleasePhaseProgress({
-        attach: result.releasePhase.attach,
-        detach: result.releasePhase.detach,
-        stage: 'completed',
-        status: result.releasePhase.status,
-        type: 'release-phase',
-      }, preview)
-    }
   }
 
   private displayReleasePhaseProgress(
