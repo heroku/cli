@@ -1,20 +1,31 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import ClientsIndex from '../../../../src/commands/clients/index.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
+type FakePlatform = {
+  oauthClient: {list: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    oauthClient: {list: sinon.stub()},
+  }
+}
+
 describe('clients', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   describe('with clients', function () {
@@ -25,9 +36,7 @@ describe('clients', function () {
     }
 
     it('lists the clients', async function () {
-      api
-        .get('/oauth/clients')
-        .reply(200, [exampleClient1])
+      fakePlatform.oauthClient.list.resolves([exampleClient1])
 
       const {stdout} = await runCommand(ClientsIndex, [])
 
@@ -37,9 +46,7 @@ describe('clients', function () {
     })
 
     it('lists the clients as json', async function () {
-      api
-        .get('/oauth/clients')
-        .reply(200, [exampleClient1])
+      fakePlatform.oauthClient.list.resolves([exampleClient1])
 
       const {stdout} = await runCommand(ClientsIndex, ['--json'])
 
@@ -49,9 +56,7 @@ describe('clients', function () {
 
   describe('without clients', function () {
     it('shows no clients message', async function () {
-      api
-        .get('/oauth/clients')
-        .reply(200, [])
+      fakePlatform.oauthClient.list.resolves([])
 
       const {stdout} = await runCommand(ClientsIndex, [])
 
