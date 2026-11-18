@@ -18,10 +18,15 @@ describe('heroku redis:wait ', function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons')
       .reply(200, [
-        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_URL'], name: 'redis-haiku'},
+        {
+          addon_service: {name: 'heroku-redis'},
+          config_vars: ['REDIS_URL'],
+          id: 'b5e0b6ce-1a1d-4f3c-9d1a-6f0e3a2c7d11',
+          name: 'redis-haiku',
+        },
       ])
     const redis = nock('https://api.data.heroku.com')
-      .get('/redis/v0/databases/redis-haiku/wait')
+      .get('/redis/v0/databases/b5e0b6ce-1a1d-4f3c-9d1a-6f0e3a2c7d11/wait')
       .reply(200, {'waiting?': false})
 
     const {stderr, stdout} = await runCommand(Cmd, [
@@ -39,12 +44,17 @@ describe('heroku redis:wait ', function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons')
       .reply(200, [
-        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_URL'], name: 'redis-haiku'},
+        {
+          addon_service: {name: 'heroku-redis'},
+          config_vars: ['REDIS_URL'],
+          id: 'b5e0b6ce-1a1d-4f3c-9d1a-6f0e3a2c7d11',
+          name: 'redis-haiku',
+        },
       ])
     const redis = nock('https://api.data.heroku.com')
-      .get('/redis/v0/databases/redis-haiku/wait')
+      .get('/redis/v0/databases/b5e0b6ce-1a1d-4f3c-9d1a-6f0e3a2c7d11/wait')
       .reply(200, {message: 'upgrading version', 'waiting?': true})
-      .get('/redis/v0/databases/redis-haiku/wait')
+      .get('/redis/v0/databases/b5e0b6ce-1a1d-4f3c-9d1a-6f0e3a2c7d11/wait')
       .reply(200, {message: 'available', 'waiting?': false})
 
     const {stderr, stdout} = await runCommand(Cmd, [
