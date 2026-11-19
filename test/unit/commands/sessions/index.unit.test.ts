@@ -1,12 +1,23 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Sessions from '../../../../src/commands/sessions/index.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
+type FakePlatform = {
+  oauthSession: {list: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    oauthSession: {list: sinon.stub()},
+  }
+}
+
 describe('sessions:index', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
   const exampleSession1 = {
     description: 'B Session @ 166.176.184.223',
     id: 'aBcD1234-129f-42d2-854b-dEf123abc123',
@@ -17,18 +28,16 @@ describe('sessions:index', function () {
   }
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('lists the sessions alphabetically by description', async function () {
-    api
-      .get('/oauth/sessions')
-      .reply(200, [exampleSession1, exampleSession2])
+    fakePlatform.oauthSession.list.resolves([exampleSession1, exampleSession2])
 
     const {stdout} = await runCommand(Sessions, [])
 
@@ -40,9 +49,7 @@ describe('sessions:index', function () {
 
   context('with json flag', function () {
     it('lists the sessions alphabetically as json', async function () {
-      api
-        .get('/oauth/sessions')
-        .reply(200, [exampleSession1, exampleSession2])
+      fakePlatform.oauthSession.list.resolves([exampleSession1, exampleSession2])
 
       const {stdout} = await runCommand(Sessions, ['--json'])
 
@@ -55,9 +62,7 @@ describe('sessions:index', function () {
 
   context('without sessions', function () {
     it('shows no sessions message', async function () {
-      api
-        .get('/oauth/sessions')
-        .reply(200, [])
+      fakePlatform.oauthSession.list.resolves([])
 
       const {stdout} = await runCommand(Sessions, [])
 
