@@ -30,5 +30,10 @@ updates:
     ignore:
       - dependency-name: "@oclif/core"
         update-types: ["version-update:semver-major"]
+      # v7+ require @oclif/core 5 and Node >=22; upgrade together with @oclif/core.
+      - dependency-name: "@oclif/plugin-help"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@oclif/plugin-plugins"
+        update-types: ["version-update:semver-major"]
       - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]

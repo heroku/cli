@@ -28,6 +28,11 @@ process.stdout.columns = 200
 process.stdout.rows = 50
 process.stderr.columns = 200
 process.stderr.rows = 50
+// On a TTY, Node resets columns/rows to the real terminal size on SIGWINCH, so
+// resizing the window mid-run would undo the pinned size above and truncate tables.
+for (const stream of [process.stdout, process.stderr]) {
+  if (typeof stream._refreshSize === 'function') stream._refreshSize = () => {}
+}
 
 nock.disableNetConnect()
 if (process.env.ENABLE_NET_CONNECT === 'true') {

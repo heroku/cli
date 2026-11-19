@@ -24,6 +24,24 @@ const waitForImmediate = () => new Promise<void>(resolve => {
   setImmediate(resolve)
 })
 
+// test/helpers/init.mjs replaces setTimeout with a version that ignores the delay,
+// which shrinks the editor's 1000ms termination grace period to ~1ms. That races
+// the tests' setImmediate turns and can escalate to SIGKILL before the test emits
+// the child's exit. Hold those waits open on native timers so the test controls exit.
+function holdTerminationTimeouts(): () => void {
+  const timeouts: NodeJS.Timeout[] = []
+  const timeoutStub = sinon.stub(globalThis, 'setTimeout').callsFake((callback, delay, ...args) => {
+    const timeout = nativeSetTimeout(callback, delay === 1000 ? 2_147_483_647 : delay, ...args)
+    if (delay === 1000) timeouts.push(timeout)
+    return timeout
+  })
+
+  return () => {
+    timeoutStub.restore()
+    for (const timeout of timeouts) clearTimeout(timeout)
+  }
+}
+
 function makeChild() {
   // ChildProcess uses EventEmitter semantics, so mirror those in the fake.
   // eslint-disable-next-line unicorn/prefer-event-target
@@ -641,6 +659,7 @@ describe('config util Editor', function () {
       spawnedResolve()
       return child
     })
+    const releaseTerminationTimeouts = holdTerminationTimeouts()
 
     try {
       operation = new Editor().edit('config-value')
@@ -678,6 +697,7 @@ describe('config util Editor', function () {
       child.emit('close', null, 'SIGTERM')
       if (operation) await Promise.allSettled([operation])
       process.removeListener('SIGINT', owner)
+      releaseTerminationTimeouts()
     }
 
     expectListenersToMatch(listenerSnapshot)
@@ -723,12 +743,7 @@ describe('config util Editor', function () {
       // cannot change whether this test expects the signal to be re-raised.
       return listenersFor('SIGTERM').filter(listener => !listenerSnapshot.SIGTERM.includes(listener)) as unknown as ReturnType<typeof process.listeners>
     })
-    const terminationTimeouts: NodeJS.Timeout[] = []
-    const timeoutStub = sinon.stub(globalThis, 'setTimeout').callsFake((callback, delay, ...args) => {
-      const timeout = nativeSetTimeout(callback, delay === 1000 ? 2_147_483_647 : delay, ...args)
-      if (delay === 1000) terminationTimeouts.push(timeout)
-      return timeout
-    })
+    const releaseTerminationTimeouts = holdTerminationTimeouts()
 
     const operations = [new Editor().edit('first-config'), new Editor().edit('second-config')]
     const settled = Promise.allSettled(operations)
@@ -781,9 +796,8 @@ describe('config util Editor', function () {
       }
 
       await settled
-      timeoutStub.restore()
+      releaseTerminationTimeouts()
       listenersStub.restore()
-      for (const timeout of terminationTimeouts) clearTimeout(timeout)
     }
 
     expectListenersToMatch(listenerSnapshot)
@@ -808,6 +822,7 @@ describe('config util Editor', function () {
       redeliveredSignals.push({fileRemoved: files.every(({file}) => !fs.existsSync(file.name)), signal: signal as NodeJS.Signals})
       return true
     })
+    const releaseTerminationTimeouts = holdTerminationTimeouts()
 
     const operation = new Editor().edit('config-value')
     const operationSettled = Promise.allSettled([operation])
@@ -850,6 +865,7 @@ describe('config util Editor', function () {
     expect(fs.existsSync(files[0].file.name)).to.be.false
     expect(redeliveredSignals.map(({signal}) => signal)).to.deep.equal(['SIGTERM', 'SIGHUP'])
     expect(redeliveredSignals.every(({fileRemoved}) => fileRemoved), 'every signal must be delivered again after cleanup').to.be.true
+    releaseTerminationTimeouts()
     expectListenersToMatch(listenerSnapshot)
   })
 

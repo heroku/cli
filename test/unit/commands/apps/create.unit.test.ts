@@ -2,7 +2,12 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import {execSync} from 'node:child_process'
-import {SinonStub, stub} from 'sinon'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import {
+  SinonSpy, SinonStub, spy, stub,
+} from 'sinon'
 
 import CreateCommand from '../../../../src/commands/apps/create.js'
 import Git from '../../../../src/lib/git/git.js'
@@ -169,6 +174,140 @@ describe('apps:create', function () {
       expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foo.git\n')
 
       delete process.env.HEROKU_UPDATE_CHANNEL
+    })
+  })
+
+  describe('with a real heroku.yml manifest', function () {
+    const appName = 'foo'
+    const herokuYml = `setup:
+  addons:
+    - plan: heroku-postgresql
+      as: DATABASE
+    - plan: heroku-redis
+  config:
+    S3_BUCKET: my-example-bucket
+build:
+  docker:
+    web: Dockerfile
+    worker: worker/Dockerfile
+  config:
+    RAILS_ENV: development
+    FOO: bar
+release:
+  command:
+    - ./deployment-tasks.sh
+  image: worker
+run:
+  web: bundle exec puma -C config/puma.rb
+  worker: python myworker.py
+  asset-syncer:
+    command:
+      - python asset-syncer.py
+    image: worker
+`
+
+    let originalCwd: string
+    let tempDir: string
+    let readManifestSpy: SinonSpy
+
+    const writeManifest = (contents: string) => {
+      fs.writeFileSync(path.join(tempDir, 'heroku.yml'), contents)
+    }
+
+    beforeEach(function () {
+      originalCwd = process.cwd()
+      tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'heroku-apps-create-manifest-'))
+      // readManifest reads heroku.yml from the current working directory.
+      process.chdir(tempDir)
+      readManifestSpy = spy(CreateCommand.prototype, 'readManifest')
+    })
+
+    afterEach(function () {
+      readManifestSpy.restore()
+      process.chdir(originalCwd)
+      fs.rmSync(tempDir, {force: true, recursive: true})
+    })
+
+    it('parses heroku.yml into the manifest object', async function () {
+      writeManifest(herokuYml)
+      api
+        .post('/apps', {name: appName, stack: 'container'})
+        .reply(200, {name: appName, stack: {name: 'container'}, web_url: 'https://foobar.com'})
+        .post(`/apps/${appName}/addons`)
+        .twice()
+        .reply(200, {})
+        .patch(`/apps/${appName}/config-vars`)
+        .reply(200, {})
+
+      await runCommand(CreateCommand, ['--app', appName, '--manifest'])
+
+      expect(readManifestSpy.calledOnce).to.be.true
+      expect(await readManifestSpy.firstCall.returnValue).to.deep.equal({
+        build: {
+          config: {FOO: 'bar', RAILS_ENV: 'development'},
+          docker: {web: 'Dockerfile', worker: 'worker/Dockerfile'},
+        },
+        release: {command: ['./deployment-tasks.sh'], image: 'worker'},
+        run: {
+          'asset-syncer': {command: ['python asset-syncer.py'], image: 'worker'},
+          web: 'bundle exec puma -C config/puma.rb',
+          worker: 'python myworker.py',
+        },
+        setup: {
+          addons: [{as: 'DATABASE', plan: 'heroku-postgresql'}, {plan: 'heroku-redis'}],
+          config: {S3_BUCKET: 'my-example-bucket'},
+        },
+      })
+    })
+
+    it('creates a container app with the add-ons and config vars from heroku.yml', async function () {
+      writeManifest(herokuYml)
+      api
+        .post('/apps', {name: appName, stack: 'container'})
+        .reply(200, {name: appName, stack: {name: 'container'}, web_url: 'https://foobar.com'})
+        .post(`/apps/${appName}/addons`, {attachment: {name: 'DATABASE'}, plan: 'heroku-postgresql'})
+        .reply(200, {})
+        .post(`/apps/${appName}/addons`, {plan: 'heroku-redis'})
+        .reply(200, {})
+        .patch(`/apps/${appName}/config-vars`, {S3_BUCKET: 'my-example-bucket'})
+        .reply(200, {})
+
+      const {stderr, stdout} = await runCommand(CreateCommand, ['--app', appName, '--manifest'])
+
+      expect(stderr).to.contain('Reading heroku.yml manifest... done')
+      expect(stderr).to.contain('Creating ⬢ foo... done')
+      expect(stderr).to.contain('Adding heroku-postgresql... done')
+      expect(stderr).to.contain('Adding heroku-redis... done')
+      expect(stderr).to.contain('Setting config vars... done')
+      expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foo.git\n')
+    })
+
+    it('skips add-ons and config vars when heroku.yml has no setup section', async function () {
+      writeManifest(`build:
+  docker:
+    web: Dockerfile
+`)
+      api
+        .post('/apps', {name: appName, stack: 'container'})
+        .reply(200, {name: appName, stack: {name: 'container'}, web_url: 'https://foobar.com'})
+
+      const {stderr, stdout} = await runCommand(CreateCommand, ['--app', appName, '--manifest'])
+
+      expect(stderr).to.contain('Creating ⬢ foo... done')
+      expect(stderr).not.to.contain('Adding')
+      expect(stderr).not.to.contain('Setting config vars')
+      expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foo.git\n')
+    })
+
+    it('fails before creating an app when heroku.yml is not valid YAML', async function () {
+      writeManifest(`setup:
+  config: [unclosed
+`)
+
+      const {error} = await runCommand(CreateCommand, ['--app', appName, '--manifest'])
+
+      expect(error?.name).to.equal('YAMLParseError')
+      expect(error?.message).to.contain('Flow sequence in block collection')
     })
   })
 
