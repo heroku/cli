@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 
-import {OAuthSession} from '../../lib/sessions/sessions.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class SessionsIndex extends Command {
   static description = 'list your OAuth sessions'
@@ -12,8 +12,9 @@ export default class SessionsIndex extends Command {
 
   async run() {
     const {flags} = await this.parse(SessionsIndex)
+    const {platform} = createSDK(this.heroku)
 
-    let {body: sessions} = await this.heroku.get<Array<OAuthSession>>('/oauth/sessions')
+    let sessions = await platform.oauthSession.list()
 
     sessions = sessions.sort((a, b) => {
       const descA = a.description || ''
