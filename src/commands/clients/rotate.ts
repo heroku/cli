@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class ClientsRotate extends Command {
   static args = {
@@ -14,11 +15,12 @@ export default class ClientsRotate extends Command {
   }
 
   async run() {
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(ClientsRotate)
 
     ux.action.start(`Updating ${color.name(args.id)}`)
 
-    const {body: client} = await this.heroku.post<Heroku.OAuthClient>(`/oauth/clients/${encodeURIComponent(args.id)}/actions/rotate-credentials`)
+    const client = await platform.oauthClient.rotateCredentials(args.id)
 
     ux.action.stop()
 

@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {validateURL} from '../../lib/clients/clients.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class ClientsCreate extends Command {
   static args = {
@@ -20,6 +20,7 @@ export default class ClientsCreate extends Command {
   }
 
   async run() {
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(ClientsCreate)
 
     const {name, redirect_uri} = args
@@ -27,9 +28,7 @@ export default class ClientsCreate extends Command {
 
     ux.action.start(`Creating ${name}`)
 
-    const {body: client} = await this.heroku.post<Heroku.OAuthClient>('/oauth/clients', {
-      body: {name, redirect_uri},
-    })
+    const client = await platform.oauthClient.create({name, redirect_uri})
 
     ux.action.stop()
 

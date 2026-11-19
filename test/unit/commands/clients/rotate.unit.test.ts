@@ -1,11 +1,23 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import ClientsRotate from '../../../../src/commands/clients/rotate.js'
 
+type FakePlatform = {
+  oauthClient: {rotateCredentials: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    oauthClient: {rotateCredentials: sinon.stub()},
+  }
+}
+
 describe('clients:rotate', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
+
   const id = 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'
   const client = {
     id,
@@ -15,18 +27,16 @@ describe('clients:rotate', function () {
   }
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('returns the client info', async function () {
-    api
-      .post(`/oauth/clients/${id}/actions/rotate-credentials`)
-      .reply(200, client)
+    fakePlatform.oauthClient.rotateCredentials.resolves(client)
 
     const {stderr, stdout} = await runCommand(ClientsRotate, [id])
 
@@ -36,13 +46,12 @@ describe('clients:rotate', function () {
     expect(stdout).to.contain('name:         awesome\n')
     expect(stdout).to.contain('redirect_uri: https://myapp.com\n')
     expect(stdout).to.contain('secret:       supersecretkey\n')
+    expect(fakePlatform.oauthClient.rotateCredentials.calledOnceWithExactly(id)).to.equal(true)
   })
 
   context('with json flag', function () {
     it('returns the client info as json', async function () {
-      api
-        .post(`/oauth/clients/${id}/actions/rotate-credentials`)
-        .reply(200, client)
+      fakePlatform.oauthClient.rotateCredentials.resolves(client)
 
       const {stderr, stdout} = await runCommand(ClientsRotate, [id, '--json'])
 
@@ -53,9 +62,7 @@ describe('clients:rotate', function () {
 
   context('with shell flag', function () {
     it('returns the client info as shell', async function () {
-      api
-        .post(`/oauth/clients/${id}/actions/rotate-credentials`)
-        .reply(200, client)
+      fakePlatform.oauthClient.rotateCredentials.resolves(client)
 
       const {stderr, stdout} = await runCommand(ClientsRotate, [id, '--shell'])
 

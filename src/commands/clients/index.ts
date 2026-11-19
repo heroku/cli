@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class ClientsIndex extends Command {
   static description = 'list your OAuth clients'
@@ -10,9 +11,10 @@ export default class ClientsIndex extends Command {
   }
 
   async run() {
+    const {platform} = createSDK(this.heroku)
     const {flags} = await this.parse(ClientsIndex)
 
-    const {body: clients} = await this.heroku.get<Array<Heroku.OAuthClient>>('/oauth/clients')
+    const clients = await platform.oauthClient.list()
 
     if (flags.json) {
       const sortedClients = clients.sort((a, b) => (a.name || '').localeCompare(b.name || ''))

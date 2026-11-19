@@ -1,11 +1,23 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import ClientsInfo from '../../../../src/commands/clients/info.js'
 
+type FakePlatform = {
+  oauthClient: {info: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    oauthClient: {info: sinon.stub()},
+  }
+}
+
 describe('clients:info', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
+
   const id = 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'
   const client = {
     id,
@@ -15,18 +27,16 @@ describe('clients:info', function () {
   }
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('gets the client info', async function () {
-    api
-      .get('/oauth/clients/f6e8d969-129f-42d2-854b-c2eca9d5a42e')
-      .reply(200, client)
+    fakePlatform.oauthClient.info.resolves(client)
 
     const {stdout} = await runCommand(ClientsInfo, [id])
 
@@ -35,13 +45,12 @@ describe('clients:info', function () {
     expect(stdout).to.contain('name:         awesome\n')
     expect(stdout).to.contain('redirect_uri: https://myapp.com\n')
     expect(stdout).to.contain('secret:       supersecretkey\n')
+    expect(fakePlatform.oauthClient.info.calledOnceWithExactly(id)).to.equal(true)
   })
 
   context('with json flag', function () {
     it('gets the client info as json', async function () {
-      api
-        .get('/oauth/clients/f6e8d969-129f-42d2-854b-c2eca9d5a42e')
-        .reply(200, client)
+      fakePlatform.oauthClient.info.resolves(client)
 
       const {stdout} = await runCommand(ClientsInfo, [id, '--json'])
 
@@ -51,9 +60,7 @@ describe('clients:info', function () {
 
   context('with shell flag', function () {
     it('gets the client info as shell', async function () {
-      api
-        .get('/oauth/clients/f6e8d969-129f-42d2-854b-c2eca9d5a42e')
-        .reply(200, client)
+      fakePlatform.oauthClient.info.resolves(client)
 
       const {stdout} = await runCommand(ClientsInfo, [id, '--shell'])
 
