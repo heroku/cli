@@ -120,7 +120,7 @@
     "commit-and-tag-version": "^13.2.1",
     "cspell": "9.8.0",
     "eslint": "^9.39.4",
-    "eslint-config-oclif": "^6.0.157",
+    "eslint-config-oclif": "^7.1.10",
     "eslint-import-resolver-typescript": "^4.4.4",
     "husky": "8.0.3",
     "lolex": "^6.0.0",
