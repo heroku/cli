@@ -2,7 +2,7 @@ import {Command} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
-import {OAuthSession} from '../../lib/sessions/sessions.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class SessionsDestroy extends Command {
   static args = {
@@ -12,10 +12,11 @@ export default class SessionsDestroy extends Command {
 
   async run() {
     const {args: {id}} = await this.parse(SessionsDestroy)
+    const {platform} = createSDK(this.heroku)
 
     ux.action.start(`Destroying ${color.name(id)}`)
 
-    await this.heroku.delete<OAuthSession>(`/oauth/sessions/${encodeURIComponent(id)}`)
+    await platform.oauthSession.delete(id)
 
     ux.action.stop()
   }
