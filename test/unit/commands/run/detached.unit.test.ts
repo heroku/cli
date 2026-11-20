@@ -31,7 +31,11 @@ describe('run:detached', function () {
 
   afterEach(function () {
     sdkMock.restore()
-    nock.enableNetConnect()
+    if (process.env.ENABLE_NET_CONNECT === 'true') {
+      nock.enableNetConnect()
+    } else {
+      nock.disableNetConnect()
+    }
   })
 
   it('requires a command', async function () {

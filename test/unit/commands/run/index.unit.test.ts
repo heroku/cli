@@ -42,7 +42,12 @@ describe('run', function () {
   })
 
   afterEach(function () {
-    nock.enableNetConnect()
+    if (process.env.ENABLE_NET_CONNECT === 'true') {
+      nock.enableNetConnect()
+    } else {
+      nock.disableNetConnect()
+    }
+
     process.argv = [...originalProcessArgv]
     sdkMock.restore()
   })

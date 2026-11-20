@@ -364,7 +364,7 @@ describe('pg:settings commands with the real SDK', function () {
     const platform = nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [attachment])
-    const data = nock('https://postgres-api.heroku.com')
+    const data = nock('https://api.data.heroku.com')
       .get('/postgres/v0/databases/addon-1/config')
       .reply(200, {log_lock_waits: {default: false, desc: 'description', value: true}})
 
@@ -381,7 +381,7 @@ describe('pg:settings commands with the real SDK', function () {
     const platform = nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [attachment])
-    const data = nock('https://postgres-api.heroku.com')
+    const data = nock('https://api.data.heroku.com')
       .patch('/postgres/v0/databases/addon-1/config', {log_lock_waits: false})
       .reply(200, {log_lock_waits: {default: false, desc: 'description', value: false}})
 
@@ -397,7 +397,7 @@ describe('pg:settings commands with the real SDK', function () {
     const platform = nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [attachment])
-    const data = nock('https://postgres-api.heroku.com')
+    const data = nock('https://api.data.heroku.com')
       .get('/postgres/v0/databases/addon-1/config')
       .reply(200, {log_lock_waits: {default: false, desc: 'description', value: true}})
 
