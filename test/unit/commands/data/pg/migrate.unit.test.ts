@@ -462,8 +462,8 @@ describe('data:pg:migrate', function () {
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).to.contain('=== Migration Details')
-      expect(stdout).to.match(/Source:\s+⛁ postgresql-cubic-12345 \(STANDARD_DB\) - Postgres 16\.4 - Available/)
-      expect(stdout).to.match(/Destination:\s+⛁ postgresql-lively-12345 \(ADVANCED_DB\) - Postgres 17\.5 - Migrating/)
+      expect(stdout).to.match(/Source:\s+⛁ postgresql-cubic-12345 \(STANDARD_DB\) - standard-0 - Postgres 16\.4 - Available/)
+      expect(stdout).to.match(/Destination:\s+⛁ postgresql-lively-12345 \(ADVANCED_DB\) - advanced - Postgres 17\.5 - Migrating/)
       expect(stdout).to.match(/Method:\s+Streaming/)
       expect(stdout).to.match(/Configured at:\s+2026-10-21 16:00 UTC/)
       expect(stdout).to.match(/Status:\s+Preparing databases/)
@@ -637,7 +637,7 @@ describe('data:pg:migrate', function () {
 
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout).to.match(/Destination:\s+⛁ postgresql-lively-12345 \(ADVANCED_DB\)$/m)
+      expect(stdout).to.match(/Destination:\s+⛁ postgresql-lively-12345 \(ADVANCED_DB\) - advanced$/m)
       expect(stdout).not.to.contain('Method:')
       expect(stdout).to.match(/Status:\s+Preparing databases/)
     })
@@ -792,8 +792,8 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.contain('Preparing the migration deletes all the data on the destination database ⛁ postgresql-obscured-12345.')
       expect(stderr).to.equal('Configuring migration... done\n')
       // Verify the details of the new migration are shown
-      expect(stdout).to.match(/Source:\s+⛁ postgresql-convex-12345 \(PREMIUM_DB\)/)
-      expect(stdout).to.match(/Destination:\s+⛁ postgresql-obscured-12345 \(OTHER_ADVANCED_DB\) - Postgres 17\.5 - Available/)
+      expect(stdout).to.match(/Source:\s+⛁ postgresql-convex-12345 \(PREMIUM_DB\) - premium-0/)
+      expect(stdout).to.match(/Destination:\s+⛁ postgresql-obscured-12345 \(OTHER_ADVANCED_DB\) - advanced - Postgres 17\.5 - Available/)
       expect(stdout).to.match(/Configured at:\s+2026-10-21 17:30 UTC/)
       // Verify the new migration is shown on the configured migrations table
       expect(stdout).to.match(/⛁ postgresql-convex-12345\s+⛁ postgresql-obscured-12345\s+Snapshot\s+Preparing databases/)
@@ -1635,8 +1635,8 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.contain(`⛁ ${premiumDbAttachment.addon.name} v16.4 as PREMIUM_DB`)
       expect(stdout).to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} v17.5 as OTHER_ADVANCED_DB`)
       expect(stdout).to.contain('Warning: The destination database runs Postgres 17.5, but the source database runs Postgres 16.4. Migrating the database also upgrades the Postgres version.')
-      expect(stdout).to.match(/Source:\s+⛁ postgresql-convex-12345 \(PREMIUM_DB\) - Postgres 16\.4$/m)
-      expect(stdout).to.match(/Destination:\s+⛁ postgresql-obscured-12345 \(OTHER_ADVANCED_DB\) - Postgres 17\.5 - Available/)
+      expect(stdout).to.match(/Source:\s+⛁ postgresql-convex-12345 \(PREMIUM_DB\) - premium-0 - Postgres 16\.4$/m)
+      expect(stdout).to.match(/Destination:\s+⛁ postgresql-obscured-12345 \(OTHER_ADVANCED_DB\) - advanced - Postgres 17\.5 - Available/)
     })
 
     // The destination runs Postgres 17.5. The API rejects migrations to an older major version, so there's nothing to warn about.
@@ -1785,7 +1785,7 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('Starting migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
-      expect(stdout).to.match(/Source:\s+⛁ postgresql-cubic-12345 \(STANDARD_DB\) - Postgres 16\.4$/m)
+      expect(stdout).to.match(/Source:\s+⛁ postgresql-cubic-12345 \(STANDARD_DB\) - standard-0 - Postgres 16\.4$/m)
       expect(stdout).to.contain('Warning: The destination database runs Postgres 17.5, but the source database runs Postgres 16.4. Migrating the database also upgrades the Postgres version.')
     })
   })

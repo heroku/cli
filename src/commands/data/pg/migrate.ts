@@ -425,11 +425,12 @@ export default class DataPgMigrate extends BaseCommand {
     return addon
   }
 
-  // e.g. ⛁ postgresql-name (DATABASE_URL) - Postgres 17.6 - Available
-  private databaseDetails(database: undefined | {attachment_names?: string[], name: string}, version?: string, status?: string): string {
+  // e.g. ⛁ postgresql-name (DATABASE_URL) - advanced-shield - Postgres 17.6 - Available
+  private databaseDetails(database: undefined | {attachment_names?: string[], name: string, plan: {name: string}}, version?: string, status?: string): string {
     const attachments = database?.attachment_names?.map(name => color.attachment(name)).join(', ')
     return [
       this.databaseName(database) + (attachments ? ` (${attachments})` : ''),
+      database?.plan.name.split(':', 2)[1],
       version && `Postgres ${version}`,
       status,
     ].filter(Boolean).join(' - ')
