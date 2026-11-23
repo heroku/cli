@@ -1,5 +1,7 @@
 import * as Heroku from '@heroku-cli/schema'
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import ansis from 'ansis'
+import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
@@ -25,7 +27,10 @@ describe('pg:links', function () {
   beforeEach(function () {
     api = nock('https://api.heroku.com')
     dataApi = nock('https://api.data.heroku.com')
-    addon = fixtures.addons['www-db']
+    addon = {
+      ...fixtures.addons['www-db'],
+      plan: fixtures.plans['heroku-postgresql:standard-2'],
+    }
   })
 
   afterEach(function () {
@@ -75,5 +80,22 @@ describe('pg:links', function () {
       created_at: 100
       remote:     REDIS (⛁ redis-001)
     `))
+  })
+
+  it('errors when the database arg resolves to an Essential-tier database', async function () {
+    const essentialAddon = {
+      ...addon,
+      plan: {...addon.plan, name: 'heroku-postgresql:essential-0'},
+    }
+    api
+      .post('/actions/addon-attachments/resolve')
+      .reply(200, [{addon: essentialAddon}])
+
+    const {error} = await runCommand(Cmd, [
+      '--app',
+      appName,
+      'test-database',
+    ])
+    expect(ansis.strip((error as Error).message)).to.equal('You can only use this command on Advanced-tier databases.')
   })
 })

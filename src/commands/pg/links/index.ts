@@ -4,6 +4,7 @@ import {Args} from '@oclif/core'
 
 import type {Link} from '../../../lib/pg/types.js'
 
+import {essentialPlan} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
 export default class Index extends Command {
@@ -27,6 +28,8 @@ export default class Index extends Command {
     if (database) {
       const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
       const {addon} = await dbResolver.getAttachment(app, database)
+      if (essentialPlan(addon))
+        throw new Error('You can only use this command on Advanced-tier databases.')
       dbs = [addon]
     } else {
       const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
