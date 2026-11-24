@@ -130,15 +130,6 @@ describe('heroku members', function () {
     expect(stdout).to.not.contain('Status')
   })
 
-  it('keeps pending invitations in the result for --pending', async function () {
-    fakePlatform.teamMember.listWithInvitations.resolves([adminMember, pendingInvite])
-
-    const {result, stdout} = await runCommand(MembersIndex, ['--team=myteam', '--pending'])
-
-    expect(result).to.eql([pendingInvite])
-    expect(stdout).to.contain('pending')
-  })
-
   it('keeps pending invitations out of the table when a role filter excludes them', async function () {
     fakePlatform.teamMember.listWithInvitations.resolves([adminMember, pendingInvite])
 

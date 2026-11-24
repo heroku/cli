@@ -7,11 +7,12 @@ import * as sinon from 'sinon'
 import MembersSet from '../../../../src/commands/members/set.js'
 
 type FakePlatform = {
+  teamFeature: {list: sinon.SinonStub}
   teamMember: {update: sinon.SinonStub}
 }
 
 function buildFakePlatform(): FakePlatform {
-  return {teamMember: {update: sinon.stub()}}
+  return {teamFeature: {list: sinon.stub()}, teamMember: {update: sinon.stub()}}
 }
 
 describe('heroku members:set', function () {
@@ -52,16 +53,7 @@ describe('heroku members:set', function () {
     expect(fakePlatform.teamMember.update.firstCall.args).to.eql(['myteam', {email: 'foo@foo.com', role: 'custom-role'}])
   })
 
-  it('does not look up invitation features', async function () {
-    fakePlatform.teamMember.update.resolves()
-
-    const {result} = await runCommand(MembersSet, ['--role=admin', '--team=myteam', 'foo@foo.com'])
-
-    expect(result).to.be.undefined
-    expect(fakePlatform.teamMember.update.calledOnce).to.equal(true)
-  })
-
-  it('returns an undefined SDK result unchanged', async function () {
+  it('returns an undefined SDK result unchanged without looking up invitation features', async function () {
     fakePlatform.teamMember.update.resolves()
 
     const {error, result} = await runCommand(MembersSet, ['--role=member', '--team=myteam', 'foo@foo.com'])
@@ -69,6 +61,7 @@ describe('heroku members:set', function () {
     expect(error).to.be.undefined
     expect(result).to.be.undefined
     expect(fakePlatform.teamMember.update.calledOnceWithExactly('myteam', {email: 'foo@foo.com', role: 'member'})).to.equal(true)
+    expect(fakePlatform.teamFeature.list.called).to.equal(false)
   })
 
   it('passes through a mutation failure without stopping the spinner', async function () {

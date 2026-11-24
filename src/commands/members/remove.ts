@@ -4,9 +4,11 @@ import {ux} from '@oclif/core/ux'
 
 import {createSDK} from '../../lib/sdk.js'
 
+const TEAM_INVITATIONS_ACCEPT = 'application/vnd.heroku+json; version=3.team-invitations'
+
 const revokeInvite = async (email: string, team: string, platform: ReturnType<typeof createSDK>['platform']) => {
   ux.action.start(`Revoking invite for ${color.user(email)} in ${color.team(team)}`)
-  const invitation = await platform.withHeaders({Accept: 'application/vnd.heroku+json; version=3.team-invitations'})
+  const invitation = await platform.withHeaders({Accept: TEAM_INVITATIONS_ACCEPT})
     .teamInvitation.revoke(team, email)
   ux.action.stop()
   return invitation
@@ -40,7 +42,7 @@ export default class MembersRemove extends Command {
       const teamInviteFeatureEnabled = features.some(feature => feature.name === 'team-invite-acceptance' && feature.enabled)
 
       if (teamInviteFeatureEnabled) {
-        const invites = await platform.withHeaders({Accept: 'application/vnd.heroku+json; version=3.team-invitations'})
+        const invites = await platform.withHeaders({Accept: TEAM_INVITATIONS_ACCEPT})
           .teamInvitation.list(team)
         isInvitedUser = Boolean(invites.some(m => m.user?.email === email))
       }
