@@ -1,3 +1,5 @@
+import type {TeamWithDelinquency} from '@heroku/sdk/resources/platform/team'
+
 import {Command, flags} from '@heroku-cli/command'
 import {hux} from '@heroku/heroku-cli-util'
 import {teamExtensions} from '@heroku/sdk/extensions/platform'
@@ -12,12 +14,15 @@ export default class OrgsOpen extends Command {
   }
   static topic = 'orgs'
 
-  public async run(): Promise<void> {
+  public async run(): Promise<TeamWithDelinquency> {
     const {flags} = await this.parse(OrgsOpen)
     const {team} = flags
     const {platform} = createSDK(this.heroku, {extensions: [teamExtensions]})
-    const {delinquency, team: org} = await platform.team.getWithDelinquency(team)
+    const result = await platform.team.getWithDelinquency(team)
+    const {delinquency, team: org} = result
     warnDelinquency(this, 'team', delinquency)
     if (!await hux.openUrl(`https://dashboard.heroku.com/teams/${org.name}`, {prompt: false})) this.exit(1)
+
+    return result
   }
 }

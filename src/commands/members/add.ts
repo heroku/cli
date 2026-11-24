@@ -1,9 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import {RoleCompletion} from '@heroku-cli/command/lib/completions.js'
+import * as color from '@heroku/heroku-cli-util/color'
+import {type AddOrInviteResult, teamMemberExtensions} from '@heroku/sdk/extensions/platform'
 import {Args} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
-import {isTeamInviteFeatureEnabled, ROLE_DESCRIPTION} from '../../lib/members/team-invite-utils.js'
-import {addMemberToTeam, inviteMemberToTeam} from '../../lib/members/util.js'
+import {ROLE_DESCRIPTION} from '../../lib/members/constants.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class MembersAdd extends Command {
   static args = {
@@ -21,17 +24,19 @@ export default class MembersAdd extends Command {
   }
   static topic = 'members'
 
-  public async run(): Promise<void> {
+  public async run(): Promise<AddOrInviteResult> {
     const {args, flags} = await this.parse(MembersAdd)
     const {role, team} = flags
     const {email} = args
+    const {platform} = createSDK(this.heroku, {extensions: [teamMemberExtensions]})
 
-    const teamInviteEnabled = await isTeamInviteFeatureEnabled(team, this.heroku)
-    // eslint-disable-next-line unicorn/prefer-ternary
-    if (teamInviteEnabled) {
-      await inviteMemberToTeam(email, role, team, this.heroku)
-    } else {
-      await addMemberToTeam(email, role, team, this.heroku)
-    }
+    const result = await platform.teamMember.addOrInvite(team, email, role, {
+      beforeMutation({kind}) {
+        const action = kind === 'invitation' ? 'Inviting' : 'Adding'
+        ux.action.start(`${action} ${color.user(email)} to ${color.team(team)} as ${color.green(role)}`)
+      },
+    })
+    ux.action.stop()
+    return result
   }
 }

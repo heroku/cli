@@ -26,10 +26,12 @@ describe('heroku org:open', function () {
   })
 
   it('opens org in dashboard via browser if team flag is passed', async function () {
-    getWithDelinquencyStub.resolves({delinquency: null, team: {name: 'myteam'}})
+    const teamWithDelinquency = {delinquency: null, team: {name: 'myteam'}}
+    getWithDelinquencyStub.resolves(teamWithDelinquency)
 
-    await runCommand(Cmd, ['--team', 'myteam'])
+    const {result} = await runCommand(Cmd, ['--team', 'myteam'])
 
+    expect(result).to.deep.equal(teamWithDelinquency)
     expect(getWithDelinquencyStub.calledOnceWithExactly('myteam')).to.equal(true)
     expect(urlOpenerStub.calledOnceWithExactly('https://dashboard.heroku.com/teams/myteam', {prompt: false})).to.equal(true)
   })
@@ -38,8 +40,9 @@ describe('heroku org:open', function () {
     getWithDelinquencyStub.resolves({delinquency: null, team: {name: 'myteam'}})
     urlOpenerStub.resolves(false)
 
-    const {error} = await runCommand(Cmd, ['--team', 'myteam'])
+    const {error, result} = await runCommand(Cmd, ['--team', 'myteam'])
 
     expect(error?.oclif?.exit).to.equal(1)
+    expect(result).to.be.undefined
   })
 })

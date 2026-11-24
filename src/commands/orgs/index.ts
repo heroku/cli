@@ -1,7 +1,9 @@
+import type {Team} from '@heroku/types/3.sdk'
+
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 
 import {printGroups, printGroupsJSON} from '../../lib/orgs/utils.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class OrgsIndex extends Command {
   static description = 'list the teams that you are a member of'
@@ -12,9 +14,10 @@ export default class OrgsIndex extends Command {
   }
   static topic = 'orgs'
 
-  public async run(): Promise<void> {
+  public async run(): Promise<Team[]> {
+    const {platform} = createSDK(this.heroku)
     const {flags} = await this.parse(OrgsIndex)
-    let {body: orgs} = await this.heroku.get<Heroku.Team[]>('/teams')
+    let orgs = await platform.team.list()
     if (flags.enterprise) {
       orgs = orgs.filter(o => o.type === 'enterprise')
     }
@@ -24,5 +27,7 @@ export default class OrgsIndex extends Command {
     } else {
       printGroups(orgs, {label: 'Teams'})
     }
+
+    return orgs
   }
 }
