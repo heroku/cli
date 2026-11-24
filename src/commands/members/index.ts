@@ -1,20 +1,18 @@
 import {Command, flags} from '@heroku-cli/command'
 import {RoleCompletion} from '@heroku-cli/command/lib/completions.js'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {teamMemberExtensions, type TeamMemberWithStatus} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
-import {getTeamInvites, isTeamInviteFeatureEnabled} from '../../lib/members/team-invite-utils.js'
+import {createSDK} from '../../lib/sdk.js'
 
-type MemberWithStatus = Heroku.TeamMember & {status?: string}
-
-const buildTableColumns = (teamInvites: MemberWithStatus[]) => {
+const buildTableColumns = (teamInvites: TeamMemberWithStatus[]) => {
   const baseColumns = {
     email: {
-      get: ({email}: any): string => color.user(email),
+      get: ({email}: {email: string}): string => color.user(email),
     },
     role: {
-      get: ({role}: any): string => color.info(role),
+      get: ({role}: TeamMemberWithStatus): string => color.info(role as string),
     },
   }
 
@@ -22,7 +20,7 @@ const buildTableColumns = (teamInvites: MemberWithStatus[]) => {
     return {
       ...baseColumns,
       status: {
-        get({status}: any): string {
+        get({status}: TeamMemberWithStatus): string {
           if (status === 'pending') return color.warning(status)
           return color.success(status)
         },
@@ -47,34 +45,12 @@ export default class MembersIndex extends Command {
   }
   static topic = 'members'
 
-  public async run(): Promise<void> {
+  public async run(): Promise<TeamMemberWithStatus[]> {
     const {flags} = await this.parse(MembersIndex)
     const {json, pending, role, team} = flags
-    let teamInvites: MemberWithStatus[] = []
-
-    if (await isTeamInviteFeatureEnabled(team, this.heroku)) {
-      const invites = await getTeamInvites(team, this.heroku)
-      /* eslint-disable perfectionist/sort-objects */
-      teamInvites = invites.map((invite: Heroku.TeamInvitation): MemberWithStatus => ({
-        email: invite.user?.email || '',
-        role: invite.role,
-        status: 'pending',
-        federated: false,
-        user: invite.user,
-        two_factor_authentication: false,
-        created_at: invite.created_at || '',
-        updated_at: invite.updated_at || '',
-      }))
-      /* eslint-enable perfectionist/sort-objects */
-    }
-
-    let {body: members} = await this.heroku.get<MemberWithStatus[]>(`/teams/${team}/members`)
-    // Set status '' to all existing members
-    members.forEach((member: MemberWithStatus) => {
-      member.status = ''
-    })
-
-    members = [...members, ...teamInvites].sort((a, b) => a.email.localeCompare(b.email))
+    const {platform} = createSDK(this.heroku, {extensions: [teamMemberExtensions]})
+    const allMembers = await platform.teamMember.listWithInvitations(team)
+    let members = allMembers
 
     if (role)
       members = members.filter(m => m.role === role)
@@ -89,11 +65,13 @@ export default class MembersIndex extends Command {
         msg += ` with role ${color.info(role)}`
       ux.stdout(msg)
     } else {
-      const tableColumns = buildTableColumns(teamInvites)
+      const tableColumns = buildTableColumns(allMembers.filter(member => member.status === 'pending'))
       this.log(hux.table(
         members,
         tableColumns,
       ))
     }
+
+    return members
   }
 }

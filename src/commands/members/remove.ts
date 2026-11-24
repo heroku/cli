@@ -1,27 +1,24 @@
-import {APIClient, Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
-import {getTeamInvites, isTeamInviteFeatureEnabled} from '../../lib/members/team-invite-utils.js'
+import {createSDK} from '../../lib/sdk.js'
 
-const revokeInvite = async (email: string, team: string, heroku: APIClient) => {
+const TEAM_INVITATIONS_ACCEPT = 'application/vnd.heroku+json; version=3.team-invitations'
+
+const revokeInvite = async (email: string, team: string, platform: ReturnType<typeof createSDK>['platform']) => {
   ux.action.start(`Revoking invite for ${color.user(email)} in ${color.team(team)}`)
-  await heroku.delete<Heroku.TeamInvitation[]>(
-    `/teams/${team}/invitations/${email}`,
-    {
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.team-invitations',
-      },
-    },
-  )
+  const invitation = await platform.withHeaders({Accept: TEAM_INVITATIONS_ACCEPT})
+    .teamInvitation.revoke(team, email)
   ux.action.stop()
+  return invitation
 }
 
-const removeUserMembership = async (email: string, team: string, heroku: APIClient) => {
+const removeUserMembership = async (email: string, team: string, platform: ReturnType<typeof createSDK>['platform']) => {
   ux.action.start(`Removing ${color.user(email)} from ${color.team(team)}`)
-  await heroku.delete(`/teams/${team}/members/${encodeURIComponent(email)}`)
+  const member = await platform.teamMember.delete(team, email)
   ux.action.stop()
+  return member
 }
 
 export default class MembersRemove extends Command {
@@ -32,18 +29,29 @@ export default class MembersRemove extends Command {
   static strict = false
   static topic = 'members'
 
-  public async run(): Promise<void> {
+  public async run() {
     const {argv, flags} = await this.parse(MembersRemove)
     const {team} = flags
     const email = argv[0] as string
-    const teamInviteFeatureEnabled = await isTeamInviteFeatureEnabled(team, this.heroku)
+    const {platform} = createSDK(this.heroku)
+    const teamInfo = await platform.team.info(team)
     let isInvitedUser = false
 
-    if (teamInviteFeatureEnabled) {
-      const invites = await getTeamInvites(team, this.heroku)
-      isInvitedUser = Boolean(invites.some(m => m.user?.email === email))
+    if (teamInfo.type === 'team') {
+      const features = await platform.teamFeature.list(team)
+      const teamInviteFeatureEnabled = features.some(feature => feature.name === 'team-invite-acceptance' && feature.enabled)
+
+      if (teamInviteFeatureEnabled) {
+        const invites = await platform.withHeaders({Accept: TEAM_INVITATIONS_ACCEPT})
+          .teamInvitation.list(team)
+        isInvitedUser = Boolean(invites.some(m => m.user?.email === email))
+      }
     }
 
-    await (teamInviteFeatureEnabled && isInvitedUser ? revokeInvite(email, team, this.heroku) : removeUserMembership(email, team, this.heroku))
+    if (isInvitedUser) {
+      return revokeInvite(email, team, platform)
+    }
+
+    return removeUserMembership(email, team, platform)
   }
 }
