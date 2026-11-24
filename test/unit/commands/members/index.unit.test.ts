@@ -42,6 +42,17 @@ describe('heroku members', function () {
     expect(fakePlatform.teamMember.listWithInvitations.calledOnceWithExactly('myteam')).to.equal(true)
   })
 
+  it('lists active members and pending invitations together by default', async function () {
+    fakePlatform.teamMember.listWithInvitations.resolves([adminMember, pendingInvite])
+
+    const {result, stdout} = await runCommand(MembersIndex, ['--team=myteam'])
+
+    expect(result).to.eql([adminMember, pendingInvite])
+    expect(stdout).to.contain('admin@heroku.com')
+    expect(stdout).to.contain('invited-user@mail.com')
+    expect(stdout).to.contain('pending')
+  })
+
   it('preserves the empty-list message', async function () {
     fakePlatform.teamMember.listWithInvitations.resolves([])
 
