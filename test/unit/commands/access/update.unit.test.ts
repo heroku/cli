@@ -76,7 +76,7 @@ describe('heroku access:update', function () {
         'view,deploy',
         'gandalf@heroku.com',
       ])
-      expect(ansis.strip(error?.message ?? '')).to.contain('Error: cannot update permissions. The app ⬢ myapp is not owned by a team')
+      expect(ansis.strip(error?.message ?? '')).to.contain('Cannot update permissions. The app ⬢ myapp is not owned by a team')
     })
   })
 })

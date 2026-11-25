@@ -35,7 +35,7 @@ export default class Update extends Command {
       await platform.appCollaborator.update(appName, args.email, {permissions})
     } catch (error) {
       if (error instanceof NotATeamAppError) {
-        this.error(`Error: cannot update permissions. The app ${color.app(appName)} is not owned by a team`)
+        this.error(`Cannot update permissions. The app ${color.app(appName)} is not owned by a team`)
       }
 
       throw error
