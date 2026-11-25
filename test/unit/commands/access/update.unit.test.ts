@@ -1,21 +1,42 @@
+import type {App} from '@heroku/types/3.sdk'
+
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
+import {NotATeamAppError} from '@heroku/sdk/extensions/platform'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/access/update.js'
-import {personalApp, teamApp, teamAppWithoutOwner} from '../../../helpers/stubs/get.js'
-import {appCollaboratorWithPermissions} from '../../../helpers/stubs/patch.js'
+
+type FakePlatform = {
+  appCollaborator: {update: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    appCollaborator: {update: sinon.stub()},
+  }
+}
 
 describe('heroku access:update', function () {
-  context('with a team app with permissions', function () {
-    afterEach(function () {
-      return nock.cleanAll()
+  let fakePlatform: FakePlatform
+
+  beforeEach(function () {
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+  })
+
+  afterEach(function () {
+    sinon.restore()
+  })
+
+  context('with a team app', function () {
+    beforeEach(function () {
+      fakePlatform.appCollaborator.update.resolves({permissions: ['deploy', 'view'], user: {email: 'gandalf@heroku.com'}})
     })
 
     it('updates the app permissions, view being implicit', async function () {
-      teamApp()
-      appCollaboratorWithPermissions({email: 'gandalf@heroku.com', permissions: ['deploy', 'view']})
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -23,13 +44,12 @@ describe('heroku access:update', function () {
         'deploy',
         'gandalf@heroku.com',
       ])
-      expect('').to.eq(stdout)
+      expect(stdout).to.eq('')
       expect(stderr).to.equal('Updating gandalf@heroku.com in application ⬢ myapp with deploy,view permissions... done\n')
+      expect(fakePlatform.appCollaborator.update.calledOnceWithExactly('myapp', 'gandalf@heroku.com', {permissions: ['deploy', 'view']})).to.equal(true)
     })
 
     it('updates the app permissions, even specifying view as a permission', async function () {
-      teamApp()
-      appCollaboratorWithPermissions({email: 'gandalf@heroku.com', permissions: ['deploy', 'view']})
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -37,39 +57,18 @@ describe('heroku access:update', function () {
         'deploy,view',
         'gandalf@heroku.com',
       ])
-      expect('').to.eq(stdout)
+      expect(stdout).to.eq('')
       expect(stderr).to.equal('Updating gandalf@heroku.com in application ⬢ myapp with deploy,view permissions... done\n')
+      expect(fakePlatform.appCollaborator.update.calledOnceWithExactly('myapp', 'gandalf@heroku.com', {permissions: ['deploy', 'view']})).to.equal(true)
     })
   })
 
-  context('with a team app whose owner is missing from the response', function () {
-    afterEach(function () {
-      return nock.cleanAll()
+  context('with a non-team app', function () {
+    beforeEach(function () {
+      fakePlatform.appCollaborator.update.rejects(new NotATeamAppError({name: 'myapp', team: null} as App))
     })
 
-    // Team detection keys off the authoritative `team` field the API sends, not
-    // the owner email — so a real team app updates even when `owner` is absent.
-    it('updates the app permissions', async function () {
-      teamAppWithoutOwner()
-      appCollaboratorWithPermissions({email: 'gandalf@heroku.com', permissions: ['deploy', 'view']})
-      const {stderr, stdout} = await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        '--permissions',
-        'deploy',
-        'gandalf@heroku.com',
-      ])
-      expect('').to.eq(stdout)
-      expect(stderr).to.equal('Updating gandalf@heroku.com in application ⬢ myapp with deploy,view permissions... done\n')
-    })
-  })
-
-  context('with a non team app', function () {
-    afterEach(function () {
-      return nock.cleanAll()
-    })
     it('returns an error when passing permissions', async function () {
-      personalApp()
       const {error} = await runCommand(Cmd, [
         '--app',
         'myapp',
