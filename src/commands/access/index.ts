@@ -1,15 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
-import {HerokuAPIError} from '@heroku-cli/command/lib/api-client.js'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {type AdminCollaborator, appCollaboratorExtensions} from '@heroku/sdk/extensions/platform'
+import {Collaborator} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
-import {getOwner} from '../../lib/team-utils.js'
-
-type AdminWithPermissions = Heroku.TeamMember & {
-  permissions?: Heroku.TeamAppPermission[],
-}
+import {createSDK} from '../../lib/sdk.js'
 
 type MemberData = {
   email: string,
@@ -31,36 +27,14 @@ export default class AccessIndex extends Command {
 
     const {flags} = await this.parse(AccessIndex)
     const {app: appName, json} = flags
-    const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
-    let {body: collaborators} = await this.heroku.get<Heroku.TeamAppCollaborator[]>(`/apps/${appName}/collaborators`)
-    if (app.team) {
-      const teamName = app.team.name ?? getOwner(app.owner?.email)
-      try {
-        const {body: members} = await this.heroku.get<Heroku.TeamMember[]>(`/teams/${teamName}/members`)
-        let admins: AdminWithPermissions[] = members.filter(member => member.role === 'admin')
-        const {body: adminPermissions} = await this.heroku.get<Heroku.TeamAppPermission[]>('/teams/permissions')
-        admins = _.forEach(admins, admin => {
-          admin.user = {email: admin.email}
-          admin.permissions = adminPermissions
-          return admin
-        })
-        collaborators = buildCollaboratorsArray(collaborators, admins, _)
-      } catch (error: any) {
-        if (!(error instanceof HerokuAPIError && error.http.statusCode === 403))
-          throw error
-      }
-    }
+    const {platform} = createSDK(this.heroku, {extensions: [appCollaboratorExtensions]})
+    const collaborators = await platform.appCollaborator.list(appName)
 
     if (json)
       printJSON(collaborators)
     else
       printAccess(collaborators, _)
   }
-}
-
-function buildCollaboratorsArray(collaboratorsRaw: Heroku.TeamAppCollaborator[], admins: Heroku.TeamMember[], _: any) {
-  const collaboratorsNoAdmins = _.reject(collaboratorsRaw, {role: 'admin'})
-  return _.union(collaboratorsNoAdmins, admins)
 }
 
 function buildTableColumns(showPermissions: boolean) {
@@ -83,10 +57,10 @@ function buildTableColumns(showPermissions: boolean) {
   return baseColumns
 }
 
-function printAccess(collaborators: any[], _: any) {
-  const showPermissions = collaborators.some((c: any) => c.permissions !== undefined)
-  collaborators = _.chain(collaborators)
-    .sortBy((c: any) => c.email || c.user.email)
+function printAccess(collaborators: Array<AdminCollaborator | Collaborator>, _: any) {
+  const showPermissions = collaborators.some(c => c.permissions !== undefined)
+  const rows = _.chain(collaborators)
+    .sortBy((c: any) => c.user.email)
     .reject((c: any) => /herokumanager\.com$/.test(c.user.email))
     .map((collab: any) => {
       const {email} = collab.user
@@ -102,11 +76,11 @@ function printAccess(collaborators: any[], _: any) {
 
   const tableColumns = buildTableColumns(showPermissions)
   ux.stdout(hux.table(
-    collaborators,
+    rows,
     tableColumns,
   ))
 }
 
-function printJSON(collaborators: Heroku.TeamAppCollaborator[]) {
+function printJSON(collaborators: Array<AdminCollaborator | Collaborator>) {
   ux.stdout(JSON.stringify(collaborators, null, 2))
 }

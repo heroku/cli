@@ -1,27 +1,38 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/access/add.js'
-import {
-  personalApp, teamApp, teamAppWithoutOwner, teamFeatures,
-} from '../../../helpers/stubs/get.js'
-import {collaborators, teamAppCollaborators} from '../../../helpers/stubs/post.js'
 
-let apiGet: nock.Scope
-let apiPost: nock.Scope
-let apiGetOrgFeatures: nock.Scope
+type FakePlatform = {
+  app: {info: sinon.SinonStub}
+  appCollaborator: {add: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    app: {info: sinon.stub()},
+    appCollaborator: {add: sinon.stub()},
+  }
+}
 
 describe('heroku access:add', function () {
-  context('with a team app with user permissions', function () {
-    beforeEach(function () {
-      apiGet = teamApp()
-      apiPost = teamAppCollaborators('gandalf@heroku.com', ['deploy', 'view'])
-      apiGetOrgFeatures = teamFeatures([{name: 'org-access-controls'}])
-    })
+  let fakePlatform: FakePlatform
 
-    afterEach(function () {
-      nock.cleanAll()
+  beforeEach(function () {
+    fakePlatform = buildFakePlatform()
+    fakePlatform.appCollaborator.add.resolves({user: {email: 'gandalf@heroku.com'}})
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+  })
+
+  afterEach(function () {
+    sinon.restore()
+  })
+
+  context('with a team app', function () {
+    beforeEach(function () {
+      fakePlatform.app.info.resolves({name: 'myapp', team: {name: 'myteam'}})
     })
 
     it('adds user to the app with permissions, even specifying the view permission', async function () {
@@ -32,11 +43,9 @@ describe('heroku access:add', function () {
         'deploy,view',
         'gandalf@heroku.com',
       ])
-      apiGet.done()
-      apiGetOrgFeatures.done()
-      apiPost.done()
-      expect('').to.eq(stdout)
+      expect(stdout).to.eq('')
       expect(stderr).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp with deploy, view permissions... done\n')
+      expect(fakePlatform.appCollaborator.add.calledOnceWithExactly('myapp', 'gandalf@heroku.com', {permissions: ['deploy', 'view']})).to.equal(true)
     })
 
     it('adds user to the app with permissions, and view is implicit', async function () {
@@ -47,86 +56,26 @@ describe('heroku access:add', function () {
         'deploy',
         'gandalf@heroku.com',
       ])
-      apiGet.done()
-      apiGetOrgFeatures.done()
-      apiPost.done()
-      expect('').to.eq(stdout)
+      expect(stdout).to.eq('')
       expect(stderr).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp with deploy, view permissions... done\n')
+      expect(fakePlatform.appCollaborator.add.calledOnceWithExactly('myapp', 'gandalf@heroku.com', {permissions: ['deploy']})).to.equal(true)
     })
 
-    it('raises an error when permissions are not specified', async function () {
-      const {error} = await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        'gandalf@heroku.com',
-      ])
-      expect(error?.message).to.equal('Missing argument: permissions')
-    })
-  })
-
-  context('with a team app without user permissions', function () {
-    beforeEach(function () {
-      apiGet = teamApp()
-      apiPost = collaborators()
-      apiGetOrgFeatures = teamFeatures([])
-    })
-
-    afterEach(function () {
-      nock.cleanAll()
-    })
-
-    it('adds user to the app', async function () {
+    it('adds user to the app without permissions', async function () {
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         'gandalf@heroku.com',
       ])
-      apiGet.done()
-      apiGetOrgFeatures.done()
-      apiPost.done()
-      expect('').to.eq(stdout)
+      expect(stdout).to.eq('')
       expect(stderr).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp... done\n')
+      expect(fakePlatform.appCollaborator.add.calledOnceWithExactly('myapp', 'gandalf@heroku.com', {permissions: undefined})).to.equal(true)
     })
   })
 
-  context('with a team app whose owner is missing from the response', function () {
+  context('with a non-team app', function () {
     beforeEach(function () {
-      apiGet = teamAppWithoutOwner()
-      apiPost = teamAppCollaborators('gandalf@heroku.com', ['deploy', 'view'])
-      apiGetOrgFeatures = teamFeatures([{name: 'org-access-controls'}])
-    })
-
-    afterEach(function () {
-      nock.cleanAll()
-    })
-
-    // Team detection and the team-features lookup both key off the authoritative
-    // `team` field/name the API sends, not the owner email — so permissions are
-    // honored even when `owner` is absent from the response.
-    it('adds user to the app with permissions', async function () {
-      const {stderr, stdout} = await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        '--permissions',
-        'deploy',
-        'gandalf@heroku.com',
-      ])
-      apiGet.done()
-      apiGetOrgFeatures.done()
-      apiPost.done()
-      expect('').to.eq(stdout)
-      expect(stderr).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp with deploy, view permissions... done\n')
-    })
-  })
-
-  context('with a non team app', function () {
-    beforeEach(function () {
-      apiGet = personalApp()
-      apiPost = collaborators()
-    })
-
-    afterEach(function () {
-      nock.cleanAll()
+      fakePlatform.app.info.resolves({name: 'myapp', team: null})
     })
 
     it('adds user to the app as a collaborator', async function () {
@@ -135,10 +84,22 @@ describe('heroku access:add', function () {
         'myapp',
         'gandalf@heroku.com',
       ])
-      apiGet.done()
-      apiPost.done()
-      expect('').to.eq(stdout)
+      expect(stdout).to.eq('')
       expect(stderr).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp... done\n')
+      expect(fakePlatform.appCollaborator.add.calledOnceWithExactly('myapp', 'gandalf@heroku.com', {permissions: undefined})).to.equal(true)
+    })
+
+    it('does not mention permissions even when permissions are passed', async function () {
+      const {stderr, stdout} = await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--permissions',
+        'deploy',
+        'gandalf@heroku.com',
+      ])
+      expect(stdout).to.eq('')
+      expect(stderr).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp... done\n')
+      expect(fakePlatform.appCollaborator.add.calledOnceWithExactly('myapp', 'gandalf@heroku.com', {permissions: ['deploy']})).to.equal(true)
     })
   })
 })

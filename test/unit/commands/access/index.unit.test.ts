@@ -1,102 +1,100 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/access/index.js'
-import {
-  appCollaborators,
-  appCollaboratorsWithPermissions,
-  appPermissions,
-  ownerlessApp,
-  personalApp,
-  teamApp,
-  teamAppCollaboratorsWithPermissions,
-  teamMembers,
-  teamServiceAccountApp,
-} from '../../../helpers/stubs/get.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
+type FakePlatform = {
+  appCollaborator: {list: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    appCollaborator: {list: sinon.stub()},
+  }
+}
+
 describe('heroku access', function () {
-  context('with personal app', function () {
-    afterEach(function () {
-      return nock.cleanAll()
-    })
-    it('shows the app collaborators', async function () {
-      const apiGetPersonalApp = personalApp()
-      const apiGetAppCollaborators = appCollaborators()
-      const {stderr, stdout} = await runCommand(Cmd, [
-        '--app',
-        'myapp',
-      ])
-      expect(removeAllWhitespace(stdout)).to.contain(removeAllWhitespace('frodo@heroku.com  collaborator \n gandalf@heroku.com owner'))
-      expect('').to.eq(stderr)
-      apiGetPersonalApp.done()
-      apiGetAppCollaborators.done()
-    })
+  let fakePlatform: FakePlatform
+
+  beforeEach(function () {
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
-  context('with team', function () {
-    afterEach(function () {
-      return nock.cleanAll()
-    })
-    it('shows the app collaborators and hides the team collaborator record', async function () {
-      const apiGetTeamApp = teamApp()
-      const apiGetOrgMembers = teamMembers()
-      const apiGetAppPermissions = appPermissions()
-      const apiGetTeamAppCollaboratorsWithPermissions = teamAppCollaboratorsWithPermissions()
-      const {stderr, stdout} = await runCommand(Cmd, [
-        '--app',
-        'myapp',
-      ])
-      expect(removeAllWhitespace(stdout)).to.contain(removeAllWhitespace('bob@heroku.com   member deploy, view                  \n gandalf@heroku.com admin  deploy, manage, operate, view \n'))
-      expect('').to.eq(stderr)
-      apiGetTeamApp.done()
-      apiGetOrgMembers.done()
-      apiGetAppPermissions.done()
-      apiGetTeamAppCollaboratorsWithPermissions.done()
-    })
+
+  afterEach(function () {
+    sinon.restore()
   })
-  context('with a team service account owned app', function () {
-    afterEach(function () {
-      return nock.cleanAll()
-    })
-    // The owner email (myteam+service@herokumanager.com) looks team-ish, but the
-    // Platform API treats service accounts as non-team, so it sends no permissions.
-    // The permissions column must track what the API actually sent, not the email.
-    // A service-account-owned app is not a team app per the API (it sends no
-    // `team` and no permissions), so detection keyed on `app.team` matches the
-    // API and the permissions column stays hidden.
-    it('does not show the permissions column', async function () {
-      const apiGetServiceAccountApp = teamServiceAccountApp()
-      const apiGetAppCollaborators = appCollaborators()
+
+  context('with no permissions on any collaborator', function () {
+    it('shows the app collaborators without a permissions column', async function () {
+      fakePlatform.appCollaborator.list.resolves([
+        {role: 'owner', user: {email: 'gandalf@heroku.com'}},
+        {role: 'collaborator', user: {email: 'frodo@heroku.com'}},
+      ])
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])
+
       expect(removeAllWhitespace(stdout)).to.contain(removeAllWhitespace('frodo@heroku.com  collaborator \n gandalf@heroku.com owner'))
       expect(stdout.toLowerCase()).to.not.contain('permissions')
-      expect('').to.eq(stderr)
-      apiGetServiceAccountApp.done()
-      apiGetAppCollaborators.done()
+      expect(stderr).to.eq('')
+      expect(fakePlatform.appCollaborator.list.calledOnceWithExactly('myapp')).to.equal(true)
     })
   })
-  context('with a team app whose owner is missing from the response', function () {
-    afterEach(function () {
-      return nock.cleanAll()
-    })
-    // The API omitted the owner but still sent permissions (it's a real team app).
-    // The column must be driven by the permissions the API sent, not the owner email.
-    it('shows the permissions column', async function () {
-      const apiGetOwnerlessApp = ownerlessApp()
-      const apiGetAppCollaborators = appCollaboratorsWithPermissions()
+
+  context('with permissions on at least one collaborator', function () {
+    it('shows the permissions column and hides the team collaborator record', async function () {
+      fakePlatform.appCollaborator.list.resolves([
+        {
+          permissions: [],
+          role: 'owner',
+          user: {email: 'myteam@herokumanager.com'},
+        },
+        {
+          permissions: [{name: 'deploy'}, {name: 'view'}],
+          role: 'member',
+          user: {email: 'bob@heroku.com'},
+        },
+        {
+          permissions: [{name: 'deploy'}, {name: 'manage'}, {name: 'operate'}, {name: 'view'}],
+          role: 'admin',
+          user: {email: 'gandalf@heroku.com'},
+        },
+      ])
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])
-      expect(removeAllWhitespace(stdout)).to.contain(removeAllWhitespace('bob@heroku.com  member deploy, view'))
+
+      expect(removeAllWhitespace(stdout)).to.contain(removeAllWhitespace('bob@heroku.com member deploy, view'))
+      expect(removeAllWhitespace(stdout)).to.contain(removeAllWhitespace('gandalf@heroku.com admin deploy, manage, operate, view'))
+      expect(stdout).to.not.contain('herokumanager.com')
       expect(stdout.toLowerCase()).to.contain('permissions')
-      expect('').to.eq(stderr)
-      apiGetOwnerlessApp.done()
-      apiGetAppCollaborators.done()
+      expect(stderr).to.eq('')
+    })
+  })
+
+  context('with --json', function () {
+    it('prints the raw collaborators as json', async function () {
+      const collaborators = [
+        {role: 'owner', user: {email: 'gandalf@heroku.com'}},
+      ]
+      fakePlatform.appCollaborator.list.resolves(collaborators)
+
+      const {stderr, stdout} = await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--json',
+      ])
+
+      expect(JSON.parse(stdout)).to.deep.equal(collaborators)
+      expect(stderr).to.eq('')
     })
   })
 })

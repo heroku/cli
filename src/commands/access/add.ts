@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {appCollaboratorExtensions, isTeamOwned} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 
-import {getOwner} from '../../lib/team-utils.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class AccessAdd extends Command {
   static args = {
@@ -24,31 +24,22 @@ export default class AccessAdd extends Command {
     const {args, flags} = await this.parse(AccessAdd)
     const {email} = args
     const {app: appName, permissions} = flags
-    const {body: appInfo} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
+    const {platform} = createSDK(this.heroku, {extensions: [appCollaboratorExtensions]})
+
     let output = `Adding ${color.user(email)} access to the app ${color.app(appName)}`
-    let teamFeatures: Heroku.TeamFeature[] = []
-    if (appInfo?.team) {
-      const teamName = appInfo.team.name ?? getOwner(appInfo?.owner?.email)
-      const teamFeaturesRequest = await this.heroku.get<Heroku.TeamFeature[]>(`/teams/${teamName}/features`)
-      teamFeatures = teamFeaturesRequest.body
+
+    const app = await platform.app.info(appName)
+    const permissionsArray = permissions
+      ? permissions.split(',').map((permission: string) => permission.trim()).filter(Boolean)
+      : undefined
+
+    if (isTeamOwned(app) && permissionsArray) {
+      const normalizedPermissions = [...new Set(['view', ...permissionsArray])].sort()
+      output += ` with ${color.green(normalizedPermissions.join(', '))} permissions`
     }
 
-    if (teamFeatures.some(feature => feature.name === 'org-access-controls')) {
-      if (!permissions)
-        this.error('Missing argument: permissions', {exit: 1})
-      const permissionsArray = permissions ? permissions.split(',') : []
-      permissionsArray.push('view')
-      const permissionsArraySorted = [...new Set(permissionsArray.sort())]
-      output += ` with ${color.green(permissionsArraySorted.join(', '))} permissions`
-      ux.action.start(output)
-      await this.heroku.post<Heroku.TeamAppCollaborator[]>(`/teams/apps/${appName}/collaborators`, {
-        body: {permissions: permissionsArraySorted, user: email},
-      })
-      ux.action.stop()
-    } else {
-      ux.action.start(output)
-      await this.heroku.post<Heroku.Collaborator[]>(`/apps/${appName}/collaborators`, {body: {user: email}})
-      ux.action.stop()
-    }
+    ux.action.start(output)
+    await platform.appCollaborator.add(appName, email, {permissions: permissionsArray})
+    ux.action.stop()
   }
 }
